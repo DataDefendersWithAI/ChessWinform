@@ -19,14 +19,14 @@ namespace ChessAI
         }
         public void boardPaint(object sender, PaintEventArgs e) // update continously
         {
-            boardRenderer.DrawBoard(e.Graphics, chessBoard, 600, isDebug: true); // draw the board
+            boardRenderer.DrawBoard(e.Graphics, chessBoard, 600, isDebug: true , isWhite: true); // draw the board
             richTextBox1.Text = chessBoard.ToPgn(); // show the moves       
         }
 
         public void boardClick(object sender, MouseEventArgs e)
         {
             Debug.WriteLine("X: " + e.X + " Y: " + e.Y);
-            chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard , isNormalize: false); // handle the click
+            chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard , isNormalized: false); // handle the click
             Invalidate(); // redraw whole screen
         }
 
@@ -35,7 +35,7 @@ namespace ChessAI
             var moves = textBox1.Text.Split(' ');
             foreach (var m in moves)
             {
-                chessBoard = boardRenderer.onClicked(new Position(m), chessBoard, isNormalize: true); // handle the click
+                chessBoard = boardRenderer.onClicked(new Position(m), chessBoard, isNormalized: true); // handle the click
                 Invalidate(); // redraw whole screen
             }         
         }
