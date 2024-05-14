@@ -26,11 +26,10 @@ Traditional chess game using .NET Core, Winform, Firebase and TCP to communicate
 * Communication method: TCP via LAN
 
 ### Collaborators
-- Leader: JakeClark38a (Nguyễn Chí Thành - 22521350) (another account: JakeClark-chan)
-- Sub-Leader: Witnull (Trần Nguyễn Tiến Thành - 22521364)
+- **Leader: Witnull** (Trần Nguyễn Tiến Thành - 22521364)
+- Sub-Leader: JakeClark38a (Nguyễn Chí Thành - 22521350) (another account: JakeClark-chan)
 - SeaWind (Nguyễn Hải Phong - 22521088)
 - KienSD (Hồ Trung Kiên - 22520704)
-- lightunderwolft (Hồ Vĩnh Nhật - 22521013)
 
 ### Special thanks for all repos below, you are our best!
 * [Chat UI: https://github.com/agreentejada/winforms-chat](https://github.com/agreentejada/winforms-chat)
