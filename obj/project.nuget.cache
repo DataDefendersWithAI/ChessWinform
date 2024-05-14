@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "sKiJssfzwUDd9rK8lTWnlF3HqYz4V53flpyRavFkiRkAjIm19AwsTava+r6bs/mT+pIzucufwROXhMEQ8Vbt6A==",
+  "success": true,
+  "projectFilePath": "D:\\Lap trinh mang\\ChessAI\\ChessAI.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\admin\\.nuget\\packages\\ardalis.smartenum\\2.0.1\\ardalis.smartenum.2.0.1.nupkg.sha512",
+    "C:\\Users\\admin\\.nuget\\packages\\gera.chess\\1.1.0\\gera.chess.1.1.0.nupkg.sha512"
+  ],
+  "logs": []
+}
