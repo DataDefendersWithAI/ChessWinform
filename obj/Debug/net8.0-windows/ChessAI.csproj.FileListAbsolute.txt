@@ -23,3 +23,5 @@ D:\Lap trinh mang\ChessAI\obj\Debug\net8.0-windows\winforms_chat.ChatForm.Chatbo
 D:\Lap trinh mang\ChessAI\obj\Debug\net8.0-windows\winforms_chat.ChatForm.ChatItem.resources
 D:\Lap trinh mang\ChessAI\obj\Debug\net8.0-windows\winforms_chat.ChatMainForm.resources
 D:\Lap trinh mang\ChessAI\obj\Debug\net8.0-windows\ChessAI.ChessAIClient.resources
+D:\Lap trinh mang\ChessAI\obj\Debug\net8.0-windows\ChessAI.ChatBox_Server_Form.resources
+D:\Lap trinh mang\ChessAI\obj\Debug\net8.0-windows\ChessAI.Lab3_Bai4.resources

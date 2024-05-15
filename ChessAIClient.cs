@@ -1,67 +1,97 @@
+using Ardalis.SmartEnum.Core;
 using Chess;
+using System;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
-using System.Xml;
+
 namespace ChessAI
 {
     public partial class ChessAIClient : Form
     {
-        BoardRenderer boardRenderer;
-        ChessBoard chessBoard;
-        PieceColor Side;
+        private BoardRenderer boardRenderer;
+        private ChessBoard chessBoard;
+        private PieceColor Side;
+        private bool gameStarted = false;
 
-        //connections
+        // Connections
         private TcpClient client;
         private NetworkStream stream;
         private Thread receiveThread;
-        //
+
+        // Random player name
+        private string PlayerName = "Player" + Guid.NewGuid().ToString();
 
         public ChessAIClient()
         {
             InitializeComponent();
-            DoubleBuffered = true; // remove the small blinking when Invalidate()
+            DoubleBuffered = true; // Remove the small blinking when Invalidate()
 
-            ///Set the side
-            Side = PieceColor.White;
 
-            chessBoard = new ChessBoard() { AutoEndgameRules = AutoEndgameRules.All }; // init new board
-            boardRenderer = new BoardRenderer(); // init new renderer
 
-            this.Size = new Size(1000, 800); // add minimun offset is 75 and maybe some space
+            chessBoard = new ChessBoard() { AutoEndgameRules = AutoEndgameRules.All }; // Init new board
+            boardRenderer = new BoardRenderer(); // Init new renderer
+
+            this.Size = new System.Drawing.Size(1000, 800); // Add minimum offset is 75 and maybe some space
+            this.FormClosed += ClientForm_FormClosed; // Add event when form is closed
         }
-        public void boardPaint(object sender, PaintEventArgs e) // update continously
+        private void InitGame(string message)
         {
-            boardRenderer.DrawBoard(e.Graphics, chessBoard, 500, isDebug: true, side: Side); // draw the board
-            richTextBox1.Text = chessBoard.ToPgn(); // show the moves       
+            if(gameStarted) return; // If game already started, return
+            // Set the side
+            Side = message.Contains("White") ? PieceColor.White : PieceColor.Black; 
+            // Set the game started
+            gameStarted = true;
+            LogMessage("Game started! You are: " + Side);
+            Invalidate(); // Redraw whole screen
+        }
+        private void boardPaint(object sender, PaintEventArgs e) // Update continuously
+        {
+            if(!gameStarted) return; // If game not started, return
+            boardRenderer.DrawBoard(e.Graphics, chessBoard, 500, isDebug: true, side: Side); // Draw the board
+            richTextBox1.Text = chessBoard.ToPgn(); // Show the moves       
         }
 
-        public void boardClick(object sender, MouseEventArgs e)
+        private void boardClick(object sender, MouseEventArgs e)
         {
+            if (!gameStarted) return; // If game not started, return
             Debug.WriteLine("X: " + e.X + " Y: " + e.Y);
-            chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard, isNormalized: false, side: Side); // handle the click
-            Invalidate(); // redraw whole screen
+            chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard, isNormalized: false, side: Side); // Handle the click
+            Invalidate(); // Redraw whole screen
+            LogMessage(chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none");
+            SendMessage(chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none");
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            /*var moves = textBox1.Text.Split(' ');
-            foreach (var m in moves)
-            {
-                chessBoard = boardRenderer.onClicked(new Position(m), chessBoard, isNormalized: true); // handle the click
-                Invalidate(); // redraw whole screen
-            }*/
-            if (chessBoard.Turn == Side) return; // simulate opoonent
+            if (!gameStarted) return; // If game not started, return
+            if (chessBoard.Turn == Side) return; // Simulate opponent
+
             var moves = chessBoard.Moves();
             if (chessBoard.IsEndGame)
             {
                 Debug.WriteLine("Game end " + chessBoard.EndGame.WonSide + " won!");
                 return;
-            };
+            }
             chessBoard.Move(moves[Random.Shared.Next(moves.Length)]);
             Invalidate();
         }
+
+        private void MoveAsMessage(string message)
+        {
+            Move move;
+            if (!chessBoard.TryParseFromSan(message, out move)) return;
+            if (chessBoard.IsEndGame)
+            {
+                Debug.WriteLine("Game end " + chessBoard.EndGame.WonSide + " won!");
+                return;
+            }
+            chessBoard.Move(move);
+            Invalidate();
+        }
+
 
         private void ClientForm_Load(object sender, EventArgs e)
         {
@@ -80,12 +110,10 @@ namespace ChessAI
 
         private void ConnectToServer()
         {
-
             client = new TcpClient();
             client.Connect("127.0.0.1", 9099);
             stream = client.GetStream();
-            LogMessage("Connected to server.");
-
+            LogMessage(PlayerName + " connected to server.");
         }
 
         private void ReceiveMessages()
@@ -112,7 +140,16 @@ namespace ChessAI
                     }
 
                     string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-                    LogMessage(message);
+                    LogMessage("Rcv: " + message);
+                    if(message.Contains("BG*#"))
+                    {
+                        InitGame(message); // Init the game and set side
+                    }
+                    else
+                    {
+                        MoveAsMessage(message);
+                    }
+                    
                 }
             }
             catch (Exception ex)
@@ -129,7 +166,7 @@ namespace ChessAI
                 {
                     byte[] data = Encoding.ASCII.GetBytes(message);
                     stream.Write(data, 0, data.Length);
-                    LogMessage(message);
+                    LogMessage("Snd: " + message);
                 }
                 else
                 {
@@ -155,7 +192,7 @@ namespace ChessAI
         private void ClientForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Send last message to server
-            SendMessage("Client disconnected");
+            SendMessage("Client " + PlayerName + " disconnected!");
             // Close the stream
             if (stream != null)
             {
@@ -165,6 +202,11 @@ namespace ChessAI
             if (client != null)
             {
                 client.Close();
+            }
+            // Stop receiving messages
+            if (receiveThread != null && receiveThread.IsAlive)
+            {
+                receiveThread.Abort();
             }
         }
 
@@ -182,9 +224,5 @@ namespace ChessAI
                 LogMessage("Error: " + ex.Message);
             }
         }
-
     }
-
-
-}
 }
