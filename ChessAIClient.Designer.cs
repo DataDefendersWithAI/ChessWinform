@@ -1,6 +1,6 @@
 ﻿namespace ChessAI
 {
-    partial class Form1
+    partial class ChessAIClient
     {
         /// <summary>
         ///  Required designer variable.
@@ -29,8 +29,9 @@
         private void InitializeComponent()
         {
             richTextBox1 = new RichTextBox();
-            textBox1 = new TextBox();
             button1 = new Button();
+            richTextBox2 = new RichTextBox();
+            cntSvr = new Button();
             SuspendLayout();
             // 
             // richTextBox1
@@ -41,44 +42,60 @@
             richTextBox1.TabIndex = 0;
             richTextBox1.Text = "";
             // 
-            // textBox1
-            // 
-            textBox1.Location = new Point(708, 346);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(250, 27);
-            textBox1.TabIndex = 1;
-            //textBox1.TextChanged += textBox1_TextChanged;
-            // 
             // button1
             // 
-            button1.Location = new Point(708, 379);
+            button1.BackColor = Color.LightGreen;
+            button1.Font = new Font("Segoe UI", 13F);
+            button1.Location = new Point(708, 336);
             button1.Name = "button1";
-            button1.Size = new Size(94, 29);
+            button1.Size = new Size(140, 83);
             button1.TabIndex = 2;
-            button1.Text = "Move";
-            button1.UseVisualStyleBackColor = true;
+            button1.Text = "Opponent move";
+            button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
             // 
-            // Form1
+            // richTextBox2
+            // 
+            richTextBox2.Location = new Point(708, 453);
+            richTextBox2.Name = "richTextBox2";
+            richTextBox2.Size = new Size(250, 288);
+            richTextBox2.TabIndex = 3;
+            richTextBox2.Text = "";
+            // 
+            // cntSvr
+            // 
+            cntSvr.BackColor = Color.Chartreuse;
+            cntSvr.Font = new Font("Segoe UI", 13F);
+            cntSvr.Location = new Point(854, 336);
+            cntSvr.Name = "cntSvr";
+            cntSvr.Size = new Size(104, 83);
+            cntSvr.TabIndex = 4;
+            cntSvr.Text = "Connect server";
+            cntSvr.UseVisualStyleBackColor = false;
+            cntSvr.Click += cntSvr_Click;
+            // 
+            // ChessAIClient
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(982, 753);
+            Controls.Add(cntSvr);
+            Controls.Add(richTextBox2);
             Controls.Add(button1);
-            Controls.Add(textBox1);
             Controls.Add(richTextBox1);
-            Name = "Form1";
+            Name = "ChessAIClient";
             Text = "Form1";
+            Load += ClientForm_Load;
             Paint += boardPaint;
             MouseClick += boardClick;
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
         private RichTextBox richTextBox1;
-        private TextBox textBox1;
         private Button button1;
+        private RichTextBox richTextBox2;
+        private Button cntSvr;
     }
 }
