@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.Json;
@@ -15,12 +16,18 @@ using System.Threading.Tasks;
 /// Message message = Message.FromJson(json);
 /// Console.WriteLine(message.TableCode);
 /// 
-/// Communication Usages:
+/// ClientCommunication Usages:
 /// Init Communication: Communication comm = new Communication(IP, Port, LogMessage);
 ///     with LogMessage is a method to handle received messages.
 /// All methods from connect to server, start thread in comm.ClientLoad();
 /// Send message: comm.SendMessage("message");
 /// Close connection: comm.ClientClose();
+/// 
+/// ServerCommunication Usages:
+/// Init Communication: ServerCommunication comm = new Communication(IP, Port, LogMessage);
+///     with LogMessage is a method to handle received messages.
+/// Start server: comm.StartServer();
+/// Close server: TODO
 /// </summary>
 
 namespace ChessAI.ChatServerAndClient
@@ -79,6 +86,8 @@ namespace ChessAI.ChatServerAndClient
             return JsonSerializer.Deserialize<Message>(json);
         }
     }
+
+
     /// <summary>
     /// Handles TCP client communication, including connecting to the server,
     /// receiving messages, sending messages, and logging messages.
@@ -89,8 +98,8 @@ namespace ChessAI.ChatServerAndClient
         private NetworkStream stream;
         private Thread receiveThread;
         private Action<string> receiveHandler;
-        private string ipAddress;
-        private int port;
+        protected string ipAddress;
+        protected int port;
         /// <summary>
         /// Initializes a new instance of the <see cref="Communication"/> class.
         /// </summary>
@@ -210,6 +219,155 @@ namespace ChessAI.ChatServerAndClient
             {
                 client.Close();
             }
+        }
+    }
+
+    /// <summary>
+    /// Handles TCP client communication specifically.
+    /// </summary>
+    public class ClientCommunication : Communication
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClientCommunication"/> class.
+        /// </summary>
+        /// <param name="ipAddress">The IP address of the server.</param>
+        /// <param name="port">The port number to connect to.</param>
+        /// <param name="receiveHandler">The handler to process received messages.</param>
+        public ClientCommunication(string ipAddress, int port, Action<string> receiveHandler)
+            : base(ipAddress, port, receiveHandler)
+        {
+            // No additional constructor logic required
+        }
+
+        // No additional methods or properties needed, inherits all from Communication
+    }
+
+
+    /// <summary>
+    /// Handles TCP server communication, including listening for clients,
+    /// handling client connections, and broadcasting messages.
+    /// </summary>
+    public class ServerCommunication : Communication
+    {
+        private TcpListener server;
+        private Thread serverThread;
+        private List<TcpClient> connectedClients = new List<TcpClient>();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ServerCommunication"/> class.
+        /// </summary>
+        /// <param name="ipAddress">The IP address for the server to listen on.</param>
+        /// <param name="port">The port number for the server to listen on.</param>
+        /// <param name="receiveHandler">The handler to process received messages.</param>
+        public ServerCommunication(string ipAddress, int port, Action<string> receiveHandler)
+            : base(ipAddress, port, receiveHandler)
+        {
+        }
+
+        /// <summary>
+        /// Starts the server and begins listening for client connections.
+        /// </summary>
+        public void StartServer()
+        {
+            serverThread = new Thread(new ThreadStart(ListenForClients));
+            serverThread.IsBackground = true;
+            serverThread.Start();
+            LogMessage($"Server running on {base.ipAddress}:{base.port}");
+        }
+
+        /// <summary>
+        /// Listens for incoming client connections.
+        /// </summary>
+        private void ListenForClients()
+        {
+            try
+            {
+                server = new TcpListener(IPAddress.Parse(base.ipAddress), base.port);
+                server.Start();
+
+                while (true)
+                {
+                    TcpClient client = server.AcceptTcpClient();
+                    LogMessage("New client connected from: " + ((IPEndPoint)client.Client.RemoteEndPoint).ToString());
+                    connectedClients.Add(client);
+
+                    Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClient));
+                    clientThread.IsBackground = true;
+                    clientThread.Start(client);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogMessage("Error: " + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Handles communication with a connected client.
+        /// </summary>
+        /// <param name="obj">The client to handle.</param>
+        private void HandleClient(object obj)
+        {
+            TcpClient tcpClient = (TcpClient)obj;
+            NetworkStream stream = tcpClient.GetStream();
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+
+            while (true)
+            {
+                bytesRead = 0;
+                try
+                {
+                    bytesRead = stream.Read(buffer, 0, buffer.Length);
+                }
+                catch
+                {
+                    break;
+                }
+
+                if (bytesRead == 0)
+                {
+                    break;
+                }
+
+                string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
+                BroadcastMessage(message, tcpClient);
+            }
+
+            tcpClient.Close();
+            connectedClients.Remove(tcpClient);
+        }
+
+        /// <summary>
+        /// Broadcasts a message to all connected clients except the sender.
+        /// </summary>
+        /// <param name="message">The message to broadcast.</param>
+        /// <param name="senderClient">The client that sent the message.</param>
+        private void BroadcastMessage(string message, TcpClient senderClient)
+        {
+            if (server == null)
+            {
+                return;
+            }
+            foreach (TcpClient client in connectedClients)
+            {
+                if (client != senderClient)
+                {
+                    try
+                    {
+                        NetworkStream stream = client.GetStream();
+                        byte[] data = Encoding.ASCII.GetBytes(message);
+                        stream.Write(data, 0, data.Length);
+                    }
+                    catch
+                    {
+                        LogMessage("Error: Client disconnected.");
+                    }
+                }
+            }
+
+            LogMessage($"{message}");
         }
     }
 }

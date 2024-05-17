@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ChessAI;
+using ChessAI.ChatServerAndClient;
 
 namespace winforms_chat
 {
@@ -18,9 +19,9 @@ namespace winforms_chat
     {
 
         // Temporaly init server to not null
-        private TcpListener server;
-        private Thread serverThread;
-        private List<TcpClient> connectedClients = new List<TcpClient>();
+        private ServerCommunication serverComm;
+        private string serverIP = "127.0.0.1";
+        private int serverPort = 9999;
         public ChatServerLog()
         {
             InitializeComponent();
@@ -28,98 +29,13 @@ namespace winforms_chat
 
         private void ServerForm_Load(object sender, EventArgs e)
         {
-            serverThread = new Thread(new ThreadStart(ListenForClients));
-            serverThread.IsBackground = true;
+            serverComm = new ServerCommunication(serverIP, serverPort, LogMessage);
+
         }
 
         private void btnListen_Click(object sender, EventArgs e)
         {
-            serverThread.Start();
-            LogMessage("Server running on 127.0.0.1:9999");
-        }
-
-        private void ListenForClients()
-        {
-            try
-            {
-                server = new TcpListener(IPAddress.Parse("127.0.0.1"), 9999);
-                server.Start();
-
-                while (true)
-                {
-                    TcpClient client = server.AcceptTcpClient();
-                    LogMessage("New client connected from: " + ((IPEndPoint)client.Client.RemoteEndPoint).ToString());
-                    connectedClients.Add(client);
-
-                    Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClient));
-                    clientThread.IsBackground = true;
-                    clientThread.Start(client);
-                }
-            }
-            catch (Exception ex)
-            {
-                LogMessage("Error: " + ex.Message);
-            }
-        }
-
-        private void HandleClient(object obj)
-        {
-            TcpClient tcpClient = (TcpClient)obj;
-            NetworkStream stream = tcpClient.GetStream();
-
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-
-            while (true)
-            {
-                bytesRead = 0;
-                try
-                {
-                    bytesRead = stream.Read(buffer, 0, buffer.Length);
-                }
-                catch
-                {
-                    break;
-                }
-
-                if (bytesRead == 0)
-                {
-                    break;
-                }
-
-                string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-                BroadcastMessage(message, tcpClient);
-            }
-
-            tcpClient.Close();
-        }
-
-        private void BroadcastMessage(string message, TcpClient senderClient)
-        {
-            if (server == null)
-            {
-                return;
-            }
-            foreach (TcpClient client in connectedClients)
-            {
-                if (client != senderClient)
-                {
-                    try
-                    {
-                        NetworkStream stream = client.GetStream();
-                        byte[] data = Encoding.ASCII.GetBytes(message);
-                        stream.Write(data, 0, data.Length);
-                    }
-                    catch
-                    {
-                        LogMessage("Error: Client disconnected.");
-                    }
-                }
-            }
-
-            //LogMessage($"Broadcasted: {message}");
-            LogMessage($"{message}");
-
+            serverComm.StartServer();
         }
 
         private void LogMessage(string message)
