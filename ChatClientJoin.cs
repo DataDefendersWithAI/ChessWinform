@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 // Import the Message class from MessageClass.cs
-using ChessAI;
+using winforms_chat;
 
 namespace winforms_chat
 {
@@ -130,7 +130,7 @@ namespace winforms_chat
                 }
 
                 // Extract message from JSON
-                ChessAI.Message msg = ChessAI.Message.FromJson(message);
+                winforms_chat.Message msg = winforms_chat.Message.FromJson(message);
                 if (msg != null)
                 {
                     // Check if code is 000000, type is join, from "server", to txt_userName.Text
@@ -163,7 +163,7 @@ namespace winforms_chat
             // to: server
             // message: disconnected
             // date: DateTime.Now
-            ChessAI.Message message = new ChessAI.Message("000000", "join", txt_userName.Text, "server", "disconnected", DateTime.Now);
+            winforms_chat.Message message = new winforms_chat.Message("000000", "join", txt_userName.Text, "server", "disconnected", DateTime.Now);
             SendMessage(message.ToJson());
             // Close the stream
             if (stream != null)
@@ -204,7 +204,7 @@ namespace winforms_chat
             // message: 
             // date: DateTime.Now
 
-            ChessAI.Message message = new ChessAI.Message("000000", "join", txt_userName.Text, "server", "", DateTime.Now);
+            winforms_chat.Message message = new winforms_chat.Message("000000", "join", txt_userName.Text, "server", "", DateTime.Now);
             SendMessage(message.ToJson());
         }
 
@@ -220,7 +220,7 @@ namespace winforms_chat
             // to: server
             // message: cancel
             // date: DateTime.Now
-            ChessAI.Message message = new ChessAI.Message("000000", "join", txt_userName.Text, "server", "cancel", DateTime.Now);
+            winforms_chat.Message message = new winforms_chat.Message("000000", "join", txt_userName.Text, "server", "cancel", DateTime.Now);
             SendMessage(message.ToJson());
         }
     }

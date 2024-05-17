@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace ChessAI
+namespace winforms_chat
 {
     public class Message
     {
