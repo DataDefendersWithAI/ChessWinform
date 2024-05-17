@@ -28,27 +28,28 @@
         /// </summary>
         private void InitializeComponent()
         {
-            button1 = new Button();
-            listView1 = new ListView();
+            btn_joinRandom = new Button();
+            listview_userQueue = new ListView();
             label_statusText = new Label();
             SuspendLayout();
             // 
-            // button1
+            // btn_joinRandom
             // 
-            button1.Location = new Point(25, 23);
-            button1.Name = "button1";
-            button1.Size = new Size(197, 60);
-            button1.TabIndex = 0;
-            button1.Text = "Join 2 random people to random room";
-            button1.UseVisualStyleBackColor = true;
+            btn_joinRandom.Location = new Point(25, 23);
+            btn_joinRandom.Name = "btn_joinRandom";
+            btn_joinRandom.Size = new Size(197, 60);
+            btn_joinRandom.TabIndex = 0;
+            btn_joinRandom.Text = "Join 2 random people to random room";
+            btn_joinRandom.UseVisualStyleBackColor = true;
+            btn_joinRandom.Click += btn_joinRandom_Click;
             // 
-            // listView1
+            // listview_userQueue
             // 
-            listView1.Location = new Point(25, 89);
-            listView1.Name = "listView1";
-            listView1.Size = new Size(763, 358);
-            listView1.TabIndex = 1;
-            listView1.UseCompatibleStateImageBehavior = false;
+            listview_userQueue.Location = new Point(25, 89);
+            listview_userQueue.Name = "listview_userQueue";
+            listview_userQueue.Size = new Size(763, 358);
+            listview_userQueue.TabIndex = 1;
+            listview_userQueue.UseCompatibleStateImageBehavior = false;
             // 
             // label_statusText
             // 
@@ -65,18 +66,20 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
             Controls.Add(label_statusText);
-            Controls.Add(listView1);
-            Controls.Add(button1);
+            Controls.Add(listview_userQueue);
+            Controls.Add(btn_joinRandom);
             Name = "ChatServerCode";
             Text = "ChatServer";
+            FormClosed += ClientForm_FormClosed;
+            Load += ClientForm_Load;
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.Button btn_joinRandom;
+        private System.Windows.Forms.ListView listview_userQueue;
         private System.Windows.Forms.Label label_statusText;
     }
 }

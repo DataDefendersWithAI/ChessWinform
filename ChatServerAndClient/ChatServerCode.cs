@@ -17,8 +17,8 @@ namespace winforms_chat
 
         // Variables
         private Communication comm;
-        string serverIP = "127.0.0.1";
-        int serverPort = 9999;
+        private string serverIP = "127.0.0.1";
+        private int serverPort = 9999;
         public ChatServerCode()
         {
             InitializeComponent();
@@ -28,6 +28,10 @@ namespace winforms_chat
         {
             comm = new Communication(serverIP, serverPort, LogMessage);
             comm.ClientLoad();
+            // Add column name "Code" and "Player"
+            listview_userQueue.View = View.Details;
+            listview_userQueue.Columns.Add("Code", 50);
+            listview_userQueue.Columns.Add("Player", 100);
         }
 
         private void LogMessage(string message)
@@ -42,7 +46,7 @@ namespace winforms_chat
                     return;
                 }
                 // ------------ All received logic here -------------
-                Console.WriteLine("Received: " + message);
+                Console.WriteLine("Server code received: " + message);
                 // If message is not valid JSON, return
                 if (!message.Contains("TableCode") || !message.Contains("type") || !message.Contains("from") || !message.Contains("to") || !message.Contains("message") || !message.Contains("date"))
                 {
@@ -53,7 +57,31 @@ namespace winforms_chat
                 ChessAI.ChatServerAndClient.Message msg = ChessAI.ChatServerAndClient.Message.FromJson(message);
                 if (msg != null)
                 {
-                    
+                    // Check if message is correct format: Join the chat: {"TableCode": "000000", "type": "join", "from": userName, "to": "server", "message": "", "date": DateTime.Now}
+                    if (msg.type == "join" && msg.TableCode == "000000")
+                    {
+                        // If message is empty, it means user want to join the chat queue
+                        // If message is "cancel", it means user want to cancel the chat queue
+                        if (msg.message == "")
+                        {
+                            // Add user to listview
+                            ListViewItem item = new ListViewItem(msg.TableCode);
+                            item.SubItems.Add(msg.from);
+                            listview_userQueue.Items.Add(item);
+                        }
+                        else if (msg.message == "cancel")
+                        {
+                            // Remove user from listview
+                            foreach (ListViewItem item in listview_userQueue.Items)
+                            {
+                                if (item.SubItems[1].Text == msg.from)
+                                {
+                                    listview_userQueue.Items.Remove(item);
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
 
             }
@@ -67,24 +95,45 @@ namespace winforms_chat
         private void ClientForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Send last message to server
-            // TableCode: 000000
-            // type: join
-            // from: txt_userName.Text
-            // to: server
-            // message: disconnected
-            // date: DateTime.Now
-            //ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", txt_userName.Text, "server", "disconnected", DateTime.Now);
-            //SendMessage(message.ToJson());
-            //// Close the stream
-            //if (stream != null)
-            //{
-            //    stream.Close();
-            //}
-            //// Close the client
-            //if (client != null)
-            //{
-            //    client.Close();
-            //}
+            // Server code close connection: {"TableCode": "000000", "type": "join", "from": "server", "to": "server", "message": "close", "date": DateTime.Now}
+            ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", "server", "close", DateTime.Now);
+            comm.SendMessage(msg.ToJson());
+            comm.ClientClose();
+        }
+
+        private void btn_joinRandom_Click(object sender, EventArgs e)
+        {
+            // Pick 2 random users from listview
+            if (listview_userQueue.Items.Count >= 2)
+            {
+                Random random = new Random();
+                int index1 = random.Next(0, listview_userQueue.Items.Count);
+                int index2 = random.Next(0, listview_userQueue.Items.Count);
+                while (index1 == index2)
+                {
+                    index2 = random.Next(0, listview_userQueue.Items.Count);
+                }
+                string player1 = listview_userQueue.Items[index1].SubItems[1].Text;
+                string player2 = listview_userQueue.Items[index2].SubItems[1].Text;
+
+                Console.WriteLine("Pick 2 random players: " + player1 + " and " + player2 + " at index " + index1 + " and " + index2);
+
+                // Remove 2 users from listview
+                listview_userQueue.Items.RemoveAt(index1);
+                if (index2 > index1)
+                {
+                    index2--;
+                }
+                listview_userQueue.Items.RemoveAt(index2);
+
+
+                // Send message to 2 users
+                // Server send code to client: {"TableCode": "000000", "type": "join", "from": "server", "to": userName + "+" + opponentUserName, "message": newTableCode, "date": DateTime.Now}
+                // with newTableCode is a random string from 000001 to 999998
+                string newTableCode = random.Next(1, 999999).ToString("D6");
+                ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode, DateTime.Now);
+                comm.SendMessage(msg1.ToJson());
+            }
         }
     }
 }

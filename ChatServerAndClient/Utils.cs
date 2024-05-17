@@ -204,6 +204,12 @@ namespace ChessAI.ChatServerAndClient
         /// <param name="message">The message to log.</param>
         public void LogMessage(string message)
         {
+            // If message is error, MessageBox it
+            if (message.Contains("Error:"))
+            {
+                MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            // Invoke the receive handler to log the message
             receiveHandler?.Invoke(message);
         }
         /// <summary>
@@ -369,5 +375,13 @@ namespace ChessAI.ChatServerAndClient
 
             LogMessage($"{message}");
         }
+
+        private void ServerClose()
+        {
+            if (server != null)
+            {
+                server.Stop();
+            }
+        }   
     }
 }

@@ -60,15 +60,27 @@ namespace winforms_chat
                 ChessAI.ChatServerAndClient.Message msg = ChessAI.ChatServerAndClient.Message.FromJson(message);
                 if (msg != null)
                 {
-                    // Check if code is 000000, type is join, from "server", to txt_userName.Text
+                    // Check if code is 000000, type is join, from "server", msg.to contains txt_userName.Text
                     // If yes, then take message as room code, MessageBox it
                     // Then close this form and open ChatMainForm.cs
-                    if (msg.TableCode == "000000" && msg.type == "join" && msg.from == "server" && msg.to == txt_userName.Text)
+                    if (msg.TableCode == "000000" && msg.type == "join" && msg.from == "server" && msg.to.Contains(txt_userName.Text))
                     {
-                        MessageBox.Show("Room code: " + msg.message);
+                        // Split msg.to by - and swap if needed to make sure that first part is user name and second part is opponent user name
+                        string[] userNames = msg.to.Split('-');
+                        string userName = userNames[0];
+                        string opponentUserName = userNames[1];
+                        if (userName != txt_userName.Text)
+                        {
+                            userName = userNames[1];
+                            opponentUserName = userNames[0];
+                        }
+                        // Merge userName and opponentUserName with "-" and pass it to ChatMainForm
+                        msg.to = userName + "-" + opponentUserName;
+                        //MessageBox.Show("Room code: " + msg.message);
                         this.Hide();
-                        ChatMainForm chatMainForm = new ChatMainForm();
-                        chatMainForm.ShowDialog();
+                        // Open ChatMainForm with table code and username
+                        ChatMainForm chatMainForm = new ChatMainForm(msg.message, msg.to);
+                        chatMainForm.Show();
                         this.Close();
                     }
                 }
@@ -105,6 +117,12 @@ namespace winforms_chat
             }
             // Check if user name is "server"
             if (txt_userName.Text == "server")
+            {
+                MessageBox.Show("Invalid user name.");
+                return;
+            }
+            // Check if name contains special characters
+            if (txt_userName.Text.Any(c => !char.IsLetterOrDigit(c)))
             {
                 MessageBox.Show("Invalid user name.");
                 return;

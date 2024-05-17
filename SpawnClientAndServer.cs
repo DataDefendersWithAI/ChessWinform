@@ -19,10 +19,7 @@ namespace winforms_chat
 
         private void btn_server_Click(object sender, EventArgs e)
         {
-            // Start the server form ChatServerCode.cs
-            ChatServerCode server = new ChatServerCode();
-            server.Show();
-            // Also start the server form ChatServerLog.cs
+            // Start the server form ChatServerLog.cs
             ChatServerLog serverLog = new ChatServerLog();
             serverLog.Show();
         }
