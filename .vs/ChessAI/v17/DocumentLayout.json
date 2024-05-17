@@ -1,30 +1,46 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\Lap trinh mang\\ChessAI\\",
+  "WorkspaceRootPath": "D:\\git\\ChessWinform\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|D:\\Lap trinh mang\\ChessAI\\chessaiclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\git\\chesswinform\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\git\\chesswinform\\chatserverandclient\\chatservercode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:chatserverandclient\\chatservercode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\git\\chesswinform\\chatserverandclient\\chatclientjoin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:chatserverandclient\\chatclientjoin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\git\\chesswinform\\chessaiclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:chessaiclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\lap trinh mang\\chessai\\chessaiclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\git\\chesswinform\\chessaiclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:chessaiclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|D:\\Lap trinh mang\\ChessAI\\position.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:position.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\git\\chesswinform\\chatserverandclient\\chatclientjoin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:chatserverandclient\\chatclientjoin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\lap trinh mang\\chessai\\chessaiclient.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:chessaiclient.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\git\\chesswinform\\chatserverandclient\\chatservercode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:chatserverandclient\\chatservercode.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\lap trinh mang\\chessai\\boardrenderer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:boardrenderer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\git\\chesswinform\\chatserverandclient\\message.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:chatserverandclient\\message.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\lap trinh mang\\chessai\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\git\\chesswinform\\spawnclientandserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:spawnclientandserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\git\\chesswinform\\spawnclientandserver.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:spawnclientandserver.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,85 +50,144 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 3,
           "Children": [
             {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "Position.cs",
-              "DocumentMoniker": "D:\\Lap trinh mang\\ChessAI\\Position.cs",
-              "RelativeDocumentMoniker": "Position.cs",
-              "ToolTip": "D:\\Lap trinh mang\\ChessAI\\Position.cs",
-              "RelativeToolTip": "Position.cs",
-              "ViewState": "AQIAABAAAAAAAAAAAAAzwCsAAAAjAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-14T05:33:13.528Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{e8b06f52-6d01-11d2-aa7d-00c04f990343}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{eefa5220-e298-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "ChessAIClient.cs",
-              "DocumentMoniker": "D:\\Lap trinh mang\\ChessAI\\ChessAIClient.cs",
-              "RelativeDocumentMoniker": "ChessAIClient.cs",
-              "ToolTip": "D:\\Lap trinh mang\\ChessAI\\ChessAIClient.cs",
-              "RelativeToolTip": "ChessAIClient.cs",
-              "ViewState": "AQIAAHgAAAAAAAAAAAAYwIIAAAA3AAAA",
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\git\\ChessWinform\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "D:\\git\\ChessWinform\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAA0AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-14T02:36:44.96Z",
-              "IsPinned": true,
+              "WhenOpened": "2024-05-17T07:56:32.571Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "ChessAIClient.cs [Design]",
-              "DocumentMoniker": "D:\\Lap trinh mang\\ChessAI\\ChessAIClient.cs",
-              "RelativeDocumentMoniker": "ChessAIClient.cs",
-              "ToolTip": "D:\\Lap trinh mang\\ChessAI\\ChessAIClient.cs [Design]",
-              "RelativeToolTip": "ChessAIClient.cs [Design]",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-15T11:21:18.995Z",
-              "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "ChessAIClient.Designer.cs",
-              "DocumentMoniker": "D:\\Lap trinh mang\\ChessAI\\ChessAIClient.Designer.cs",
-              "RelativeDocumentMoniker": "ChessAIClient.Designer.cs",
-              "ToolTip": "D:\\Lap trinh mang\\ChessAI\\ChessAIClient.Designer.cs",
-              "RelativeToolTip": "ChessAIClient.Designer.cs",
-              "ViewState": "AQIAACwAAAAAAAAAAAAcwDYAAAAAAAAA",
+              "Title": "ChessAIClient.cs",
+              "DocumentMoniker": "D:\\git\\ChessWinform\\ChessAIClient.cs",
+              "RelativeDocumentMoniker": "ChessAIClient.cs",
+              "ToolTip": "D:\\git\\ChessWinform\\ChessAIClient.cs",
+              "RelativeToolTip": "ChessAIClient.cs",
+              "ViewState": "AQIAAJsAAAAAAAAAAAAUwL0AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-15T11:21:01.727Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\Lap trinh mang\\ChessAI\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "D:\\Lap trinh mang\\ChessAI\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAAJAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-15T10:14:09.702Z",
+              "WhenOpened": "2024-05-17T07:49:44.171Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "BoardRenderer.cs",
-              "DocumentMoniker": "D:\\Lap trinh mang\\ChessAI\\BoardRenderer.cs",
-              "RelativeDocumentMoniker": "BoardRenderer.cs",
-              "ToolTip": "D:\\Lap trinh mang\\ChessAI\\BoardRenderer.cs",
-              "RelativeToolTip": "BoardRenderer.cs",
-              "ViewState": "AQIAAMcAAAAAAAAAAAAowNEAAAAUAAAA",
+              "Title": "ChessAIClient.cs [Design]",
+              "DocumentMoniker": "D:\\git\\ChessWinform\\ChessAIClient.cs",
+              "RelativeDocumentMoniker": "ChessAIClient.cs",
+              "ToolTip": "D:\\git\\ChessWinform\\ChessAIClient.cs [Design]",
+              "RelativeToolTip": "ChessAIClient.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-14T02:46:27.993Z",
+              "WhenOpened": "2024-05-17T07:49:41.927Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ChatClientJoin.cs",
+              "DocumentMoniker": "D:\\git\\ChessWinform\\ChatServerAndClient\\ChatClientJoin.cs",
+              "RelativeDocumentMoniker": "ChatServerAndClient\\ChatClientJoin.cs",
+              "ToolTip": "D:\\git\\ChessWinform\\ChatServerAndClient\\ChatClientJoin.cs",
+              "RelativeToolTip": "ChatServerAndClient\\ChatClientJoin.cs",
+              "ViewState": "AQIAAHoAAAAAAAAAAAAowBcAAAAUAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-17T07:35:54.955Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ChatClientJoin.cs [Design]",
+              "DocumentMoniker": "D:\\git\\ChessWinform\\ChatServerAndClient\\ChatClientJoin.cs",
+              "RelativeDocumentMoniker": "ChatServerAndClient\\ChatClientJoin.cs",
+              "ToolTip": "D:\\git\\ChessWinform\\ChatServerAndClient\\ChatClientJoin.cs [Design]",
+              "RelativeToolTip": "ChatServerAndClient\\ChatClientJoin.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-17T07:35:53.206Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ChatServerCode.cs",
+              "DocumentMoniker": "D:\\git\\ChessWinform\\ChatServerAndClient\\ChatServerCode.cs",
+              "RelativeDocumentMoniker": "ChatServerAndClient\\ChatServerCode.cs",
+              "ToolTip": "D:\\git\\ChessWinform\\ChatServerAndClient\\ChatServerCode.cs",
+              "RelativeToolTip": "ChatServerAndClient\\ChatServerCode.cs",
+              "ViewState": "AQIAADYAAAAAAAAAAAAgwFcAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-17T07:21:27.027Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ChatServerCode.cs [Design]",
+              "DocumentMoniker": "D:\\git\\ChessWinform\\ChatServerAndClient\\ChatServerCode.cs",
+              "RelativeDocumentMoniker": "ChatServerAndClient\\ChatServerCode.cs",
+              "ToolTip": "D:\\git\\ChessWinform\\ChatServerAndClient\\ChatServerCode.cs [Design]",
+              "RelativeToolTip": "ChatServerAndClient\\ChatServerCode.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-17T07:21:00.947Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Message.cs",
+              "DocumentMoniker": "D:\\git\\ChessWinform\\ChatServerAndClient\\Message.cs",
+              "RelativeDocumentMoniker": "ChatServerAndClient\\Message.cs",
+              "ToolTip": "D:\\git\\ChessWinform\\ChatServerAndClient\\Message.cs",
+              "RelativeToolTip": "ChatServerAndClient\\Message.cs",
+              "ViewState": "AQIAAKgAAAAAAAAAAAAiwMIAAAAWAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-17T07:20:13.819Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "SpawnClientAndServer.cs [Design]",
+              "DocumentMoniker": "D:\\git\\ChessWinform\\SpawnClientAndServer.cs",
+              "RelativeDocumentMoniker": "SpawnClientAndServer.cs",
+              "ToolTip": "D:\\git\\ChessWinform\\SpawnClientAndServer.cs [Design]",
+              "RelativeToolTip": "SpawnClientAndServer.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-17T07:20:00.209Z",
+              "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "SpawnClientAndServer.Designer.cs",
+              "DocumentMoniker": "D:\\git\\ChessWinform\\SpawnClientAndServer.Designer.cs",
+              "RelativeDocumentMoniker": "SpawnClientAndServer.Designer.cs",
+              "ToolTip": "D:\\git\\ChessWinform\\SpawnClientAndServer.Designer.cs",
+              "RelativeToolTip": "SpawnClientAndServer.Designer.cs",
+              "ViewState": "AQIAAAEAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-17T07:19:59.387Z",
               "EditorCaption": ""
             }
           ]
