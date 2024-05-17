@@ -1,0 +1,24 @@
+﻿- Join chat:
+
++ Join the chat: {"TableCode": "000000", "type": "join", "from": userName, "to": "server", "message": "", "date": DateTime.Now}
++ Cancel join: {"TableCode": "000000", "type": "join", "from": userName, "to": "server", "message": "cancel", "date": DateTime.Now}
++ Client disconnected: {"TableCode": "000000", "type": "join", "from": userName, "to": "server", "message": "disconnect", "date": DateTime.Now}
++ Server send code to client: {"TableCode": "000000", "type": "join", "from": "server", "to": userName, "message": newTableCode, "date": DateTime.Now}
+
+- Chat: (In room newTableCode)
+
++ Send message: {"TableCode": newTableCode, "type": "chat", "from": userName, "to": opponentUserName, "message": message, "date": DateTime.Now}
++ Client disconnected: 
+	+ {"TableCode": newTableCode, "type": "chat", "from": userName, "to": opponentUserName, "message": "disconnect", "date": DateTime.Now}
+	+ and also send to server: {"TableCode": "000000", "type": "chat", "from": userName, "to": "server", "message": "disconnect", "date": DateTime.Now}
+
+- Chess game: (In room newTableCode)
+
++ Send move: {"TableCode": newTableCode, "type": "chess", "from": userName, "to": opponentUserName, "message": move, "date": DateTime.Now}
++ Respond move: {"TableCode": newTableCode, "type": "chess", "from": opponentUserName, "to": userName, "message": move, "date": DateTime.Now}
++ End game state: 
+	+ {"TableCode": newTableCode, "type": "chess", "from": userName, "to": opponentUserName, "message": "resign", "date": DateTime.Now}
+	+ {"TableCode": "000000", "type": "chess", "from": userName, "to": "server", "message": newTableCode + "-resign" (or "-draw" or "-win" or "-lose"), "date": DateTime.Now}
++ One client disconnected: 
+	+ {"TableCode": newTableCode, "type": "chess", "from": userName, "to": opponentUserName, "message": "disconnect", "date": DateTime.Now}
+	+ and also send to server: {"TableCode": "000000", "type": "chess", "from": userName, "to": "server", "message": "disconnect", "date": DateTime.Now}
