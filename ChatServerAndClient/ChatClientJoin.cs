@@ -22,8 +22,9 @@ namespace winforms_chat
         // Variables
         private Communication comm;
         // Constants
-        string serverIP = "127.0.0.1";
-        int serverPort = 9999;
+        string serverIP = ChessAI.ChatServerAndClient.Constants.serverIP;
+        int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
+        bool isFormExit = false;
         public ChatClientJoin()
         {
             InitializeComponent();
@@ -77,11 +78,12 @@ namespace winforms_chat
                         // Merge userName and opponentUserName with "-" and pass it to ChatMainForm
                         msg.to = userName + "-" + opponentUserName;
                         //MessageBox.Show("Room code: " + msg.message);
-                        this.Hide();
                         // Open ChatMainForm with table code and username
+                        isFormExit = true;
                         ChatMainForm chatMainForm = new ChatMainForm(msg.message, msg.to);
                         chatMainForm.Show();
                         this.Close();
+                        this.Dispose();
                     }
                 }
 
@@ -93,7 +95,7 @@ namespace winforms_chat
 
         }
 
-        private void ClientForm_FormClosed(object sender, FormClosedEventArgs e)
+        private void ClientForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             // Send last message to server
             // TableCode: 000000
@@ -102,7 +104,12 @@ namespace winforms_chat
             // to: server
             // message: disconnected
             // date: DateTime.Now
-            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", txt_userName.Text, "server", "disconnected", DateTime.Now);
+            if (isFormExit)
+            {
+                return;
+            }
+            // When user closes the form, send message to server
+            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", txt_userName.Text, "server", "disconnect", DateTime.Now);
             comm.SendMessage(message.ToJson());
             comm.ClientClose();
         }

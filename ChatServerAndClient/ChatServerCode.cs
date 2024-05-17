@@ -17,8 +17,8 @@ namespace winforms_chat
 
         // Variables
         private Communication comm;
-        private string serverIP = "127.0.0.1";
-        private int serverPort = 9999;
+        string serverIP = ChessAI.ChatServerAndClient.Constants.serverIP;
+        int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
         public ChatServerCode()
         {
             InitializeComponent();
@@ -69,7 +69,7 @@ namespace winforms_chat
                             item.SubItems.Add(msg.from);
                             listview_userQueue.Items.Add(item);
                         }
-                        else if (msg.message == "cancel")
+                        else if (msg.message == "cancel" || msg.message == "disconnect")
                         {
                             // Remove user from listview
                             foreach (ListViewItem item in listview_userQueue.Items)

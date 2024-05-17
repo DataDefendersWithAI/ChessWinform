@@ -20,8 +20,8 @@ namespace winforms_chat
 
         // Temporaly init server to not null
         private ServerCommunication serverComm;
-        private string serverIP = "127.0.0.1";
-        private int serverPort = 9999;
+        string serverIP = ChessAI.ChatServerAndClient.Constants.serverIP;
+        int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
         public ChatServerLog()
         {
             InitializeComponent();

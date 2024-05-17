@@ -146,7 +146,7 @@
             Controls.Add(pnl_wait);
             Name = "ChatClientJoin";
             Text = "ChatClientJoin";
-            FormClosed += ClientForm_FormClosed;
+            FormClosing += ClientForm_FormClosing;
             Load += ClientForm_Load;
             pnl_wait.ResumeLayout(false);
             pnl_wait.PerformLayout();

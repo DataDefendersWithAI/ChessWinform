@@ -21,9 +21,9 @@ namespace winforms_chat
 		ChatForm.Chatbox chat_panel;
 		// Also communication object
 		private ClientCommunication comm;
-		private string serverIP = "127.0.0.1";
-		private int serverPort = 9999;
-		public ChatMainForm(string tableCode = "123456", string userName = "testUser")
+        string serverIP = ChessAI.ChatServerAndClient.Constants.serverIP;
+        int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
+        public ChatMainForm(string tableCode = "123456", string userName = "testUser")
 		{
 			this.tableCode = tableCode;
 			// Split userName by - and get the first part as userName, second part as opponentUserName
