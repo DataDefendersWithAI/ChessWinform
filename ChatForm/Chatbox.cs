@@ -17,7 +17,9 @@ namespace winforms_chat.ChatForm
         public OpenFileDialog fileDialog = new OpenFileDialog();
         public string initialdirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
-        public Chatbox(ChatboxInfo _chatbox_info)
+        private Action<string> sendHandler;
+
+        public Chatbox(ChatboxInfo _chatbox_info, Action<string> sendHandler)
         {
             InitializeComponent();
 
@@ -35,6 +37,7 @@ namespace winforms_chat.ChatForm
             removeButton.Click += CancelAttachment;
 
             chatTextbox.KeyDown += OnEnter;
+            this.sendHandler = sendHandler;
 
             // Because this isn't chat software, we'll remove first chat item.
             // AddMessage(null);
@@ -137,9 +140,10 @@ namespace winforms_chat.ChatForm
                 */
 
                 // Send the message with JSON format
-                // {"TableCode": "123456", "type": "chat", "from": playerName, "to": opponentName, "message": chatmessage, "date": DateTime.Now}
+                // Send message: {"TableCode": newTableCode, "type": "chat", "from": userName, "to": opponentUserName, "message": message, "date": DateTime.Now}
 
-                Console.WriteLine("123456-Chat: "+ chatmessage + "; Date: " + DateTime.Now);
+                // Send message to server
+                sendHandler?.Invoke(chatmessage);
 
                 /*
                  * END OF SENDING LOGIC

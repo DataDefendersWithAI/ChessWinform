@@ -1,9 +1,13 @@
-﻿- Join chat:
+﻿- Server code:
+
++ Server send code to client: {"TableCode": "000000", "type": "join", "from": "server", "to": userName + "-" + opponentUserName, "message": newTableCode, "date": DateTime.Now}
++ Server code close connection: {"TableCode": "000000", "type": "join", "from": "server", "to": "server", "message": "close", "date": DateTime.Now}
+
+- Join chat:
 
 + Join the chat: {"TableCode": "000000", "type": "join", "from": userName, "to": "server", "message": "", "date": DateTime.Now}
 + Cancel join: {"TableCode": "000000", "type": "join", "from": userName, "to": "server", "message": "cancel", "date": DateTime.Now}
 + Client disconnected: {"TableCode": "000000", "type": "join", "from": userName, "to": "server", "message": "disconnect", "date": DateTime.Now}
-+ Server send code to client: {"TableCode": "000000", "type": "join", "from": "server", "to": userName, "message": newTableCode, "date": DateTime.Now}
 
 - Chat: (In room newTableCode - code generated from 1 to 999998 - room 999999 is test room)
 
