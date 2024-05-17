@@ -16,7 +16,7 @@ namespace ChessAI
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             ApplicationConfiguration.Initialize();
-            Application.Run(new SpawnClientAndServer());
+            Application.Run(new ChessAIClient());
         }
     }
 }
