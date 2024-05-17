@@ -5,7 +5,7 @@
 + Client disconnected: {"TableCode": "000000", "type": "join", "from": userName, "to": "server", "message": "disconnect", "date": DateTime.Now}
 + Server send code to client: {"TableCode": "000000", "type": "join", "from": "server", "to": userName, "message": newTableCode, "date": DateTime.Now}
 
-- Chat: (In room newTableCode)
+- Chat: (In room newTableCode - code generated from 1 to 999998 - room 999999 is test room)
 
 + Send message: {"TableCode": newTableCode, "type": "chat", "from": userName, "to": opponentUserName, "message": message, "date": DateTime.Now}
 + Client disconnected: 
