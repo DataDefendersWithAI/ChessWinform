@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ChessAI;
 
 namespace winforms_chat
 {
@@ -136,6 +137,13 @@ namespace winforms_chat
             {
                 MessageBox.Show(ex.Message, "Warning");
             }
+        }
+
+        private void btn_openCodeForm_Click(object sender, EventArgs e)
+        {
+            // Open the code form
+            ChatServerCode codeForm = new ChatServerCode();
+            codeForm.Show();
         }
     }
 }

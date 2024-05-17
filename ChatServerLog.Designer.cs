@@ -28,15 +28,16 @@
         /// </summary>
         private void InitializeComponent()
         {
-            btn_listen = new System.Windows.Forms.Button();
-            rtb_chatLog = new System.Windows.Forms.RichTextBox();
+            btn_listen = new Button();
+            rtb_chatLog = new RichTextBox();
+            btn_openCodeForm = new Button();
             SuspendLayout();
             // 
             // btn_listen
             // 
-            btn_listen.Location = new System.Drawing.Point(615, 12);
+            btn_listen.Location = new Point(615, 12);
             btn_listen.Name = "btn_listen";
-            btn_listen.Size = new System.Drawing.Size(173, 65);
+            btn_listen.Size = new Size(173, 65);
             btn_listen.TabIndex = 0;
             btn_listen.Text = "Listen";
             btn_listen.UseVisualStyleBackColor = true;
@@ -44,17 +45,28 @@
             // 
             // rtb_chatLog
             // 
-            rtb_chatLog.Location = new System.Drawing.Point(12, 84);
+            rtb_chatLog.Location = new Point(12, 84);
             rtb_chatLog.Name = "rtb_chatLog";
-            rtb_chatLog.Size = new System.Drawing.Size(776, 354);
+            rtb_chatLog.Size = new Size(776, 354);
             rtb_chatLog.TabIndex = 1;
             rtb_chatLog.Text = "";
             // 
+            // btn_openCodeForm
+            // 
+            btn_openCodeForm.Location = new Point(12, 13);
+            btn_openCodeForm.Name = "btn_openCodeForm";
+            btn_openCodeForm.Size = new Size(173, 65);
+            btn_openCodeForm.TabIndex = 2;
+            btn_openCodeForm.Text = "Open server code (require server opened)";
+            btn_openCodeForm.UseVisualStyleBackColor = true;
+            btn_openCodeForm.Click += btn_openCodeForm_Click;
+            // 
             // ChatServerLog
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(800, 450);
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 450);
+            Controls.Add(btn_openCodeForm);
             Controls.Add(rtb_chatLog);
             Controls.Add(btn_listen);
             Name = "ChatServerLog";
@@ -67,5 +79,6 @@
 
         private System.Windows.Forms.Button btn_listen;
         private System.Windows.Forms.RichTextBox rtb_chatLog;
+        private Button btn_openCodeForm;
     }
 }

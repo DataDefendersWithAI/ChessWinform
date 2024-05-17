@@ -68,6 +68,7 @@
             btn_cancel.TabIndex = 2;
             btn_cancel.Text = "Cancel";
             btn_cancel.UseVisualStyleBackColor = true;
+            btn_cancel.Click += btn_cancel_Click;
             // 
             // label3
             // 
@@ -114,6 +115,7 @@
             btn_join.TabIndex = 7;
             btn_join.Text = "Join";
             btn_join.UseVisualStyleBackColor = true;
+            btn_join.Click += btn_join_Click;
             // 
             // pnl_join
             // 
@@ -144,6 +146,8 @@
             Controls.Add(pnl_wait);
             Name = "ChatClientJoin";
             Text = "ChatClientJoin";
+            FormClosed += ClientForm_FormClosed;
+            Load += ClientForm_Load;
             pnl_wait.ResumeLayout(false);
             pnl_wait.PerformLayout();
             pnl_join.ResumeLayout(false);
