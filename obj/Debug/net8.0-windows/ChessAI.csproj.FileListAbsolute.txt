@@ -1,0 +1,58 @@
+D:\git\ChessWinform\obj\Debug\net8.0-windows\ChessAI.csproj.AssemblyReference.cache
+D:\git\ChessWinform\obj\Debug\net8.0-windows\winforms_chat.ChatForm.Chatbox.resources
+D:\git\ChessWinform\obj\Debug\net8.0-windows\winforms_chat.ChatForm.ChatItem.resources
+D:\git\ChessWinform\obj\Debug\net8.0-windows\winforms_chat.ChatClientJoin.resources
+D:\git\ChessWinform\obj\Debug\net8.0-windows\winforms_chat.ChatMainForm.resources
+D:\git\ChessWinform\obj\Debug\net8.0-windows\winforms_chat.ChatServerCode.resources
+D:\git\ChessWinform\obj\Debug\net8.0-windows\winforms_chat.ChatServerLog.resources
+D:\git\ChessWinform\obj\Debug\net8.0-windows\ChessAI.ChessAIClient.resources
+D:\git\ChessWinform\obj\Debug\net8.0-windows\ChessAI.Properties.Resources.resources
+D:\git\ChessWinform\obj\Debug\net8.0-windows\winforms_chat.SpawnClientAndServer.resources
+D:\git\ChessWinform\obj\Debug\net8.0-windows\ChessAI.csproj.GenerateResource.cache
+D:\git\ChessWinform\obj\Debug\net8.0-windows\ChessAI.GeneratedMSBuildEditorConfig.editorconfig
+D:\git\ChessWinform\obj\Debug\net8.0-windows\ChessAI.AssemblyInfoInputs.cache
+D:\git\ChessWinform\obj\Debug\net8.0-windows\ChessAI.AssemblyInfo.cs
+D:\git\ChessWinform\obj\Debug\net8.0-windows\ChessAI.csproj.CoreCompileInputs.cache
+D:\git\ChessWinform\obj\Debug\net8.0-windows\ChessAI.sourcelink.json
+D:\git\ChessWinform\bin\Debug\net8.0-windows\ChessAI.exe
+D:\git\ChessWinform\bin\Debug\net8.0-windows\ChessAI.deps.json
+D:\git\ChessWinform\bin\Debug\net8.0-windows\ChessAI.runtimeconfig.json
+D:\git\ChessWinform\bin\Debug\net8.0-windows\ChessAI.dll
+D:\git\ChessWinform\bin\Debug\net8.0-windows\ChessAI.pdb
+D:\git\ChessWinform\bin\Debug\net8.0-windows\Ardalis.SmartEnum.dll
+D:\git\ChessWinform\bin\Debug\net8.0-windows\ChessLibrary.dll
+D:\git\ChessWinform\obj\Debug\net8.0-windows\ChessAI.csproj.Up2Date
+D:\git\ChessWinform\obj\Debug\net8.0-windows\ChessAI.dll
+D:\git\ChessWinform\obj\Debug\net8.0-windows\refint\ChessAI.dll
+D:\git\ChessWinform\obj\Debug\net8.0-windows\ChessAI.pdb
+D:\git\ChessWinform\obj\Debug\net8.0-windows\ChessAI.genruntimeconfig.cache
+D:\git\ChessWinform\obj\Debug\net8.0-windows\ref\ChessAI.dll
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\bin\Debug\net8.0-windows\ChessAI.exe
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\bin\Debug\net8.0-windows\ChessAI.deps.json
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\bin\Debug\net8.0-windows\ChessAI.runtimeconfig.json
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\bin\Debug\net8.0-windows\ChessAI.dll
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\bin\Debug\net8.0-windows\ChessAI.pdb
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\bin\Debug\net8.0-windows\Ardalis.SmartEnum.dll
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\bin\Debug\net8.0-windows\ChessLibrary.dll
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\ChessAI.csproj.AssemblyReference.cache
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\winforms_chat.ChatForm.Chatbox.resources
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\winforms_chat.ChatForm.ChatItem.resources
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\winforms_chat.ChatClientJoin.resources
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\winforms_chat.ChatMainForm.resources
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\winforms_chat.ChatServerCode.resources
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\winforms_chat.ChatServerLog.resources
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\ChessAI.ChessAIClient.resources
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\ChessAI.Properties.Resources.resources
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\winforms_chat.SpawnClientAndServer.resources
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\ChessAI.csproj.GenerateResource.cache
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\ChessAI.GeneratedMSBuildEditorConfig.editorconfig
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\ChessAI.AssemblyInfoInputs.cache
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\ChessAI.AssemblyInfo.cs
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\ChessAI.csproj.CoreCompileInputs.cache
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\ChessAI.sourcelink.json
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\ChessAI.csproj.Up2Date
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\ChessAI.dll
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\refint\ChessAI.dll
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\ChessAI.pdb
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\ChessAI.genruntimeconfig.cache
+E:\Stuff or sth like that\LapTrinhMangCanBan\TestingGeraChess\ChessWinform\obj\Debug\net8.0-windows\ref\ChessAI.dll

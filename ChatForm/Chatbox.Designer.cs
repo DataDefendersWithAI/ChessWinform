@@ -30,154 +30,154 @@ namespace winforms_chat.ChatForm
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Chatbox));
-            topPanel = new System.Windows.Forms.Panel();
-            statusLabel = new System.Windows.Forms.Label();
-            phoneLabel = new System.Windows.Forms.Label();
-            clientnameLabel = new System.Windows.Forms.Label();
-            bottomPanel = new System.Windows.Forms.Panel();
-            chatTextbox = new System.Windows.Forms.TextBox();
-            btn_emojis = new System.Windows.Forms.Button();
-            attachButton = new System.Windows.Forms.Button();
-            removeButton = new System.Windows.Forms.Button();
-            sendButton = new System.Windows.Forms.Button();
-            itemsPanel = new System.Windows.Forms.Panel();
-            flp_emojisList = new System.Windows.Forms.FlowLayoutPanel();
+            topPanel = new Panel();
+            statusLabel = new Label();
+            phoneLabel = new Label();
+            clientnameLabel = new Label();
+            bottomPanel = new Panel();
+            chatTextbox = new TextBox();
+            btn_emojis = new Button();
+            attachButton = new Button();
+            removeButton = new Button();
+            sendButton = new Button();
+            itemsPanel = new Panel();
+            flp_emojisList = new FlowLayoutPanel();
             topPanel.SuspendLayout();
             bottomPanel.SuspendLayout();
             SuspendLayout();
             // 
             // topPanel
             // 
-            topPanel.BackColor = System.Drawing.Color.RoyalBlue;
+            topPanel.BackColor = Color.RoyalBlue;
             topPanel.Controls.Add(statusLabel);
             topPanel.Controls.Add(phoneLabel);
             topPanel.Controls.Add(clientnameLabel);
-            topPanel.Dock = System.Windows.Forms.DockStyle.Top;
-            topPanel.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            topPanel.Location = new System.Drawing.Point(0, 0);
-            topPanel.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            topPanel.Dock = DockStyle.Top;
+            topPanel.ForeColor = SystemColors.ButtonHighlight;
+            topPanel.Location = new Point(0, 0);
+            topPanel.Margin = new Padding(5, 4, 5, 4);
             topPanel.Name = "topPanel";
-            topPanel.Padding = new System.Windows.Forms.Padding(21, 23, 21, 23);
-            topPanel.Size = new System.Drawing.Size(547, 119);
+            topPanel.Padding = new Padding(21, 23, 21, 23);
+            topPanel.Size = new Size(547, 119);
             topPanel.TabIndex = 0;
             topPanel.Paint += topPanel_Paint;
             // 
             // statusLabel
             // 
             statusLabel.AutoSize = true;
-            statusLabel.Dock = System.Windows.Forms.DockStyle.Right;
-            statusLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            statusLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            statusLabel.Location = new System.Drawing.Point(441, 55);
-            statusLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            statusLabel.Dock = DockStyle.Right;
+            statusLabel.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            statusLabel.ForeColor = SystemColors.ControlLightLight;
+            statusLabel.Location = new Point(441, 55);
+            statusLabel.Margin = new Padding(5, 0, 5, 0);
             statusLabel.Name = "statusLabel";
-            statusLabel.Size = new System.Drawing.Size(85, 20);
+            statusLabel.Size = new Size(85, 20);
             statusLabel.TabIndex = 2;
             statusLabel.Text = "LastViewed";
             // 
             // phoneLabel
             // 
             phoneLabel.AutoSize = true;
-            phoneLabel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            phoneLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            phoneLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            phoneLabel.Location = new System.Drawing.Point(21, 68);
-            phoneLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            phoneLabel.Dock = DockStyle.Bottom;
+            phoneLabel.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
+            phoneLabel.ForeColor = SystemColors.ControlLightLight;
+            phoneLabel.Location = new Point(21, 68);
+            phoneLabel.Margin = new Padding(5, 0, 5, 0);
             phoneLabel.Name = "phoneLabel";
-            phoneLabel.Size = new System.Drawing.Size(148, 28);
+            phoneLabel.Size = new Size(148, 28);
             phoneLabel.TabIndex = 1;
             phoneLabel.Text = "(408) 262-9190";
             // 
             // clientnameLabel
             // 
             clientnameLabel.AutoSize = true;
-            clientnameLabel.Dock = System.Windows.Forms.DockStyle.Top;
-            clientnameLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            clientnameLabel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            clientnameLabel.Location = new System.Drawing.Point(21, 23);
-            clientnameLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            clientnameLabel.Dock = DockStyle.Top;
+            clientnameLabel.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
+            clientnameLabel.ForeColor = SystemColors.ControlLightLight;
+            clientnameLabel.Location = new Point(21, 23);
+            clientnameLabel.Margin = new Padding(5, 0, 5, 0);
             clientnameLabel.Name = "clientnameLabel";
-            clientnameLabel.Size = new System.Drawing.Size(149, 32);
+            clientnameLabel.Size = new Size(149, 32);
             clientnameLabel.TabIndex = 0;
             clientnameLabel.Text = "Client Name";
             // 
             // bottomPanel
             // 
-            bottomPanel.BackColor = System.Drawing.Color.RoyalBlue;
+            bottomPanel.BackColor = Color.RoyalBlue;
             bottomPanel.Controls.Add(chatTextbox);
             bottomPanel.Controls.Add(btn_emojis);
             bottomPanel.Controls.Add(attachButton);
             bottomPanel.Controls.Add(removeButton);
             bottomPanel.Controls.Add(sendButton);
-            bottomPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            bottomPanel.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            bottomPanel.Location = new System.Drawing.Point(0, 844);
-            bottomPanel.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            bottomPanel.Dock = DockStyle.Bottom;
+            bottomPanel.ForeColor = SystemColors.ControlLightLight;
+            bottomPanel.Location = new Point(0, 844);
+            bottomPanel.Margin = new Padding(5, 4, 5, 4);
             bottomPanel.Name = "bottomPanel";
-            bottomPanel.Padding = new System.Windows.Forms.Padding(21, 16, 21, 16);
-            bottomPanel.Size = new System.Drawing.Size(547, 83);
+            bottomPanel.Padding = new Padding(21, 16, 21, 16);
+            bottomPanel.Size = new Size(547, 83);
             bottomPanel.TabIndex = 1;
             // 
             // chatTextbox
             // 
-            chatTextbox.Dock = System.Windows.Forms.DockStyle.Fill;
-            chatTextbox.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            chatTextbox.Location = new System.Drawing.Point(21, 16);
-            chatTextbox.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            chatTextbox.Dock = DockStyle.Fill;
+            chatTextbox.Font = new Font("Segoe UI", 12F);
+            chatTextbox.Location = new Point(21, 16);
+            chatTextbox.Margin = new Padding(5, 4, 5, 4);
             chatTextbox.MaxLength = 128;
             chatTextbox.Multiline = true;
             chatTextbox.Name = "chatTextbox";
             chatTextbox.PlaceholderText = "Please enter a message...";
-            chatTextbox.Size = new System.Drawing.Size(285, 51);
+            chatTextbox.Size = new Size(285, 51);
             chatTextbox.TabIndex = 7;
             // 
             // btn_emojis
             // 
-            btn_emojis.BackColor = System.Drawing.Color.GhostWhite;
-            btn_emojis.BackgroundImage = (System.Drawing.Image)resources.GetObject("btn_emojis.BackgroundImage");
-            btn_emojis.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            btn_emojis.Dock = System.Windows.Forms.DockStyle.Right;
-            btn_emojis.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            btn_emojis.ForeColor = System.Drawing.SystemColors.ControlText;
-            btn_emojis.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            btn_emojis.Location = new System.Drawing.Point(306, 16);
-            btn_emojis.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            btn_emojis.BackColor = Color.GhostWhite;
+            btn_emojis.BackgroundImage = (Image)resources.GetObject("btn_emojis.BackgroundImage");
+            btn_emojis.BackgroundImageLayout = ImageLayout.Zoom;
+            btn_emojis.Dock = DockStyle.Right;
+            btn_emojis.FlatStyle = FlatStyle.Flat;
+            btn_emojis.ForeColor = SystemColors.ControlText;
+            btn_emojis.ImageAlign = ContentAlignment.MiddleLeft;
+            btn_emojis.Location = new Point(306, 16);
+            btn_emojis.Margin = new Padding(5, 4, 5, 4);
             btn_emojis.Name = "btn_emojis";
-            btn_emojis.Size = new System.Drawing.Size(47, 51);
+            btn_emojis.Size = new Size(47, 51);
             btn_emojis.TabIndex = 6;
-            btn_emojis.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            btn_emojis.TextAlign = ContentAlignment.MiddleRight;
             btn_emojis.UseVisualStyleBackColor = false;
             btn_emojis.Click += btn_emojis_Click;
             // 
             // attachButton
             // 
-            attachButton.BackColor = System.Drawing.Color.GhostWhite;
-            attachButton.BackgroundImage = (System.Drawing.Image)resources.GetObject("attachButton.BackgroundImage");
-            attachButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            attachButton.Dock = System.Windows.Forms.DockStyle.Right;
-            attachButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            attachButton.ForeColor = System.Drawing.SystemColors.ControlText;
-            attachButton.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            attachButton.Location = new System.Drawing.Point(353, 16);
-            attachButton.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            attachButton.BackColor = Color.GhostWhite;
+            attachButton.BackgroundImage = (Image)resources.GetObject("attachButton.BackgroundImage");
+            attachButton.BackgroundImageLayout = ImageLayout.Center;
+            attachButton.Dock = DockStyle.Right;
+            attachButton.FlatStyle = FlatStyle.Flat;
+            attachButton.ForeColor = SystemColors.ControlText;
+            attachButton.ImageAlign = ContentAlignment.MiddleLeft;
+            attachButton.Location = new Point(353, 16);
+            attachButton.Margin = new Padding(5, 4, 5, 4);
             attachButton.Name = "attachButton";
-            attachButton.Size = new System.Drawing.Size(47, 51);
+            attachButton.Size = new Size(47, 51);
             attachButton.TabIndex = 6;
-            attachButton.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            attachButton.TextAlign = ContentAlignment.MiddleRight;
             attachButton.UseVisualStyleBackColor = false;
             attachButton.Click += attachButton_Click;
             // 
             // removeButton
             // 
-            removeButton.BackColor = System.Drawing.Color.Red;
-            removeButton.Dock = System.Windows.Forms.DockStyle.Right;
-            removeButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            removeButton.Font = new System.Drawing.Font("Segoe UI Symbol", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            removeButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            removeButton.Location = new System.Drawing.Point(400, 16);
-            removeButton.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            removeButton.BackColor = Color.Red;
+            removeButton.Dock = DockStyle.Right;
+            removeButton.FlatStyle = FlatStyle.Popup;
+            removeButton.Font = new Font("Segoe UI Symbol", 9.75F, FontStyle.Bold);
+            removeButton.ForeColor = SystemColors.ControlLightLight;
+            removeButton.Location = new Point(400, 16);
+            removeButton.Margin = new Padding(5, 4, 5, 4);
             removeButton.Name = "removeButton";
-            removeButton.Size = new System.Drawing.Size(25, 51);
+            removeButton.Size = new Size(25, 51);
             removeButton.TabIndex = 5;
             removeButton.Text = "X";
             removeButton.UseVisualStyleBackColor = false;
@@ -185,14 +185,14 @@ namespace winforms_chat.ChatForm
             // 
             // sendButton
             // 
-            sendButton.BackColor = System.Drawing.Color.RoyalBlue;
-            sendButton.Dock = System.Windows.Forms.DockStyle.Right;
-            sendButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            sendButton.Font = new System.Drawing.Font("Segoe UI Semibold", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            sendButton.Location = new System.Drawing.Point(425, 16);
-            sendButton.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            sendButton.BackColor = Color.RoyalBlue;
+            sendButton.Dock = DockStyle.Right;
+            sendButton.FlatStyle = FlatStyle.Flat;
+            sendButton.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold);
+            sendButton.Location = new Point(425, 16);
+            sendButton.Margin = new Padding(5, 4, 5, 4);
             sendButton.Name = "sendButton";
-            sendButton.Size = new System.Drawing.Size(101, 51);
+            sendButton.Size = new Size(101, 51);
             sendButton.TabIndex = 1;
             sendButton.Text = "Send";
             sendButton.UseVisualStyleBackColor = false;
@@ -200,36 +200,36 @@ namespace winforms_chat.ChatForm
             // itemsPanel
             // 
             itemsPanel.AutoScroll = true;
-            itemsPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            itemsPanel.Location = new System.Drawing.Point(0, 119);
-            itemsPanel.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            itemsPanel.Dock = DockStyle.Fill;
+            itemsPanel.Location = new Point(0, 119);
+            itemsPanel.Margin = new Padding(5, 4, 5, 4);
             itemsPanel.Name = "itemsPanel";
-            itemsPanel.Size = new System.Drawing.Size(547, 725);
+            itemsPanel.Size = new Size(547, 725);
             itemsPanel.TabIndex = 2;
             // 
             // flp_emojisList
             // 
-            flp_emojisList.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            flp_emojisList.Anchor = AnchorStyles.Bottom;
             flp_emojisList.AutoScroll = true;
-            flp_emojisList.BackColor = System.Drawing.Color.RoyalBlue;
-            flp_emojisList.Location = new System.Drawing.Point(183, 472);
+            flp_emojisList.BackColor = Color.RoyalBlue;
+            flp_emojisList.Location = new Point(183, 472);
             flp_emojisList.Name = "flp_emojisList";
-            flp_emojisList.Size = new System.Drawing.Size(288, 365);
+            flp_emojisList.Size = new Size(288, 365);
             flp_emojisList.TabIndex = 2;
             flp_emojisList.Visible = false;
             // 
             // Chatbox
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            BackColor = System.Drawing.Color.White;
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.White;
             Controls.Add(flp_emojisList);
             Controls.Add(itemsPanel);
             Controls.Add(bottomPanel);
             Controls.Add(topPanel);
-            Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            Margin = new Padding(5, 4, 5, 4);
             Name = "Chatbox";
-            Size = new System.Drawing.Size(547, 927);
+            Size = new Size(547, 927);
             topPanel.ResumeLayout(false);
             topPanel.PerformLayout();
             bottomPanel.ResumeLayout(false);

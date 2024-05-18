@@ -31,14 +31,15 @@ namespace winforms_chat
         {
             SuspendLayout();
             // 
-            // Form1
+            // ChatMainForm
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(514, 754);
-            Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            Name = "Form1";
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(514, 754);
+            Margin = new Padding(3, 4, 3, 4);
+            Name = "ChatMainForm";
             Text = "Form1";
+            FormClosing += Form1_FormClosing;
             Load += Form1_Load;
             ResumeLayout(false);
         }
