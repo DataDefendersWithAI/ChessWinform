@@ -15,6 +15,9 @@ namespace ChessAI
         private ChessBoard chessBoard;
         private PieceColor Side;
         private bool gameStarted = false;
+        private bool isDebug = false;
+        private bool isOffline = false; // Playing offline with bots/ AI
+        private PromotionType selectedPromotion;
 
         // Connections
         private TcpClient client;
@@ -29,19 +32,19 @@ namespace ChessAI
             InitializeComponent();
             DoubleBuffered = true; // Remove the small blinking when Invalidate()
 
-
-
             chessBoard = new ChessBoard() { AutoEndgameRules = AutoEndgameRules.All }; // Init new board
+            chessBoard.OnPromotePawn+= PromotePawn; // Add event when pawn is promoted
             boardRenderer = new BoardRenderer(); // Init new renderer
 
             this.Size = new System.Drawing.Size(1000, 800); // Add minimum offset is 75 and maybe some space
             this.FormClosed += ClientForm_FormClosed; // Add event when form is closed
+
         }
         private void InitGame(string message)
         {
-            if(gameStarted) return; // If game already started, return
+            if (gameStarted) return; // If game already started, return
             // Set the side
-            Side = message.Contains("White") ? PieceColor.White : PieceColor.Black; 
+            Side = message.Contains("White") ? PieceColor.White : PieceColor.Black;
             // Set the game started
             gameStarted = true;
             LogMessage("Game started! You are: " + Side);
@@ -49,25 +52,27 @@ namespace ChessAI
         }
         private void boardPaint(object sender, PaintEventArgs e) // Update continuously
         {
-            if(!gameStarted) return; // If game not started, return
-            boardRenderer.DrawBoard(e.Graphics, chessBoard, 500, isDebug: true, side: Side); // Draw the board
+            if (!gameStarted) return; // If game not started, return
+            boardRenderer.DrawBoard(e.Graphics, chessBoard, 500, isDebug: isDebug, side: Side); // Draw the board
             richTextBox1.Text = chessBoard.ToPgn(); // Show the moves       
+            
         }
 
         private void boardClick(object sender, MouseEventArgs e)
         {
             if (!gameStarted) return; // If game not started, return
-            Debug.WriteLine("X: " + e.X + " Y: " + e.Y);
+            Debug.WriteLineIf(isDebug, "X: " + e.X + " Y: " + e.Y);
             chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard, isNormalized: false, side: Side); // Handle the click
             Invalidate(); // Redraw whole screen
-            LogMessage(chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none");
-            SendMessage(chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none");
+            var mv = "MV#*" + (chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none"); //move
+            LogMessage(mv);
+            SendMessage(mv);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             if (!gameStarted) return; // If game not started, return
-            if (chessBoard.Turn == Side) return; // Simulate opponent
+            if (chessBoard.Turn == Side) return; // Simulate opponent when offline
 
             var moves = chessBoard.Moves();
             if (chessBoard.IsEndGame)
@@ -81,6 +86,12 @@ namespace ChessAI
 
         private void MoveAsMessage(string message)
         {
+            message = message.Replace("MV#*", ""); //Normalize message as SAN
+            if (!gameStarted) return; // If game not started, return
+            if (chessBoard.Turn == Side) return; // If it's our turn, return
+            if (message == "none") return; // If no move, return
+
+            // Opponent move
             Move move;
             if (!chessBoard.TryParseFromSan(message, out move)) return;
             if (chessBoard.IsEndGame)
@@ -92,6 +103,49 @@ namespace ChessAI
             Invalidate();
         }
 
+        public async Task<PromotionType> PromotePawnUIAsync()
+        {
+            if (Side == PieceColor.White) // set up images for promotion
+            {
+                Queen.ImageKey = "WQueen";
+                Knight.ImageKey = "WKnight";
+                Rook.ImageKey = "WRook";
+                Bishop.ImageKey = "WBishop";
+            }
+            else
+            {
+                Queen.ImageKey = "BQueen";
+                Knight.ImageKey = "BKnight";
+                Rook.ImageKey = "BRook";
+                Bishop.ImageKey = "BBishop";
+            }
+
+            var tcs = new TaskCompletionSource<PromotionType>();
+
+            Queen.Click += (s, ev) => { tcs.TrySetResult(PromotionType.ToQueen); };
+            Knight.Click += (s, ev) => { tcs.TrySetResult(PromotionType.ToKnight); };
+            Rook.Click += (s, ev) => { tcs.TrySetResult(PromotionType.ToRook); };
+            Bishop.Click += (s, ev) => { tcs.TrySetResult(PromotionType.ToBishop); };
+
+            flowLayoutPanel1.Visible = true;
+
+            // Await the user's selection or timeout
+            var timeoutTask = Task.Delay(5000).ContinueWith(_ => PromotionType.Default);
+            var userChoiceTask = tcs.Task;
+
+            var selectedPromote = await Task.WhenAny(userChoiceTask, timeoutTask) == userChoiceTask
+                ? userChoiceTask.Result
+                : PromotionType.Default;
+
+            flowLayoutPanel1.Visible = false;
+            selectedPromotion = selectedPromote;
+            return selectedPromote;
+        }
+
+        private void PromotePawn(object sender, PromotionEventArgs e)
+        {
+            e.PromotionResult = selectedPromotion == null ? selectedPromotion : PromotionType.Default;
+        }
 
         private void ClientForm_Load(object sender, EventArgs e)
         {
@@ -110,9 +164,14 @@ namespace ChessAI
 
         private void ConnectToServer()
         {
+            if (client != null && client.Connected) return; // If already connected, return
+            if (isOffline) return; // If offline, return
+
             client = new TcpClient();
-            client.Connect("127.0.0.1", 9099);
+            client.Connect("127.0.0.1", 29099);
             stream = client.GetStream();
+
+            SendMessage("Client " + PlayerName + " connected!");
             LogMessage(PlayerName + " connected to server.");
         }
 
@@ -141,15 +200,15 @@ namespace ChessAI
 
                     string message = Encoding.ASCII.GetString(buffer, 0, bytesRead);
                     LogMessage("Rcv: " + message);
-                    if(message.Contains("BG*#"))
+                    if (message.Contains("BG*#"))
                     {
                         InitGame(message); // Init the game and set side
                     }
-                    else
+                    else if (message.Contains("MV#*"))
                     {
-                        MoveAsMessage(message);
+                        MoveAsMessage(message); //Move piece
                     }
-                    
+
                 }
             }
             catch (Exception ex)
@@ -160,6 +219,7 @@ namespace ChessAI
 
         private void SendMessage(string message)
         {
+            if (message == "none") return; // If no message, return
             try
             {
                 if (client != null && client.Connected)
@@ -191,22 +251,21 @@ namespace ChessAI
 
         private void ClientForm_FormClosed(object sender, FormClosedEventArgs e)
         {
-            // Send last message to server
-            SendMessage("Client " + PlayerName + " disconnected!");
-            // Close the stream
-            if (stream != null)
+            try
             {
+                if(stream == null || !stream.CanWrite) return; // If stream is null or cannot write, return
+                // Send last message to server
+                SendMessage("Client " + PlayerName + " disconnected!");
                 stream.Close();
-            }
-            // Close the client
-            if (client != null)
-            {
                 client.Close();
+                if (receiveThread != null && receiveThread.IsAlive)
+                {
+                    receiveThread.Interrupt();
+                }
             }
-            // Stop receiving messages
-            if (receiveThread != null && receiveThread.IsAlive)
+            catch
             {
-                receiveThread.Abort();
+               Debug.WriteLine("Error: Client already disconnected.");
             }
         }
 
@@ -223,6 +282,16 @@ namespace ChessAI
             {
                 LogMessage("Error: " + ex.Message);
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            gameStarted = true;
+            isOffline = true;
+            // Set the side randomly
+            Side = Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
+            LogMessage("Game started! You are: " + Side);
+            Invalidate(); // Redraw whole screen
         }
     }
 }
