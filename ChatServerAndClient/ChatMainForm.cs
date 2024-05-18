@@ -9,12 +9,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Message = ChessAI.ChatServerAndClient.Message;
+using System.Threading;
 
 namespace winforms_chat
 {
 	public partial class ChatMainForm : Form
 	{
-		// Variables
+        // Variables
+        [ThreadStatic]
+        public static readonly bool isMainThread = true;
 		private string tableCode;
 		private string userName;
 		private string opponentUserName;
@@ -25,13 +28,28 @@ namespace winforms_chat
         int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
         public ChatMainForm(string tableCode = "123456", string userName = "testUser")
 		{
-			this.tableCode = tableCode;
-			// Split userName by - and get the first part as userName, second part as opponentUserName
-			Console.WriteLine("userName: " + userName);
-			string[] userNames = userName.Split('-');
-			this.userName = userNames[0];
-			this.opponentUserName = userNames[1];
-			InitializeComponent();
+            if (ChatMainForm.isMainThread)
+            {
+                this.tableCode = tableCode;
+                // Split userName by - and get the first part as userName, second part as opponentUserName
+                Console.WriteLine("userName: " + userName);
+                string[] userNames = userName.Split('-');
+                this.userName = userNames[0];
+                this.opponentUserName = userNames[1];
+                InitializeComponent();
+
+            }
+            else
+            {
+                InitializeComponent();
+            }
+   //         this.tableCode = tableCode;
+   //         // Split userName by - and get the first part as userName, second part as opponentUserName
+   //         Console.WriteLine("userName: " + userName);
+   //         string[] userNames = userName.Split('-');
+   //         this.userName = userNames[0];
+   //         this.opponentUserName = userNames[1];
+			//InitializeComponent();
 		}
 
 		private void sendHandler(string chatmessage)
@@ -88,28 +106,54 @@ namespace winforms_chat
         private void Form1_Load(object sender, EventArgs e)
 		{
 			// Add chat panel
-			ChatForm.ChatboxInfo cbi = new ChatForm.ChatboxInfo();
-			cbi.User = userName; // Set user name
-			cbi.NamePlaceholder = "Chatbox"; // Set chatbox name
-			cbi.PhonePlaceholder = $"For table: {tableCode}"; // Set table code
+            if (ChatMainForm.isMainThread)
+            {
+                // Create chatbox info (user name, chatbox name, table code
+                ChatForm.ChatboxInfo cbi = new ChatForm.ChatboxInfo();
+                cbi.User = userName; // Set user name
+                cbi.NamePlaceholder = "Chatbox"; // Set chatbox name
+                cbi.PhonePlaceholder = $"For table: {tableCode}"; // Set table code
 
-			chat_panel = new ChatForm.Chatbox(cbi, sendHandler); // Create chat panel with chatbox info and send handler
-			chat_panel.Name = "chat_panel";
-			chat_panel.Dock = DockStyle.Fill;
-			this.Controls.Add(chat_panel);
+                chat_panel = new ChatForm.Chatbox(cbi, sendHandler); // Create chat panel with chatbox info and send handler
+                chat_panel.Name = "chat_panel";
+                chat_panel.Dock = DockStyle.Fill;
+                this.Controls.Add(chat_panel);
 
-            // Add a welcome message
-            chat_panel.AddMessage(new ChatForm.TextChatModel() { Author = "System", Body = $"Welcome back, {userName}! Joined chat in table {tableCode}!", Inbound = true, Time = DateTime.Now });
+                // Add a welcome message
+                chat_panel.AddMessage(new ChatForm.TextChatModel() { Author = "System", Body = $"Welcome back, {userName}! Joined chat in table {tableCode}!", Inbound = true, Time = DateTime.Now });
 
-			// Start communication
-			comm = new ClientCommunication(serverIP, serverPort, LogMessage);
-			comm.ClientLoad();
+                // Start communication
+                comm = new ClientCommunication(serverIP, serverPort, LogMessage);
+                comm.ClientLoad();
+            }
+            else
+            {
+                this.Close();
+            }
+			//ChatForm.ChatboxInfo cbi = new ChatForm.ChatboxInfo();
+			//cbi.User = userName; // Set user name
+			//cbi.NamePlaceholder = "Chatbox"; // Set chatbox name
+			//cbi.PhonePlaceholder = $"For table: {tableCode}"; // Set table code
+
+			//chat_panel = new ChatForm.Chatbox(cbi, sendHandler); // Create chat panel with chatbox info and send handler
+			//chat_panel.Name = "chat_panel";
+			//chat_panel.Dock = DockStyle.Fill;
+			//this.Controls.Add(chat_panel);
+
+   //         // Add a welcome message
+   //         chat_panel.AddMessage(new ChatForm.TextChatModel() { Author = "System", Body = $"Welcome back, {userName}! Joined chat in table {tableCode}!", Inbound = true, Time = DateTime.Now });
+
+			//// Start communication
+			//comm = new ClientCommunication(serverIP, serverPort, LogMessage);
+			//comm.ClientLoad();
+
 		}
 
 		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
 		{
             // Send last message: {"TableCode": newTableCode, "type": "chat", "from": userName, "to": opponentUserName, "message": "disconnect", "date": DateTime.Now} and and also send to server: {"TableCode": "000000", "type": "chat", "from": userName, "to": "server", "message": "disconnect", "date": DateTime.Now}
-			ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message(tableCode, "chat", userName, opponentUserName, "disconnect", DateTime.Now);
+            if (comm == null) return;
+            ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message(tableCode, "chat", userName, opponentUserName, "disconnect", DateTime.Now);
 			comm.SendMessage(msg.ToJson());
 			ChessAI.ChatServerAndClient.Message msg2 = new ChessAI.ChatServerAndClient.Message("000000", "chat", userName, "server", "disconnect", DateTime.Now);
 			comm.SendMessage(msg2.ToJson());

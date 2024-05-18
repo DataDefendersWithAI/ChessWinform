@@ -64,7 +64,7 @@ namespace winforms_chat
                     // Check if code is 000000, type is join, from "server", msg.to contains txt_userName.Text
                     // If yes, then take message as room code, MessageBox it
                     // Then close this form and open ChatMainForm.cs
-                    if (msg.TableCode == "000000" && msg.type == "join" && msg.from == "server" && msg.to.Contains(txt_userName.Text))
+                    if (msg.TableCode == "000000" && msg.type == "join" && msg.from == "server" && msg.to.Contains(txt_userName.Text) && msg.message!="close")
                     {
                         // Split msg.to by - and swap if needed to make sure that first part is user name and second part is opponent user name
                         string[] userNames = msg.to.Split('-');
