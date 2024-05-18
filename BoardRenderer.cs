@@ -14,6 +14,7 @@ namespace ChessAI
         //========= SETTINGS ========//
         private bool showTileCoord = true; // show the tile coordinates
         private bool[,] validMovesGrid; // Store the validity of all possible moves // precalc in order to reduce invalidate/ refresh time 
+        private bool showOpponentValidMoves = false; // show the valid moves of the opponent
 
         private int edge;
 
@@ -40,20 +41,44 @@ namespace ChessAI
         private Position selectedPiece;
         private Position pieceMoveTo;
 
+        // Define a mutex object
+        private static readonly object _graphicsLock = new object();
+
+        public PromotionType selectedPromotion { get; set; }
 
         //========= SETTINGS ========//
 
         public void DrawBoard(Graphics g, ChessBoard chessBoard, int edgeSet = 800, int offsetX = 75, int offsetY = 75, bool isDebug = false, PieceColor side = null)
         {
+            if (g == null)
+            {
+                Debug.WriteLine("Graphics object is null");
+            }
             debugMode = isDebug;
             edge = edgeSet;
             TileSize = new Size(edge / noOfTiles, edge / noOfTiles);
             Offset = new Size(offsetX, offsetY);
             // Pre-calculate valid moves and store them in validMovesGrid
-            CalculateValidMoves(chessBoard);
+            CalculateValidMoves(chessBoard, side);
             // Draw tiles and pieces separately for better performance
-            DrawTiles(g, chessBoard, side);
-            DrawPieces(g, chessBoard, side);
+            Parallel.Invoke(
+             () =>
+             {
+                 lock (_graphicsLock)
+                 {
+                     // Execute DrawTiles while holding the lock
+                     DrawTiles(g, chessBoard, side);
+                 }
+             },
+             () =>
+             {
+                 lock (_graphicsLock)
+                 {
+                     // Execute DrawPieces while holding the lock
+                     DrawPieces(g, chessBoard, side);
+                 }
+             }
+            );
         }
 
         private void DrawTiles(Graphics g, ChessBoard chessBoard, PieceColor side)
@@ -77,16 +102,14 @@ namespace ChessAI
 
                     // Use a single brush object for different tile colors
                     //Mark all posibles moves
+                    b = (white ? new SolidBrush(WhiteTilesColor) : new SolidBrush(BlackTilesColor));
+                    pen = new Pen(new SolidBrush(Color.Black), 0);
+                    
                     if (selectedPiece != null && (validMovesGrid[x,y] || (selectedPiece.X == x && selectedPiece.Y == y)))
-                    {
-                        b = (chessBoard.Turn == chessBoard[selectedPiece.toSAN()].Color ) ? new SolidBrush(PositionColor.Path) : new SolidBrush(PositionColor.NotPath); 
-                        pen =  new Pen(new SolidBrush(Color.Black), 2) ;
+                    { 
+                        b = (chessBoard.Turn == chessBoard[selectedPiece.toSAN()].Color) ? ( (chessBoard.Turn == side || (showOpponentValidMoves && chessBoard.Turn != side))? new SolidBrush(PositionColor.Path): new SolidBrush(PositionColor.NotPath)): new SolidBrush(PositionColor.NotPath);
+                        pen = new Pen(new SolidBrush(Color.Black), 2);
                         
-                    }
-                    else
-                    {
-                        b = (white ? new SolidBrush(WhiteTilesColor) : new SolidBrush(BlackTilesColor));
-                        pen = new Pen(new SolidBrush(Color.Black), 0);
                     }
 
                     // If white kings are in check, mark the tiles
@@ -160,7 +183,7 @@ namespace ChessAI
                 }
             }  
         }
-        private void CalculateValidMoves(ChessBoard chessBoard)
+        private void CalculateValidMoves(ChessBoard chessBoard, PieceColor side)
         {
             validMovesGrid = new bool[noOfTiles, noOfTiles];
 
@@ -174,6 +197,11 @@ namespace ChessAI
                     // Check if a piece is selected and it's a valid move
                     if (selectedPiece != null && IsValidMove(selectedPiece, position, chessBoard))
                     {
+                        if (chessBoard[selectedPiece.toSAN()].Color != side && !showOpponentValidMoves)
+                        {
+                            validMovesGrid[i, j] = false;
+                            continue;
+                        }
                         validMovesGrid[i, j] = true;
                     }
                 }
@@ -273,16 +301,25 @@ namespace ChessAI
                 return chessBoard;
             }
 
+            // Check for pawn promotion
+            if (chessBoard[selectedPiece.toSAN()].Type == PieceType.Pawn && (pieceMoveTo.Y == 0 || pieceMoveTo.Y == 7))
+            {
+                Debug.WriteLineIf(debugMode, "Pawn promotion");
+               // selectedPromotion = new ChessAIClient().PromotePawnUIAsync().Result;
+                
+            }
+
             // Execute the move
             chessBoard.Move(new Move(selectedPiece.toSAN(), pieceMoveTo.toSAN()));
             Debug.WriteLineIf(debugMode, "Moved piece from " + selectedPiece.toSAN() + " to " + pieceMoveTo.toSAN());
             Debug.WriteLineIf(debugMode, chessBoard.ToAscii());
-
-            // Reset selection after the move
+            
+            
             ResetSelection();
 
             return chessBoard;
         }
+       
 
         private void ResetSelection()
         {
