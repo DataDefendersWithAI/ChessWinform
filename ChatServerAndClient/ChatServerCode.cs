@@ -81,6 +81,7 @@ namespace winforms_chat
                                 }
                             }
                         }
+                        else return;
                     }
                 }
 

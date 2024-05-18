@@ -94,6 +94,8 @@ namespace ChessAI.ChatServerAndClient
     /// </summary>
     public class Communication
     {
+        [ThreadStatic]
+        public static readonly bool isMainThread = true;
         private TcpClient client;
         private NetworkStream stream;
         private Thread receiveThread;
@@ -204,13 +206,16 @@ namespace ChessAI.ChatServerAndClient
         /// <param name="message">The message to log.</param>
         public void LogMessage(string message)
         {
-            // If message is error, MessageBox it
-            if (message.Contains("Error:"))
+            if (Communication.isMainThread)
             {
-                MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                // If message is error, MessageBox it
+                if (message.Contains("Error:"))
+                {
+                    MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                // Invoke the receive handler to log the message
+                receiveHandler?.Invoke(message);
             }
-            // Invoke the receive handler to log the message
-            receiveHandler?.Invoke(message);
         }
         /// <summary>
         /// Closes the connection to the server.
