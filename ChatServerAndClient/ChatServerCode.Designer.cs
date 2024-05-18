@@ -30,7 +30,7 @@
         {
             btn_joinRandom = new Button();
             listview_userQueue = new ListView();
-            label_statusText = new Label();
+            btn_autoJoin = new Button();
             SuspendLayout();
             // 
             // btn_joinRandom
@@ -51,21 +51,22 @@
             listview_userQueue.TabIndex = 1;
             listview_userQueue.UseCompatibleStateImageBehavior = false;
             // 
-            // label_statusText
+            // btn_autoJoin
             // 
-            label_statusText.AutoSize = true;
-            label_statusText.Location = new Point(288, 43);
-            label_statusText.Name = "label_statusText";
-            label_statusText.Size = new Size(76, 20);
-            label_statusText.TabIndex = 2;
-            label_statusText.Text = "StatusText";
+            btn_autoJoin.Location = new Point(248, 23);
+            btn_autoJoin.Name = "btn_autoJoin";
+            btn_autoJoin.Size = new Size(197, 60);
+            btn_autoJoin.TabIndex = 2;
+            btn_autoJoin.Text = "Auto join 2 random people to random room";
+            btn_autoJoin.UseVisualStyleBackColor = true;
+            btn_autoJoin.Click += btn_autoJoin_Click;
             // 
             // ChatServerCode
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(label_statusText);
+            Controls.Add(btn_autoJoin);
             Controls.Add(listview_userQueue);
             Controls.Add(btn_joinRandom);
             Name = "ChatServerCode";
@@ -73,13 +74,12 @@
             FormClosed += ClientForm_FormClosed;
             Load += ClientForm_Load;
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
 
         private System.Windows.Forms.Button btn_joinRandom;
         private System.Windows.Forms.ListView listview_userQueue;
-        private System.Windows.Forms.Label label_statusText;
+        private Button btn_autoJoin;
     }
 }
