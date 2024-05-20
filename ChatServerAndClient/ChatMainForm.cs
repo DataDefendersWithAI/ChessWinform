@@ -37,11 +37,14 @@ namespace winforms_chat
                 this.userName = userNames[0];
                 this.opponentUserName = userNames[1];
                 InitializeComponent();
+               
 
             }
             else
             {
                 InitializeComponent();
+              
+                this.DoubleBuffered = true;
             }
    //         this.tableCode = tableCode;
    //         // Split userName by - and get the first part as userName, second part as opponentUserName

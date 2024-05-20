@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -79,6 +80,7 @@ namespace winforms_chat
                         msg.to = userName + "-" + opponentUserName;
                         //MessageBox.Show("Room code: " + msg.message);
                         // Open ChatMainForm with table code and username
+                        Console.WriteLine(msg.to , msg.message);
                         isFormExit = true;
                         ChatMainForm chatMainForm = new ChatMainForm(msg.message, msg.to);
                         chatMainForm.Show();
@@ -122,18 +124,29 @@ namespace winforms_chat
                 MessageBox.Show("Please enter your name.");
                 return;
             }
+
+            JoiningRoom(txt_userName.Text);
+        }
+
+        public void JoiningRoom(string userName)
+        {
+            Debug.WriteLine("JoiningRoom called with user name: " + userName);
+            txt_userName.Text = userName;
             // Check if user name is "server"
-            if (txt_userName.Text == "server")
+            if (userName == "server")
             {
                 MessageBox.Show("Invalid user name.");
                 return;
             }
+
             // Check if name contains special characters
-            if (txt_userName.Text.Any(c => !char.IsLetterOrDigit(c)))
+            if (userName.Any(c => !char.IsLetterOrDigit(c)))
             {
                 MessageBox.Show("Invalid user name.");
                 return;
             }
+
+            if (comm == null) return;
 
             // Shows pnl_wait and hides pnl_join
             pnl_wait.Visible = true;
@@ -142,17 +155,19 @@ namespace winforms_chat
             // Send message to server using JSON
             // TableCode: 000000
             // type: join
-            // from: txt_userName.Text
+            // from: userName.Text
             // to: 
             // message: 
             // date: DateTime.Now
 
-            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", txt_userName.Text, "server", "", DateTime.Now);
+
+            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", userName, "server", "", DateTime.Now);
             comm.SendMessage(message.ToJson());
         }
 
         private void btn_cancel_Click(object sender, EventArgs e)
         {
+
             // Show pnl_join and hide pnl_wait
             pnl_join.Visible = true;
             pnl_wait.Visible = false;

@@ -8,12 +8,12 @@ namespace ChessAI
 {
     internal class PiecesCustomize
     {
-        public Bitmap mapFromSANToBitmap(Graphics g,  char SAN , bool isWhite)
+        public Bitmap mapFromSANToBitmap(Graphics g, char SAN, bool isWhite)
         {
             switch (SAN)
             {
                 case 'p':
-                    return new Pawn().GetBitmap(g,isWhite);
+                    return new Pawn().GetBitmap(g, isWhite);
                 case 'r':
                     return new Rook().GetBitmap(g, isWhite);
                 case 'n':

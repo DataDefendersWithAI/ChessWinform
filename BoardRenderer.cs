@@ -31,7 +31,7 @@ namespace ChessAI
 
         public static class PositionColor
         {
-     
+
             public static Color Path = Color.Turquoise; // possible moves & selected piece
             public static Color Check = Color.Red; // check 
             public static Color NotPath = Color.Salmon; // notPath
@@ -102,23 +102,23 @@ namespace ChessAI
 
                     // Use a single brush object for different tile colors
                     //Mark all posibles moves
-                    b = (white ? new SolidBrush(WhiteTilesColor) : new SolidBrush(BlackTilesColor));
+                    b = white ? new SolidBrush(WhiteTilesColor) : new SolidBrush(BlackTilesColor);
                     pen = new Pen(new SolidBrush(Color.Black), 0);
-                    
-                    if (selectedPiece != null && (validMovesGrid[x,y] || (selectedPiece.X == x && selectedPiece.Y == y)))
-                    { 
-                        b = (chessBoard.Turn == chessBoard[selectedPiece.toSAN()].Color) ? ( (chessBoard.Turn == side || (showOpponentValidMoves && chessBoard.Turn != side))? new SolidBrush(PositionColor.Path): new SolidBrush(PositionColor.NotPath)): new SolidBrush(PositionColor.NotPath);
+
+                    if (selectedPiece != null && (validMovesGrid[x, y] || selectedPiece.X == x && selectedPiece.Y == y))
+                    {
+                        b = chessBoard.Turn == chessBoard[selectedPiece.toSAN()].Color ? chessBoard.Turn == side || showOpponentValidMoves && chessBoard.Turn != side ? new SolidBrush(PositionColor.Path) : new SolidBrush(PositionColor.NotPath) : new SolidBrush(PositionColor.NotPath);
                         pen = new Pen(new SolidBrush(Color.Black), 2);
-                        
+
                     }
 
                     // If white kings are in check, mark the tiles
-                    if (chessBoard.WhiteKingChecked && chessBoard.WhiteKing.X == x && chessBoard.WhiteKing.Y == (noOfTiles - 1 - y))
+                    if (chessBoard.WhiteKingChecked && chessBoard.WhiteKing.X == x && chessBoard.WhiteKing.Y == noOfTiles - 1 - y)
                     {
                         b = new SolidBrush(PositionColor.Check);
                     }
                     // If black kings are in check, mark the tiles
-                    if (chessBoard.BlackKingChecked && chessBoard.BlackKing.X == x && chessBoard.BlackKing.Y == (noOfTiles - 1 - y))
+                    if (chessBoard.BlackKingChecked && chessBoard.BlackKing.X == x && chessBoard.BlackKing.Y == noOfTiles - 1 - y)
                     {
                         b = new SolidBrush(PositionColor.Check);
                     }
@@ -126,7 +126,7 @@ namespace ChessAI
                     g.FillRectangle(b, i * TileSize.Width + Offset.Width, j * TileSize.Height + Offset.Height, TileSize.Width, TileSize.Height);
                     g.DrawRectangle(pen, i * TileSize.Width + Offset.Width, j * TileSize.Height + Offset.Height, TileSize.Width, TileSize.Height);
 
-                   
+
 
                     if (showTileCoord)
                     {
@@ -141,7 +141,7 @@ namespace ChessAI
                     {
                         g.DrawString((noOfTiles - y).ToString(), new Font("Arial", 13), new SolidBrush(Color.Red), i * TileSize.Width + Offset.Width - (float)(TileSize.Width * .5), j * TileSize.Height + Offset.Height + (float)(TileSize.Height * .2));
                     }
-                    
+
 
 
                     // Dispose the brush after use
@@ -154,16 +154,16 @@ namespace ChessAI
         }
 
         private void DrawPieces(Graphics g, ChessBoard chessBoard, PieceColor side)
-        { 
+        {
             Bitmap bitmap;
-           
+
             for (int i = 0; i < noOfTiles; i++)
             {
                 for (int j = 0; j < noOfTiles; j++)
                 {
                     // Retrieve the piece once instead of multiple times
                     var x = i;
-                    var y =  j;
+                    var y = j;
                     if (side == PieceColor.Black) // if the side is black, flip the board
                     {
                         x = noOfTiles - 1 - i;
@@ -181,7 +181,7 @@ namespace ChessAI
                         }
                     }
                 }
-            }  
+            }
         }
         private void CalculateValidMoves(ChessBoard chessBoard, PieceColor side)
         {
@@ -232,7 +232,7 @@ namespace ChessAI
         public ChessBoard onClicked(Position clickedPosition, ChessBoard chessBoard, bool isNormalized = false, PieceColor side = null)
         {
 
-            if (checkForEndgame(chessBoard) == true ) return chessBoard; // check if the game has ended
+            if (checkForEndgame(chessBoard) == true) return chessBoard; // check if the game has ended
 
 
             // Normalize the clicked position if needed
@@ -266,7 +266,7 @@ namespace ChessAI
                 pieceMoveTo = clickedPosition;
 
                 // Change selected piece if the clicked position has a piece in same side or a piece is not be taken by current selected piece
-                if (chessBoard[pieceMoveTo.toSAN()] != null && !IsValidMove(selectedPiece, pieceMoveTo, chessBoard) )
+                if (chessBoard[pieceMoveTo.toSAN()] != null && !IsValidMove(selectedPiece, pieceMoveTo, chessBoard))
                 {
                     Debug.WriteLineIf(debugMode, "Change select piece on " + chessBoard[pieceMoveTo.toSAN()]);
                     selectedPiece = pieceMoveTo;
@@ -305,21 +305,20 @@ namespace ChessAI
             if (chessBoard[selectedPiece.toSAN()].Type == PieceType.Pawn && (pieceMoveTo.Y == 0 || pieceMoveTo.Y == 7))
             {
                 Debug.WriteLineIf(debugMode, "Pawn promotion");
-               // selectedPromotion = new ChessAIClient().PromotePawnUIAsync().Result;
-                
+                selectedPromotion = new ChessAIClient().PromotePawnUIAsync();
             }
 
             // Execute the move
             chessBoard.Move(new Move(selectedPiece.toSAN(), pieceMoveTo.toSAN()));
             Debug.WriteLineIf(debugMode, "Moved piece from " + selectedPiece.toSAN() + " to " + pieceMoveTo.toSAN());
             Debug.WriteLineIf(debugMode, chessBoard.ToAscii());
-            
-            
+
+
             ResetSelection();
 
             return chessBoard;
         }
-       
+
 
         private void ResetSelection()
         {
@@ -327,7 +326,7 @@ namespace ChessAI
             pieceMoveTo = null;
         }
 
-        private Position NormalizePosition(Position position, PieceColor side )
+        private Position NormalizePosition(Position position, PieceColor side)
         {
             var x = (position.X - Offset.Width) / TileSize.Width;
             var y = (position.Y - Offset.Height) / TileSize.Height;
@@ -336,7 +335,7 @@ namespace ChessAI
                 x = noOfTiles - 1 - x;
                 y = noOfTiles - 1 - y;
             }
-            return new Position(x , y );
+            return new Position(x, y);
         }
 
         private bool SelectPiece(Position clickedPosition, ChessBoard chessBoard)
