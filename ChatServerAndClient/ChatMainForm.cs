@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Message = ChessAI.ChatServerAndClient.Message;
 using System.Threading;
+using ChessAI;
+using Chess;
 
 namespace winforms_chat
 {
@@ -26,7 +28,11 @@ namespace winforms_chat
 		private ClientCommunication comm;
         string serverIP = ChessAI.ChatServerAndClient.Constants.serverIP;
         int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
-        public ChatMainForm(string tableCode = "123456", string userName = "testUser")
+
+        ChessAIClient chessClient;
+        public PieceColor Side { get; private set; }
+
+    public ChatMainForm(string tableCode = "123456", string userName = "testUser" , ChessAIClient chClient = null, String side = "")
 		{
             if (ChatMainForm.isMainThread)
             {
@@ -35,9 +41,13 @@ namespace winforms_chat
                 Console.WriteLine("userName: " + userName);
                 string[] userNames = userName.Split('-');
                 this.userName = userNames[0];
-                this.opponentUserName = userNames[1];
-                InitializeComponent();
+                this.opponentUserName = userNames[1]; 
+
+                chessClient = chClient;
+                Side = side.ToLower().Contains("white") ? PieceColor.White : PieceColor.Black;
                
+                InitializeComponent();
+                this.DoubleBuffered = true;
 
             }
             else
@@ -57,12 +67,20 @@ namespace winforms_chat
 
 		private void sendHandler(string chatmessage)
 		{
+            if (chatmessage == "") return;
             // Send message: {"TableCode": newTableCode, "type": "chat", "from": userName, "to": opponentUserName, "message": message, "date": DateTime.Now}
 			ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message(tableCode, "chat", userName, opponentUserName, chatmessage, DateTime.Now);
 			comm.SendMessage(msg.ToJson());
         }
+        public void moveSendHandler(string move)
+        {
+            // Send message: {"TableCode": newTableCode, "type": "chess", "from": userName, "to": opponentUserName, "message": move, "date": DateTime.Now}
+            ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message(tableCode, "chess", userName, opponentUserName, move, DateTime.Now);
+            comm.SendMessage(msg.ToJson());
+        }
 
-		private void LogMessage(string message)
+
+        private void LogMessage(string message)
 		{
             // No log message
 
@@ -85,17 +103,38 @@ namespace winforms_chat
                 ChessAI.ChatServerAndClient.Message msg = ChessAI.ChatServerAndClient.Message.FromJson(message);
                 if (msg != null)
                 {
-                    // Check if code is this tableCode, type is chat, from opponentUserName, to userName
+                    // Check if code is this tableCode, type is chat, from opponentUserName or server, to userName
                     // If yes, then add message to chat panel
-					if (msg.TableCode == tableCode && msg.type == "chat" && msg.from == opponentUserName && msg.to == userName)
+					if (msg.TableCode == tableCode &&( msg.from == opponentUserName || msg.from == "server" )&& msg.to == userName)
 					{
-                        // Add message to chat panel
-                        ChatForm.TextChatModel chatModel = new ChatForm.TextChatModel();
-                        chatModel.Author = msg.from;
-                        chatModel.Body = msg.message;
-                        chatModel.Inbound = true;
-                        chatModel.Time = msg.date;
-                        chat_panel.AddMessage(chatModel);
+                        if (msg.type == "chat")
+                        {
+                            // Add message to chat panel
+                            ChatForm.TextChatModel chatModel = new ChatForm.TextChatModel();
+                            chatModel.Author = msg.from;
+                            chatModel.Body = msg.message;
+                            chatModel.Inbound = true;
+                            chatModel.Time = msg.date;
+                            chat_panel.AddMessage(chatModel);
+                        }
+                        else if (msg.type == "chess")
+                        {
+                            // Add message to chat panel
+                            ChatForm.TextChatModel chatModel = new ChatForm.TextChatModel();
+                            chatModel.Author = msg.from;
+                            chatModel.Body = msg.message;
+                            chatModel.Inbound = true;
+                            chatModel.Time = msg.date;
+                            chat_panel.AddMessage(chatModel);
+
+                            if (chessClient != null)
+                            {
+                                if (msg.message.Contains("MV#*"))
+                                {
+                                    chessClient.MoveAsMessage(msg.message);
+                                }
+                            }
+                        }   
                     }
                 }
 
@@ -161,6 +200,9 @@ namespace winforms_chat
 			ChessAI.ChatServerAndClient.Message msg2 = new ChessAI.ChatServerAndClient.Message("000000", "chat", userName, "server", "disconnect", DateTime.Now);
 			comm.SendMessage(msg2.ToJson());
             comm.ClientClose();
+
+
+
         }
 	}
 }

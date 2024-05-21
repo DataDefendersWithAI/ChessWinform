@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using winforms_chat;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 
 namespace ChessAI
@@ -27,11 +28,16 @@ namespace ChessAI
         private bool isOffline = false; // Playing offline with bots/ AI
 
         private PromotionType selectedPromotion;
+        ChatClientJoin x;
+        ChatMainForm currenChatMainForm;
+        string chessLastMove; // prevent sending too much when clicking on the board
 
         // Random player name
         private string PlayerName = "Player" + new Random().Next(1000, 24000);
         // Random player number in range 1-2000
         private int PlayerNumber = new Random().Next(1, 2000);
+
+
         public ChessAIClient()
         {
             InitializeComponent();
@@ -55,13 +61,15 @@ namespace ChessAI
         /// Begin the game when the message is received/ Connected to another player
         /// </summary>
         /// <param name="message"></param>
-        private void InitGame(string message)
+        private void InitGame(PieceColor side)
         {
             if (gameStarted) return; // If game already started, return
             // Set the side
-            Side = message.Contains("White") ? PieceColor.White : PieceColor.Black;
+            Side = side;
+
             // Set the game started
             gameStarted = true;
+            isOffline = false;
             LogMessage("Game started! You are: " + Side);
             panel1.Invalidate(); // Redraw whole screen 
         }
@@ -86,10 +94,21 @@ namespace ChessAI
             if (!gameStarted) return; // If game not started, return
             Debug.WriteLineIf(isDebug, "X: " + e.X + " Y: " + e.Y);
             chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard, isNormalized: false, side: Side); // Handle the click
+            
             panel1.Invalidate(); // Redraw whole screen 
             var mv = "MV#*" + (chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none"); //move
             LogMessage(mv);
             //  SendMessage(mv);
+            if(currenChatMainForm != null 
+                && mv != chessLastMove // prevent  spamming the same move
+                && mv != "MV#*none" // prevent sending none move
+                && chessBoard.Turn != Side  //prevent sending move when it's not our turn // using != because it's end of our turn
+                && isOffline == false // prevent sending move when offline
+                )
+            {
+                currenChatMainForm.moveSendHandler(mv);
+                chessLastMove = mv;
+            }
         }
 
         /// <summary>
@@ -100,7 +119,7 @@ namespace ChessAI
         {
             if (!gameStarted) return; // If game not started, return
             if (chessBoard.Turn == Side) return; // Simulate opponent when offline
-
+            if (isOffline == false) return; // If it's not offline mode, return
             var moves = chessBoard.Moves();
             if (chessBoard.IsEndGame)
             {
@@ -115,11 +134,16 @@ namespace ChessAI
         /// Parsing mesage and moving the piece as other player move receive from server
         /// </summary>
         /// <param name="message"></param>
-        private void MoveAsMessage(string message)
+        public void MoveAsMessage(string message)
         {
             message = message.Replace("MV#*", ""); //Normalize message as SAN
+            // EX: split e4e5 to e4 e5
+            //string Sfrom = message.Substring(0, 2);
+            //string Sto = message.Substring(2, 2);
+
             if (!gameStarted) return; // If game not started, return
             if (chessBoard.Turn == Side) return; // If it's our turn, return
+            if(isOffline == true) return; // If it's offline mode, return
             if (message == "none") return; // If no move, return
 
             // Opponent move
@@ -174,9 +198,21 @@ namespace ChessAI
         private void ClientForm_Load(object sender, EventArgs e)
         {
             // Do something when form is loaded
-            ChatClientJoin x = new ChatClientJoin();
+            x = new ChatClientJoin();
             x.Show();
-            x.JoiningRoom(PlayerName);
+            x.JoiningRoom(PlayerName, this);
+            x.Joined += Room_Joined;
+        }
+
+        private void Room_Joined(object sender, EventArgs e)
+        {
+            currenChatMainForm = x.currentChatMainForm;
+            // Add any additional actions needed once the chat is joined
+            if(currenChatMainForm != null)
+            {
+                Console.WriteLine("Joined room with : "+ currenChatMainForm.Side);
+                InitGame(currenChatMainForm.Side);
+            }
         }
 
         /// <summary>
@@ -199,6 +235,7 @@ namespace ChessAI
         /// <param name="message"></param>
         private void button2_Click(object sender, EventArgs e)
         {
+            if (gameStarted) return; // If game already started, return
             gameStarted = true;
             isOffline = true;
             // Set the side randomly

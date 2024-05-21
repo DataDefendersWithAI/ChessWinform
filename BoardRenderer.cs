@@ -41,15 +41,13 @@ namespace ChessAI
         private Position selectedPiece;
         private Position pieceMoveTo;
 
-        // Define a mutex object
-        private static readonly object _graphicsLock = new object();
-
         public PromotionType selectedPromotion { get; set; }
 
         //========= SETTINGS ========//
 
         public void DrawBoard(Graphics g, ChessBoard chessBoard, int edgeSet = 800, int offsetX = 75, int offsetY = 75, bool isDebug = false, PieceColor side = null)
         {
+           
             if (g == null)
             {
                 Debug.WriteLine("Graphics object is null");
@@ -58,27 +56,21 @@ namespace ChessAI
             edge = edgeSet;
             TileSize = new Size(edge / noOfTiles, edge / noOfTiles);
             Offset = new Size(offsetX, offsetY);
-            // Pre-calculate valid moves and store them in validMovesGrid
-            CalculateValidMoves(chessBoard, side);
-            // Draw tiles and pieces separately for better performance
-            Parallel.Invoke(
-             () =>
-             {
-                 lock (_graphicsLock)
-                 {
-                     // Execute DrawTiles while holding the lock
-                     DrawTiles(g, chessBoard, side);
-                 }
-             },
-             () =>
-             {
-                 lock (_graphicsLock)
-                 {
-                     // Execute DrawPieces while holding the lock
-                     DrawPieces(g, chessBoard, side);
-                 }
-             }
-            );
+
+            try
+            {
+                // Pre-calculate valid moves and store them in validMovesGrid
+                CalculateValidMoves(chessBoard, side);
+                // Draw tiles and pieces separately for better performance
+                Parallel.Invoke
+                    (() => DrawTiles(g, chessBoard, side),
+                    () => DrawPieces(g, chessBoard, side)
+                    );
+            } catch (Exception e)
+            {
+                Debug.WriteLineIf(isDebug,"Error in DrawBoard: " + e.Message);
+            }
+
         }
 
         private void DrawTiles(Graphics g, ChessBoard chessBoard, PieceColor side)
@@ -107,7 +99,7 @@ namespace ChessAI
 
                     if (selectedPiece != null && (validMovesGrid[x, y] || selectedPiece.X == x && selectedPiece.Y == y))
                     {
-                        b = chessBoard.Turn == chessBoard[selectedPiece.toSAN()].Color ? chessBoard.Turn == side || showOpponentValidMoves && chessBoard.Turn != side ? new SolidBrush(PositionColor.Path) : new SolidBrush(PositionColor.NotPath) : new SolidBrush(PositionColor.NotPath);
+                        b = (chessBoard[selectedPiece.toSAN()] != null && chessBoard.Turn == chessBoard[selectedPiece.toSAN()].Color) ? chessBoard.Turn == side || showOpponentValidMoves && chessBoard.Turn != side ? new SolidBrush(PositionColor.Path) : new SolidBrush(PositionColor.NotPath) : new SolidBrush(PositionColor.NotPath);
                         pen = new Pen(new SolidBrush(Color.Black), 2);
 
                     }
@@ -353,8 +345,15 @@ namespace ChessAI
 
         private bool IsValidMove(Position fromPosition, Position toPosition, ChessBoard chessBoard)
         {
-            Debug.WriteLineIf(debugMode && !chessBoard.IsValidMove(new Move(fromPosition.toSAN(), toPosition.toSAN())), "Invalid move: " + fromPosition.toSAN() + " to " + toPosition.toSAN());
-            return chessBoard.IsValidMove(new Move(fromPosition.toSAN(), toPosition.toSAN()));
+            try
+            {// Debug.WriteLineIf(debugMode && !chessBoard.IsValidMove(new Move(fromPosition.toSAN(), toPosition.toSAN())), "Invalid move: " + fromPosition.toSAN() + " to " + toPosition.toSAN());
+                return chessBoard.IsValidMove(new Move(fromPosition.toSAN(), toPosition.toSAN()));
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLineIf(debugMode, "Error in IsValidMove: " + e.Message);
+                return false;
+            }
         }
 
     }
