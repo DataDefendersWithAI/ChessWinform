@@ -135,11 +135,17 @@ namespace winforms_chat
 
 
                 // Send message to 2 users
-                // Server send code to client: {"TableCode": "000000", "type": "join", "from": "server", "to": userName + "+" + opponentUserName, "message": newTableCode, "date": DateTime.Now}
+                // Server send code to clients: {"TableCode": "000000", "type": "join", "from": "server", "to": userName + "-" + opponentUserName, "message": newTableCode +"$"+ userSide + "-" + oppSide, "date": DateTime.Now}
                 // with newTableCode is a random string from 000001 to 999998
                 string newTableCode = random.Next(1, 999999).ToString("D6");
-                ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode, DateTime.Now);
+                // pick player side 
+                string userSide = Random.Shared.Next(2) == 0 ? "white" : "black";
+                string oppSide = userSide == "white" ? "black" : "white";
+
+
+                ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode +"$"+ userSide + "-" + oppSide, DateTime.Now);
                 comm.SendMessage(msg1.ToJson());
+
             }
         }
 

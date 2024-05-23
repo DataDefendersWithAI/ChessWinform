@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,8 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using ChessAI;
+
 
 // Import the Message class from MessageClass.cs
 using ChessAI.ChatServerAndClient;
@@ -25,9 +28,20 @@ namespace winforms_chat
         string serverIP = ChessAI.ChatServerAndClient.Constants.serverIP;
         int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
         bool isFormExit = false;
+
+        // Connect with ChessAIClient
+        public ChatMainForm currentChatMainForm { get; private set; }
+        public bool isJoined { get; private set; }
+        public event EventHandler Joined;
+
+        ChessAIClient chessClient;
+
+
         public ChatClientJoin()
         {
             InitializeComponent();
+            isJoined = false;
+
         }
         private void ClientForm_Load(object sender, EventArgs e)
         {
@@ -70,18 +84,34 @@ namespace winforms_chat
                         string[] userNames = msg.to.Split('-');
                         string userName = userNames[0];
                         string opponentUserName = userNames[1];
+                        // Split message for table code and side
+                        string[] mess = msg.message.Split('$');
+                        string newTableCode = mess[0];
+                        string[] userSides = mess[1].Split('-');
+                        string Side = userSides[0];
+                        string OpponentSide = userSides[1];
+                        // If user name is not equal to txt_userName.Text, swap user name and opponent user name
                         if (userName != txt_userName.Text)
                         {
                             userName = userNames[1];
                             opponentUserName = userNames[0];
+                            // Swap side as well
+                            string temp = Side;
+                            Side = OpponentSide;
+                            OpponentSide = temp;
                         }
                         // Merge userName and opponentUserName with "-" and pass it to ChatMainForm
                         msg.to = userName + "-" + opponentUserName;
+                      
                         //MessageBox.Show("Room code: " + msg.message);
                         // Open ChatMainForm with table code and username
+                        Console.WriteLine(msg.to , msg.message);
                         isFormExit = true;
-                        ChatMainForm chatMainForm = new ChatMainForm(msg.message, msg.to);
+                        ChatMainForm chatMainForm = new ChatMainForm(newTableCode, msg.to , chessClient, Side);
                         chatMainForm.Show();
+                        currentChatMainForm = chatMainForm;
+                        isJoined = true;
+                        OnJoined(EventArgs.Empty);
                         this.Close();
                         this.Dispose();
                     }
@@ -93,6 +123,11 @@ namespace winforms_chat
                 MessageBox.Show(ex.Message, "Warning");
             }
 
+        }
+
+        protected virtual void OnJoined(EventArgs e)
+        {
+            Joined?.Invoke(this, e);
         }
 
         private void ClientForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -122,18 +157,30 @@ namespace winforms_chat
                 MessageBox.Show("Please enter your name.");
                 return;
             }
+
+            JoiningRoom(txt_userName.Text, null);
+        }
+
+        public void JoiningRoom(string userName, ChessAIClient chClient)
+        {
+            chessClient = chClient;
+            Debug.WriteLine("JoiningRoom called with user name: " + userName);
+            txt_userName.Text = userName;
             // Check if user name is "server"
-            if (txt_userName.Text == "server")
+            if (userName == "server")
             {
                 MessageBox.Show("Invalid user name.");
                 return;
             }
+
             // Check if name contains special characters
-            if (txt_userName.Text.Any(c => !char.IsLetterOrDigit(c)))
+            if (userName.Any(c => !char.IsLetterOrDigit(c)))
             {
                 MessageBox.Show("Invalid user name.");
                 return;
             }
+
+            if (comm == null) return;
 
             // Shows pnl_wait and hides pnl_join
             pnl_wait.Visible = true;
@@ -142,17 +189,19 @@ namespace winforms_chat
             // Send message to server using JSON
             // TableCode: 000000
             // type: join
-            // from: txt_userName.Text
+            // from: userName.Text
             // to: 
             // message: 
             // date: DateTime.Now
 
-            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", txt_userName.Text, "server", "", DateTime.Now);
+
+            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", userName, "server", "", DateTime.Now);
             comm.SendMessage(message.ToJson());
         }
 
         private void btn_cancel_Click(object sender, EventArgs e)
         {
+
             // Show pnl_join and hide pnl_wait
             pnl_join.Visible = true;
             pnl_wait.Visible = false;

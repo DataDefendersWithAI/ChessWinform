@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Chess;
 namespace ChessAI
 {
-    internal class Position 
+    internal class Position
     {
         public readonly int X;
         public readonly int Y;
@@ -16,10 +16,10 @@ namespace ChessAI
 
         public Position(int x, int y)
         {
-            this.X = x;
-            this.Y = y;
+            X = x;
+            Y = y;
             White = (X + Y) % 2 == 0;
-      
+
         }
         public Position(Position p)
         {
@@ -35,11 +35,11 @@ namespace ChessAI
 
         public string toSAN()
         {
-            return "" + (char)('a' + this.X) + (8 - this.Y) + "";
+            return "" + (char)('a' + X) + (8 - Y) + "";
         }
 
         public Position(string PGN)
-        {        
+        {
             X = PGN[0] - 'a';
             Y = 8 - (PGN[1] - '0');
         }

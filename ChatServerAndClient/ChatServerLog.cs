@@ -25,11 +25,17 @@ namespace winforms_chat
         public ChatServerLog()
         {
             InitializeComponent();
+            
         }
 
         private void ServerForm_Load(object sender, EventArgs e)
         {
             serverComm = new ServerCommunication(serverIP, serverPort, LogMessage);
+
+            serverComm.StartServer(); // auto start server
+            // Open the code form
+            ChatServerCode codeForm = new ChatServerCode();
+            codeForm.Show();
 
         }
 
