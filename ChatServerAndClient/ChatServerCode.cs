@@ -19,9 +19,15 @@ namespace winforms_chat
         private Communication comm;
         string serverIP = ChessAI.ChatServerAndClient.Constants.serverIP;
         int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
+        private System.Windows.Forms.Timer autoPickTimer;
+        private bool isAutoPicking = false;
         public ChatServerCode()
         {
             InitializeComponent();
+            // Initialize timer
+            autoPickTimer = new System.Windows.Forms.Timer();
+            autoPickTimer.Interval = 500; // Set interval to 1 second (1000 ms)
+            autoPickTimer.Tick += btn_joinRandom_Click;
         }
 
         private void ClientForm_Load(object sender, EventArgs e)
@@ -140,6 +146,30 @@ namespace winforms_chat
                 ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode +"$"+ userSide + "-" + oppSide, DateTime.Now);
                 comm.SendMessage(msg1.ToJson());
 
+            }
+        }
+
+        // Auto pick 2 random users from listview
+        private void btn_autoJoin_Click(object sender, EventArgs e)
+        {
+            // It like btn_joinRandom_Click but it will auto pick 2 users from listview
+            if (isAutoPicking)
+            {
+                // Stop auto pick
+                autoPickTimer.Stop();
+                isAutoPicking = false;
+                btn_autoJoin.Text = "Start Auto-Pick";
+                // Also make sure btn_joinRandom_Click is enabled
+                btn_joinRandom.Enabled = true;
+            }
+            else
+            {
+                // Start auto pick
+                autoPickTimer.Start();
+                isAutoPicking = true;
+                btn_autoJoin.Text = "Stop Auto-Pick";
+                // Also make sure btn_joinRandom_Click is disabled
+                btn_joinRandom.Enabled = false;
             }
         }
     }

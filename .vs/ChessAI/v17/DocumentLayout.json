@@ -7,26 +7,26 @@
       "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:chatserverandclient\\chatclientjoin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\lap trinh mang\\chessai\\chatserverandclient\\chatclientjoin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|D:\\Lap trinh mang\\ChessAI\\chatserverandclient\\chatclientjoin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:chatserverandclient\\chatclientjoin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\lap trinh mang\\chessai\\chatbox_server_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|D:\\Lap trinh mang\\ChessAI\\chatbox_server_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:chatbox_server_form.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\lap trinh mang\\chessai\\chatserverandclient\\chatmainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|D:\\Lap trinh mang\\ChessAI\\chatserverandclient\\chatmainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:chatserverandclient\\chatmainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\lap trinh mang\\chessai\\chatserverandclient\\chatmainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|D:\\Lap trinh mang\\ChessAI\\chatserverandclient\\chatmainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:chatserverandclient\\chatmainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\admin\\AppData\\Local\\Temp\\.vsdbgsrc\\ed5ac4807273201e5be15d505abb8f6b4dff06e92cae58891680b015dfc34d47\\ChessBoard.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|d:\\lap trinh mang\\chessai\\boardrenderer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|D:\\Lap trinh mang\\ChessAI\\boardrenderer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}|ChessAI.csproj|solutionrelative:boardrenderer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -62,8 +62,7 @@
               "RelativeToolTip": "ChatServerAndClient\\ChatMainForm.cs",
               "ViewState": "AQIAAL8AAAAAAAAAAAAswEIAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-21T04:19:41.709Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-21T04:19:41.709Z"
             },
             {
               "$type": "Document",
@@ -74,8 +73,7 @@
               "ToolTip": "D:\\Lap trinh mang\\ChessAI\\ChatServerAndClient\\ChatMainForm.cs [Design]",
               "RelativeToolTip": "ChatServerAndClient\\ChatMainForm.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-21T04:19:39.344Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2024-05-21T04:19:39.344Z"
             },
             {
               "$type": "Document",
@@ -86,8 +84,7 @@
               "ToolTip": "D:\\Lap trinh mang\\ChessAI\\ChatServerAndClient\\ChatClientJoin.cs [Design]",
               "RelativeToolTip": "ChatServerAndClient\\ChatClientJoin.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-21T04:19:37.288Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2024-05-21T04:19:37.288Z"
             },
             {
               "$type": "Document",
@@ -98,8 +95,7 @@
               "ToolTip": "D:\\Lap trinh mang\\ChessAI\\ChatBox_Server_Form.cs [Design]",
               "RelativeToolTip": "ChatBox_Server_Form.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-21T04:19:31.495Z",
-              "EditorCaption": " [Design]"
+              "WhenOpened": "2024-05-21T04:19:31.495Z"
             },
             {
               "$type": "Document",
@@ -109,8 +105,7 @@
               "ToolTip": "C:\\Users\\admin\\AppData\\Local\\Temp\\.vsdbgsrc\\ed5ac4807273201e5be15d505abb8f6b4dff06e92cae58891680b015dfc34d47\\ChessBoard.cs [Read Only]",
               "ViewState": "AQIAAEEEAAAAAAAAAAApwE0EAAADAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-21T04:14:58.86Z",
-              "EditorCaption": " [Read Only]"
+              "WhenOpened": "2024-05-21T04:14:58.86Z"
             },
             {
               "$type": "Document",
@@ -122,8 +117,7 @@
               "RelativeToolTip": "BoardRenderer.cs",
               "ViewState": "AQIAALoAAAAAAAAAAIAwwGcAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-21T04:10:25.171Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-21T04:10:25.171Z"
             }
           ]
         }
