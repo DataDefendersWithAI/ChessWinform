@@ -56,7 +56,7 @@ namespace ChessAI
                                                             // this.FormClosed += ClientForm_FormClosed; // Add event when form is closed
             InitUserInfo();
 
-
+            panel1.Size = new System.Drawing.Size(625, 625); // Set the panel size
             //Generate stockfish default
             var pathStockFish = GetStockfishDir();
             Stockfish = new Stockfish.NET.Stockfish(pathStockFish, depth: 2);
