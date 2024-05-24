@@ -256,7 +256,7 @@ namespace ChessAI
         public static string GetStockfishDir()
         {
             // Determine the relative path to the Stockfish executable
-            string relativePath = @"D:\DesktopFiles\Project\ChessWinform\Stockfish\stockfish_20090216_x64.exe";
+            string relativePath = "./Stockfish/stockfish_20090216_x64.exe";
 
             // Determine the full path based on the operating system
             string fullPath;
@@ -268,7 +268,7 @@ namespace ChessAI
             else
             {
                 // Use a different path for non-Windows OS
-                fullPath = "/usr/games/Stockfish";
+                fullPath = "/usr/games/stockfish";
             }
 
             // Print the determined path
