@@ -14,7 +14,7 @@ using System.Security.Cryptography;
 using System.Net.Mail;
 using System.Net;
 
-namespace LoginForm
+namespace winform_chat
 {
     public partial class RegisterForm : Form
     {

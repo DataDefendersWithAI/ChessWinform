@@ -14,7 +14,7 @@ using System.Security.Cryptography;
 using System.Net.Mail;
 using System.Net;
 using Newtonsoft.Json;
-namespace LoginForm
+namespace winform_chat
 {
     public partial class LoginForm : Form
     {

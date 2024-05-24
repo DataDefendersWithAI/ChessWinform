@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace LoginForm.DashboardForm
+namespace winform_chat.DashboardForm
 {
     
     public partial class HomeForm : Form

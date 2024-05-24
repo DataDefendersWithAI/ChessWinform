@@ -14,7 +14,7 @@ using System.Net.Mail;
 using System.Net;
 using System.Security.Cryptography;
 using Newtonsoft.Json;
-namespace LoginForm
+namespace winform_chat
 {
     public partial class ForgetPasswordForm : Form
     {

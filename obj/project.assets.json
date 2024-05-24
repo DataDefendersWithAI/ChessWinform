@@ -123,6 +123,15 @@
             "related": ".xml"
           }
         }
+      },
+      "Stockfish.NET/1.0.7": {
+        "type": "package",
+        "compile": {
+          "lib/netcoreapp3.1/Stockfish.NET.dll": {}
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/Stockfish.NET.dll": {}
+        }
       }
     }
   },
@@ -445,33 +454,46 @@
         "newtonsoft.json.nuspec",
         "packageIcon.png"
       ]
+    },
+    "Stockfish.NET/1.0.7": {
+      "sha512": "q9qZkGfgX+AbMmcuDh5MGM8wDMbf5eU8MSWRX6eyRjO1HNQ4V7WFtGV0LJriuknwGB0L3CWmNNLusf8GPLrRwA==",
+      "type": "package",
+      "path": "stockfish.net/1.0.7",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netcoreapp3.1/Stockfish.NET.dll",
+        "stockfish.net.1.0.7.nupkg.sha512",
+        "stockfish.net.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     "net8.0-windows7.0": [
       "FireSharp >= 2.0.4",
       "Gera.Chess >= 1.1.0",
-      "Newtonsoft.Json >= 13.0.3"
+      "Newtonsoft.Json >= 13.0.3",
+      "Stockfish.NET >= 1.0.7"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\admin\\.nuget\\packages\\": {},
+    "C:\\Users\\mitom\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Lap trinh mang\\ChessAI\\ChessAI.csproj",
+      "projectUniqueName": "D:\\DesktopFiles\\Project\\ChessWinform\\ChessAI.csproj",
       "projectName": "ChessAI",
-      "projectPath": "D:\\Lap trinh mang\\ChessAI\\ChessAI.csproj",
-      "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-      "outputPath": "D:\\Lap trinh mang\\ChessAI\\obj\\",
+      "projectPath": "D:\\DesktopFiles\\Project\\ChessWinform\\ChessAI.csproj",
+      "packagesPath": "C:\\Users\\mitom\\.nuget\\packages\\",
+      "outputPath": "D:\\DesktopFiles\\Project\\ChessWinform\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\mitom\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -515,6 +537,10 @@
           "Newtonsoft.Json": {
             "target": "Package",
             "version": "[13.0.3, )"
+          },
+          "Stockfish.NET": {
+            "target": "Package",
+            "version": "[1.0.7, )"
           }
         },
         "imports": [
@@ -536,7 +562,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   },

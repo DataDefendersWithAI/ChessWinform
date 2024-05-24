@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Lap trinh mang\\ChessAI\\ChessAI.csproj": {}
+    "D:\\DesktopFiles\\Project\\ChessWinform\\ChessAI.csproj": {}
   },
   "projects": {
-    "D:\\Lap trinh mang\\ChessAI\\ChessAI.csproj": {
+    "D:\\DesktopFiles\\Project\\ChessWinform\\ChessAI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Lap trinh mang\\ChessAI\\ChessAI.csproj",
+        "projectUniqueName": "D:\\DesktopFiles\\Project\\ChessWinform\\ChessAI.csproj",
         "projectName": "ChessAI",
-        "projectPath": "D:\\Lap trinh mang\\ChessAI\\ChessAI.csproj",
-        "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-        "outputPath": "D:\\Lap trinh mang\\ChessAI\\obj\\",
+        "projectPath": "D:\\DesktopFiles\\Project\\ChessWinform\\ChessAI.csproj",
+        "packagesPath": "C:\\Users\\mitom\\.nuget\\packages\\",
+        "outputPath": "D:\\DesktopFiles\\Project\\ChessWinform\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\mitom\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -61,6 +61,10 @@
             "Newtonsoft.Json": {
               "target": "Package",
               "version": "[13.0.3, )"
+            },
+            "Stockfish.NET": {
+              "target": "Package",
+              "version": "[1.0.7, )"
             }
           },
           "imports": [
@@ -82,7 +86,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

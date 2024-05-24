@@ -1,4 +1,4 @@
-﻿namespace LoginForm.DashboardForm
+﻿namespace winform_chat.DashboardForm
 {
     partial class ProfileForm
     {

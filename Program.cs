@@ -1,4 +1,6 @@
-namespace LoginForm
+using ChessAI;
+
+namespace winform_chat
 {
     internal static class Program
     {
@@ -14,7 +16,7 @@ namespace LoginForm
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             ApplicationConfiguration.Initialize();
-            Application.Run(new MainScreen());
+            Application.Run(new SpawnServerAndClient());
         }
     }
 }

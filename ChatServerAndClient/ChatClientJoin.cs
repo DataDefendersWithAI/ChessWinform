@@ -34,7 +34,7 @@ namespace winforms_chat
         public bool isJoined { get; private set; }
         public event EventHandler Joined;
 
-        ChessAIClient chessClient;
+        SpawnServerAndClient chessClient;
 
 
         public ChatClientJoin()
@@ -161,7 +161,7 @@ namespace winforms_chat
             JoiningRoom(txt_userName.Text, null);
         }
 
-        public void JoiningRoom(string userName, ChessAIClient chClient)
+        public void JoiningRoom(string userName, SpawnServerAndClient chClient)
         {
             chessClient = chClient;
             Debug.WriteLine("JoiningRoom called with user name: " + userName);

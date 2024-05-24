@@ -1,4 +1,4 @@
-﻿namespace LoginForm
+﻿namespace winform_chat
 {
     partial class LoginForm
     {
@@ -232,7 +232,7 @@
             panel1.Size = new Size(629, 62);
             panel1.TabIndex = 4;
             // 
-            // LoginForm
+            // winform_chat
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -250,7 +250,7 @@
             Controls.Add(label1);
             Controls.Add(pictureBox2);
             Controls.Add(pictureBox1);
-            Name = "LoginForm";
+            Name = "winform_chat";
             Text = "ChessAI";
             Load += LoginForm_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();

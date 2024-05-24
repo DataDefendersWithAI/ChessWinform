@@ -4,7 +4,7 @@ using FireSharp.Config;
 using FireSharp.Interfaces;
 using System.Security.Cryptography;
 
-namespace LoginForm.DashboardForm
+namespace winform_chat.DashboardForm
 {
     public partial class ProfileForm : Form
     {

@@ -1,4 +1,4 @@
-﻿namespace LoginForm
+﻿namespace winform_chat
 {
     partial class MainScreen
     {
