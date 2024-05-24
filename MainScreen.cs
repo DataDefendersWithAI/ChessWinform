@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-namespace LoginForm
+﻿namespace LoginForm
 {
     public partial class MainScreen : Form
     {
@@ -79,7 +69,7 @@ namespace LoginForm
 
         private void PvEButton_Click(object sender, EventArgs e)
         {
-           
+
         }
 
         private void LogoutButton_Click(object sender, EventArgs e)
@@ -97,5 +87,7 @@ namespace LoginForm
             var temp = new DashboardForm.ProfileForm();
             LoadForm(temp);
         }
+
+        
     }
 }

@@ -18,6 +18,7 @@ namespace LoginForm
 {
     public partial class LoginForm : Form
     {
+       
         IFirebaseConfig config = new FirebaseConfig
         {
             AuthSecret = "RZxEKkX6ffq8XZgw9p0jbPYhqLYXQOeH1FIcmGIa",

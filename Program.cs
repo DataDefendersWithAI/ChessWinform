@@ -14,7 +14,7 @@ namespace LoginForm
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             ApplicationConfiguration.Initialize();
-            Application.Run(new LoginForm());
+            Application.Run(new MainScreen());
         }
     }
 }

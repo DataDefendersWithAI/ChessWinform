@@ -70,12 +70,14 @@ namespace winforms_chat
             if (chatmessage == "") return;
             // Send message: {"TableCode": newTableCode, "type": "chat", "from": userName, "to": opponentUserName, "message": message, "date": DateTime.Now}
 			ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message(tableCode, "chat", userName, opponentUserName, chatmessage, DateTime.Now);
-			comm.SendMessage(msg.ToJson());
+            if (msg == null || comm == null) return;
+            comm.SendMessage(msg.ToJson());
         }
         public void moveSendHandler(string move)
         {
             // Send message: {"TableCode": newTableCode, "type": "chess", "from": userName, "to": opponentUserName, "message": move, "date": DateTime.Now}
             ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message(tableCode, "chess", userName, opponentUserName, move, DateTime.Now);
+            if (msg == null || comm == null) return;
             comm.SendMessage(msg.ToJson());
         }
 

@@ -148,7 +148,7 @@
             ProfileButton.Location = new Point(-18, -16);
             ProfileButton.Name = "ProfileButton";
             ProfileButton.Padding = new Padding(30, 0, 0, 0);
-            ProfileButton.Size = new Size(254, 97);
+            ProfileButton.Size = new Size(264, 97);
             ProfileButton.TabIndex = 0;
             ProfileButton.Text = "Profile";
             ProfileButton.UseVisualStyleBackColor = true;
@@ -229,7 +229,7 @@
             MainPanel.Dock = DockStyle.Fill;
             MainPanel.Location = new Point(235, 0);
             MainPanel.Name = "MainPanel";
-            MainPanel.Size = new Size(874, 688);
+            MainPanel.Size = new Size(877, 688);
             MainPanel.TabIndex = 2;
             // 
             // MainScreen
