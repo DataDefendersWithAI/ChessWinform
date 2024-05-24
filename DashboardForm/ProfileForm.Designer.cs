@@ -1,4 +1,4 @@
-﻿namespace LoginForm.DashboardForm
+﻿namespace winform_chat.DashboardForm
 {
     partial class ProfileForm
     {
@@ -37,17 +37,17 @@
             PasswordBox = new TextBox();
             pictureBox4 = new PictureBox();
             panel1 = new Panel();
-            AccountBox = new TextBox();
+            CurrAccountBox = new TextBox();
             pictureBox3 = new PictureBox();
             label2 = new Label();
             panel6 = new Panel();
-            textBox1 = new TextBox();
+            NewAccountBox = new TextBox();
             pictureBox1 = new PictureBox();
-            button1 = new Button();
+            UpdateUserButton = new Button();
             panel3 = new Panel();
-            textBox2 = new TextBox();
+            AccountBox = new TextBox();
             pictureBox2 = new PictureBox();
-            button2 = new Button();
+            UpdatePassButton = new Button();
             label1 = new Label();
             panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
@@ -82,6 +82,8 @@
             ReTypePasswordBox.Size = new Size(451, 31);
             ReTypePasswordBox.TabIndex = 7;
             ReTypePasswordBox.Text = "Retype password";
+            ReTypePasswordBox.Enter += ReTypePasswordBox_Enter;
+            ReTypePasswordBox.Leave += ReTypePasswordBox_Leave;
             // 
             // pictureBox6
             // 
@@ -125,6 +127,8 @@
             PasswordBox.Size = new Size(451, 31);
             PasswordBox.TabIndex = 7;
             PasswordBox.Text = "Enter password";
+            PasswordBox.Enter += PasswordBox_Enter;
+            PasswordBox.Leave += PasswordBox_Leave;
             // 
             // pictureBox4
             // 
@@ -139,24 +143,26 @@
             // panel1
             // 
             panel1.BackColor = Color.Azure;
-            panel1.Controls.Add(AccountBox);
+            panel1.Controls.Add(CurrAccountBox);
             panel1.Controls.Add(pictureBox3);
             panel1.Location = new Point(3, 82);
             panel1.Name = "panel1";
             panel1.Size = new Size(594, 62);
             panel1.TabIndex = 35;
             // 
-            // AccountBox
+            // CurrAccountBox
             // 
-            AccountBox.BackColor = Color.Azure;
-            AccountBox.BorderStyle = BorderStyle.None;
-            AccountBox.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            AccountBox.ForeColor = SystemColors.InactiveCaption;
-            AccountBox.Location = new Point(131, 15);
-            AccountBox.Name = "AccountBox";
-            AccountBox.Size = new Size(451, 31);
-            AccountBox.TabIndex = 1;
-            AccountBox.Text = "Enter username";
+            CurrAccountBox.BackColor = Color.Azure;
+            CurrAccountBox.BorderStyle = BorderStyle.None;
+            CurrAccountBox.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            CurrAccountBox.ForeColor = SystemColors.InactiveCaption;
+            CurrAccountBox.Location = new Point(131, 15);
+            CurrAccountBox.Name = "CurrAccountBox";
+            CurrAccountBox.Size = new Size(451, 31);
+            CurrAccountBox.TabIndex = 1;
+            CurrAccountBox.Text = "Enter current username";
+            CurrAccountBox.Enter += CurrAccountBox_Enter;
+            CurrAccountBox.Leave += CurrAccountBox_Leave;
             // 
             // pictureBox3
             // 
@@ -181,24 +187,26 @@
             // panel6
             // 
             panel6.BackColor = Color.Azure;
-            panel6.Controls.Add(textBox1);
+            panel6.Controls.Add(NewAccountBox);
             panel6.Controls.Add(pictureBox1);
             panel6.Location = new Point(3, 150);
             panel6.Name = "panel6";
             panel6.Size = new Size(594, 62);
             panel6.TabIndex = 43;
             // 
-            // textBox1
+            // NewAccountBox
             // 
-            textBox1.BackColor = Color.Azure;
-            textBox1.BorderStyle = BorderStyle.None;
-            textBox1.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            textBox1.ForeColor = SystemColors.InactiveCaption;
-            textBox1.Location = new Point(131, 15);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(451, 31);
-            textBox1.TabIndex = 1;
-            textBox1.Text = "Enter username";
+            NewAccountBox.BackColor = Color.Azure;
+            NewAccountBox.BorderStyle = BorderStyle.None;
+            NewAccountBox.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            NewAccountBox.ForeColor = SystemColors.InactiveCaption;
+            NewAccountBox.Location = new Point(131, 15);
+            NewAccountBox.Name = "NewAccountBox";
+            NewAccountBox.Size = new Size(451, 31);
+            NewAccountBox.TabIndex = 1;
+            NewAccountBox.Text = "Enter username";
+            NewAccountBox.Enter += NewAccountBox_Enter;
+            NewAccountBox.Leave += NewAccountBox_Leave;
             // 
             // pictureBox1
             // 
@@ -210,41 +218,44 @@
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
             // 
-            // button1
+            // UpdateUserButton
             // 
-            button1.BackgroundImage = (Image)resources.GetObject("button1.BackgroundImage");
-            button1.BackgroundImageLayout = ImageLayout.Stretch;
-            button1.FlatAppearance.BorderSize = 0;
-            button1.FlatStyle = FlatStyle.Flat;
-            button1.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button1.Location = new Point(624, 112);
-            button1.Name = "button1";
-            button1.Size = new Size(154, 62);
-            button1.TabIndex = 44;
-            button1.Text = "Update";
-            button1.UseVisualStyleBackColor = true;
+            UpdateUserButton.BackgroundImage = (Image)resources.GetObject("UpdateUserButton.BackgroundImage");
+            UpdateUserButton.BackgroundImageLayout = ImageLayout.Stretch;
+            UpdateUserButton.FlatAppearance.BorderSize = 0;
+            UpdateUserButton.FlatStyle = FlatStyle.Flat;
+            UpdateUserButton.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            UpdateUserButton.Location = new Point(624, 112);
+            UpdateUserButton.Name = "UpdateUserButton";
+            UpdateUserButton.Size = new Size(154, 62);
+            UpdateUserButton.TabIndex = 44;
+            UpdateUserButton.Text = "Update";
+            UpdateUserButton.UseVisualStyleBackColor = true;
+            UpdateUserButton.Click += UpdateUserButton_Click;
             // 
             // panel3
             // 
             panel3.BackColor = Color.Azure;
-            panel3.Controls.Add(textBox2);
+            panel3.Controls.Add(AccountBox);
             panel3.Controls.Add(pictureBox2);
             panel3.Location = new Point(3, 297);
             panel3.Name = "panel3";
             panel3.Size = new Size(594, 62);
             panel3.TabIndex = 45;
             // 
-            // textBox2
+            // AccountBox
             // 
-            textBox2.BackColor = Color.Azure;
-            textBox2.BorderStyle = BorderStyle.None;
-            textBox2.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            textBox2.ForeColor = SystemColors.InactiveCaption;
-            textBox2.Location = new Point(131, 15);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(451, 31);
-            textBox2.TabIndex = 1;
-            textBox2.Text = "Enter username";
+            AccountBox.BackColor = Color.Azure;
+            AccountBox.BorderStyle = BorderStyle.None;
+            AccountBox.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            AccountBox.ForeColor = SystemColors.InactiveCaption;
+            AccountBox.Location = new Point(131, 15);
+            AccountBox.Name = "AccountBox";
+            AccountBox.Size = new Size(451, 31);
+            AccountBox.TabIndex = 1;
+            AccountBox.Text = "Enter username";
+            AccountBox.Enter += AccountBox_Enter;
+            AccountBox.Leave += AccountBox_Leave;
             // 
             // pictureBox2
             // 
@@ -256,19 +267,20 @@
             pictureBox2.TabIndex = 0;
             pictureBox2.TabStop = false;
             // 
-            // button2
+            // UpdatePassButton
             // 
-            button2.BackgroundImage = (Image)resources.GetObject("button2.BackgroundImage");
-            button2.BackgroundImageLayout = ImageLayout.Stretch;
-            button2.FlatAppearance.BorderSize = 0;
-            button2.FlatStyle = FlatStyle.Flat;
-            button2.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            button2.Location = new Point(624, 367);
-            button2.Name = "button2";
-            button2.Size = new Size(154, 62);
-            button2.TabIndex = 45;
-            button2.Text = "Update";
-            button2.UseVisualStyleBackColor = true;
+            UpdatePassButton.BackgroundImage = (Image)resources.GetObject("UpdatePassButton.BackgroundImage");
+            UpdatePassButton.BackgroundImageLayout = ImageLayout.Stretch;
+            UpdatePassButton.FlatAppearance.BorderSize = 0;
+            UpdatePassButton.FlatStyle = FlatStyle.Flat;
+            UpdatePassButton.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            UpdatePassButton.Location = new Point(624, 367);
+            UpdatePassButton.Name = "UpdatePassButton";
+            UpdatePassButton.Size = new Size(154, 62);
+            UpdatePassButton.TabIndex = 45;
+            UpdatePassButton.Text = "Update";
+            UpdatePassButton.UseVisualStyleBackColor = true;
+            UpdatePassButton.Click += UpdatePassButton_Click;
             // 
             // label1
             // 
@@ -286,9 +298,9 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 656);
             Controls.Add(label1);
-            Controls.Add(button2);
+            Controls.Add(UpdatePassButton);
             Controls.Add(panel3);
-            Controls.Add(button1);
+            Controls.Add(UpdateUserButton);
             Controls.Add(panel6);
             Controls.Add(panel4);
             Controls.Add(StatusText);
@@ -326,17 +338,17 @@
         private TextBox PasswordBox;
         private PictureBox pictureBox4;
         private Panel panel1;
-        private TextBox AccountBox;
+        private TextBox CurrAccountBox;
         private PictureBox pictureBox3;
         private Label label2;
         private Panel panel6;
-        private TextBox textBox1;
+        private TextBox NewAccountBox;
         private PictureBox pictureBox1;
-        private Button button1;
+        private Button UpdateUserButton;
         private Panel panel3;
-        private TextBox textBox2;
+        private TextBox AccountBox;
         private PictureBox pictureBox2;
-        private Button button2;
+        private Button UpdatePassButton;
         private Label label1;
     }
 }

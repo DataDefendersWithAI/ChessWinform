@@ -14,10 +14,11 @@ using System.Security.Cryptography;
 using System.Net.Mail;
 using System.Net;
 using Newtonsoft.Json;
-namespace LoginForm
+namespace winform_chat
 {
     public partial class LoginForm : Form
     {
+       
         IFirebaseConfig config = new FirebaseConfig
         {
             AuthSecret = "RZxEKkX6ffq8XZgw9p0jbPYhqLYXQOeH1FIcmGIa",

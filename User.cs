@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LoginForm
+namespace winform_chat
 {
     internal class User
     {

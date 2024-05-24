@@ -1,6 +1,7 @@
 using Ardalis.SmartEnum.Core;
 using Chess;
 using ChessAI;
+using Stockfish.NET;
 using System;
 using System.Diagnostics;
 using System.Net.Sockets;
@@ -36,7 +37,8 @@ namespace ChessAI
         private string PlayerName = "Player" + new Random().Next(1000, 24000);
         // Random player number in range 1-2000
         private int PlayerNumber = new Random().Next(1, 2000);
-
+        // Stockfish module
+        private IStockfish Stockfish { get; set; }
 
         public ChessAIClient()
         {
@@ -55,6 +57,9 @@ namespace ChessAI
             InitUserInfo();
 
 
+            //Generate stockfish default
+            var pathStockFish = GetStockfishDir();
+            Stockfish = new Stockfish.NET.Stockfish(pathStockFish, depth: 2);
         }
 
         /// <summary>
@@ -94,12 +99,12 @@ namespace ChessAI
             if (!gameStarted) return; // If game not started, return
             Debug.WriteLineIf(isDebug, "X: " + e.X + " Y: " + e.Y);
             chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard, isNormalized: false, side: Side); // Handle the click
-            
+
             panel1.Invalidate(); // Redraw whole screen 
             var mv = "MV#*" + (chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none"); //move
             LogMessage(mv);
             //  SendMessage(mv);
-            if(currenChatMainForm != null 
+            if (currenChatMainForm != null
                 && mv != chessLastMove // prevent  spamming the same move
                 && mv != "MV#*none" // prevent sending none move
                 && chessBoard.Turn != Side  //prevent sending move when it's not our turn // using != because it's end of our turn
@@ -115,18 +120,22 @@ namespace ChessAI
         /// Simulate the opponent move/ Offline mode
         /// </summary>
         /// <param name="message"></param>
-        private void button1_Click(object sender, EventArgs e)
+        private void OpponentMoveButton_Click(object sender, EventArgs e)
         {
             if (!gameStarted) return; // If game not started, return
             if (chessBoard.Turn == Side) return; // Simulate opponent when offline
             if (isOffline == false) return; // If it's not offline mode, return
-            var moves = chessBoard.Moves();
+            //var moves = chessBoard.Moves();
             if (chessBoard.IsEndGame)
             {
                 Debug.WriteLine("Game end " + chessBoard.EndGame.WonSide + " won!");
                 return;
             }
-            chessBoard.Move(moves[Random.Shared.Next(moves.Length)]);
+            Stockfish.SetFenPosition(chessBoard.ToFen());
+            var bestMove = Stockfish.GetBestMove();
+            var move = new Move(bestMove.Substring(0,2),bestMove.Substring(2,2));
+            //chessBoard.Move(moves[Random.Shared.Next(moves.Length)]);
+            chessBoard.Move(move);
             panel1.Invalidate();
         }
 
@@ -143,7 +152,7 @@ namespace ChessAI
 
             if (!gameStarted) return; // If game not started, return
             if (chessBoard.Turn == Side) return; // If it's our turn, return
-            if(isOffline == true) return; // If it's offline mode, return
+            if (isOffline == true) return; // If it's offline mode, return
             if (message == "none") return; // If no move, return
 
             // Opponent move
@@ -208,9 +217,9 @@ namespace ChessAI
         {
             currenChatMainForm = x.currentChatMainForm;
             // Add any additional actions needed once the chat is joined
-            if(currenChatMainForm != null)
+            if (currenChatMainForm != null)
             {
-                Console.WriteLine("Joined room with : "+ currenChatMainForm.Side);
+                Console.WriteLine("Joined room with : " + currenChatMainForm.Side);
                 InitGame(currenChatMainForm.Side);
             }
         }
@@ -233,7 +242,7 @@ namespace ChessAI
         /// Begin offline game
         /// </summary>
         /// <param name="message"></param>
-        private void button2_Click(object sender, EventArgs e)
+        private void OfflineButton_Click(object sender, EventArgs e)
         {
             if (gameStarted) return; // If game already started, return
             gameStarted = true;
@@ -242,10 +251,30 @@ namespace ChessAI
             Side = Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
             LogMessage("Game started! You are: " + Side);
             panel1.Invalidate(); // Redraw whole screen
-
         }
 
+        public static string GetStockfishDir()
+        {
+            // Determine the relative path to the Stockfish executable
+            string relativePath = "./Stockfish/stockfish_20090216_x64.exe";
 
+            // Determine the full path based on the operating system
+            string fullPath;
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
+            {
+                // Convert relative path to absolute path for Windows
+                fullPath = Path.GetFullPath(relativePath);
+            }
+            else
+            {
+                // Use a different path for non-Windows OS
+                fullPath = "/usr/games/stockfish";
+            }
+
+            // Print the determined path
+            Console.WriteLine(fullPath);
+            return fullPath;
+        }
         private void InitUserInfo()
         {
             ourName.Text = PlayerName + " ( " + PlayerNumber + " )";
@@ -295,5 +324,14 @@ namespace ChessAI
             }
         }
 
+        private void cntSvr_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

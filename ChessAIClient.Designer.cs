@@ -60,27 +60,28 @@
             // 
             // richTextBox1
             // 
-            richTextBox1.Location = new Point(980, 27);
+            richTextBox1.Location = new Point(981, 27);
             richTextBox1.Name = "richTextBox1";
             richTextBox1.Size = new Size(269, 288);
             richTextBox1.TabIndex = 0;
             richTextBox1.Text = "";
+            richTextBox1.TextChanged += richTextBox1_TextChanged;
             // 
             // button1
             // 
             button1.BackColor = Color.LightGreen;
             button1.Font = new Font("Segoe UI", 13F);
-            button1.Location = new Point(980, 321);
+            button1.Location = new Point(981, 321);
             button1.Name = "button1";
-            button1.Size = new Size(140, 83);
+            button1.Size = new Size(139, 83);
             button1.TabIndex = 2;
             button1.Text = "Opponent move";
             button1.UseVisualStyleBackColor = false;
-            button1.Click += button1_Click;
+            button1.Click += OpponentMoveButton_Click;
             // 
             // richTextBox2
             // 
-            richTextBox2.Location = new Point(980, 453);
+            richTextBox2.Location = new Point(981, 453);
             richTextBox2.Name = "richTextBox2";
             richTextBox2.Size = new Size(269, 288);
             richTextBox2.TabIndex = 3;
@@ -96,19 +97,19 @@
             cntSvr.TabIndex = 4;
             cntSvr.Text = "Connect server";
             cntSvr.UseVisualStyleBackColor = false;
-            //cntSvr.Click += cntSvr_Click;
+            cntSvr.Click += cntSvr_Click;
             // 
             // button2
             // 
             button2.BackColor = Color.PaleGoldenrod;
             button2.Font = new Font("Segoe UI", 13F);
-            button2.Location = new Point(980, 410);
+            button2.Location = new Point(981, 411);
             button2.Name = "button2";
-            button2.Size = new Size(140, 37);
+            button2.Size = new Size(139, 37);
             button2.TabIndex = 5;
             button2.Text = "Offline";
             button2.UseVisualStyleBackColor = false;
-            button2.Click += button2_Click;
+            button2.Click += OfflineButton_Click;
             // 
             // imageList1
             // 
@@ -144,7 +145,7 @@
             Queen.ImageList = imageList1;
             Queen.Location = new Point(3, 3);
             Queen.Name = "Queen";
-            Queen.Size = new Size(68, 68);
+            Queen.Size = new Size(69, 68);
             Queen.TabIndex = 0;
             Queen.Text = " ";
             Queen.UseVisualStyleBackColor = true;
@@ -155,7 +156,7 @@
             Rook.ImageList = imageList1;
             Rook.Location = new Point(3, 77);
             Rook.Name = "Rook";
-            Rook.Size = new Size(68, 68);
+            Rook.Size = new Size(69, 68);
             Rook.TabIndex = 1;
             Rook.Text = " ";
             Rook.UseVisualStyleBackColor = true;
@@ -166,7 +167,7 @@
             Knight.ImageList = imageList1;
             Knight.Location = new Point(3, 151);
             Knight.Name = "Knight";
-            Knight.Size = new Size(68, 68);
+            Knight.Size = new Size(69, 68);
             Knight.TabIndex = 2;
             Knight.Text = " ";
             Knight.UseVisualStyleBackColor = true;
@@ -177,7 +178,7 @@
             Bishop.ImageList = imageList1;
             Bishop.Location = new Point(3, 225);
             Bishop.Name = "Bishop";
-            Bishop.Size = new Size(68, 68);
+            Bishop.Size = new Size(69, 68);
             Bishop.TabIndex = 3;
             Bishop.Text = " ";
             Bishop.UseVisualStyleBackColor = true;
@@ -193,7 +194,7 @@
             // 
             // panel1
             // 
-            panel1.BackColor = Color.DarkGoldenrod;
+            panel1.BackColor = Color.LightCyan;
             panel1.Location = new Point(18, 27);
             panel1.Name = "panel1";
             panel1.Size = new Size(664, 625);
@@ -209,7 +210,7 @@
             opponentTimer.Font = new Font("Cascadia Code", 16F);
             opponentTimer.Location = new Point(688, 124);
             opponentTimer.Name = "opponentTimer";
-            opponentTimer.Size = new Size(125, 42);
+            opponentTimer.Size = new Size(125, 43);
             opponentTimer.TabIndex = 8;
             opponentTimer.Text = "9:59";
             opponentTimer.TextAlign = ContentAlignment.MiddleCenter;
@@ -222,7 +223,7 @@
             ourTimer.Font = new Font("Cascadia Code", 16F);
             ourTimer.Location = new Point(688, 509);
             ourTimer.Name = "ourTimer";
-            ourTimer.Size = new Size(125, 42);
+            ourTimer.Size = new Size(125, 43);
             ourTimer.TabIndex = 9;
             ourTimer.Text = "9:59";
             ourTimer.TextAlign = ContentAlignment.MiddleCenter;
@@ -233,7 +234,7 @@
             opponentCaptured.BorderStyle = BorderStyle.Fixed3D;
             opponentCaptured.Location = new Point(688, 27);
             opponentCaptured.Name = "opponentCaptured";
-            opponentCaptured.Size = new Size(272, 42);
+            opponentCaptured.Size = new Size(271, 41);
             opponentCaptured.TabIndex = 10;
             // 
             // ourCaptured
@@ -243,7 +244,7 @@
             ourCaptured.BorderStyle = BorderStyle.Fixed3D;
             ourCaptured.Location = new Point(688, 607);
             ourCaptured.Name = "ourCaptured";
-            ourCaptured.Size = new Size(272, 45);
+            ourCaptured.Size = new Size(271, 45);
             ourCaptured.TabIndex = 11;
             // 
             // ourName
@@ -252,9 +253,9 @@
             ourName.BorderStyle = BorderStyle.Fixed3D;
             ourName.FlatStyle = FlatStyle.Flat;
             ourName.Font = new Font("Cascadia Code", 10F);
-            ourName.Location = new Point(688, 562);
+            ourName.Location = new Point(688, 563);
             ourName.Name = "ourName";
-            ourName.Size = new Size(272, 42);
+            ourName.Size = new Size(272, 43);
             ourName.TabIndex = 12;
             ourName.Text = "Bob (2500)";
             ourName.TextAlign = ContentAlignment.MiddleLeft;
@@ -267,7 +268,7 @@
             opponentName.Font = new Font("Cascadia Code", 10F);
             opponentName.Location = new Point(688, 72);
             opponentName.Name = "opponentName";
-            opponentName.Size = new Size(272, 42);
+            opponentName.Size = new Size(272, 43);
             opponentName.TabIndex = 13;
             opponentName.Text = "Mittens (1)";
             opponentName.TextAlign = ContentAlignment.MiddleLeft;
@@ -278,7 +279,7 @@
             opponentFlag.ImageList = imageList2;
             opponentFlag.Location = new Point(819, 124);
             opponentFlag.Name = "opponentFlag";
-            opponentFlag.Size = new Size(42, 42);
+            opponentFlag.Size = new Size(42, 43);
             opponentFlag.TabIndex = 5;
             opponentFlag.Text = " ";
             opponentFlag.UseVisualStyleBackColor = true;
@@ -303,7 +304,7 @@
             ourFlag.ImageList = imageList2;
             ourFlag.Location = new Point(819, 509);
             ourFlag.Name = "ourFlag";
-            ourFlag.Size = new Size(42, 42);
+            ourFlag.Size = new Size(42, 43);
             ourFlag.TabIndex = 14;
             ourFlag.Text = " ";
             ourFlag.UseVisualStyleBackColor = true;
@@ -314,7 +315,7 @@
             drawBtn.Font = new Font("Segoe UI", 13F);
             drawBtn.Location = new Point(18, 676);
             drawBtn.Name = "drawBtn";
-            drawBtn.Size = new Size(117, 54);
+            drawBtn.Size = new Size(117, 53);
             drawBtn.TabIndex = 15;
             drawBtn.Text = "Draw";
             drawBtn.UseVisualStyleBackColor = false;
@@ -325,7 +326,7 @@
             resignBtn.Font = new Font("Segoe UI", 13F);
             resignBtn.Location = new Point(141, 676);
             resignBtn.Name = "resignBtn";
-            resignBtn.Size = new Size(117, 54);
+            resignBtn.Size = new Size(117, 53);
             resignBtn.TabIndex = 16;
             resignBtn.Text = "Resign";
             resignBtn.UseVisualStyleBackColor = false;

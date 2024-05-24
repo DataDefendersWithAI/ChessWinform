@@ -33,8 +33,8 @@ namespace ChessAI
         {
             public Bitmap GetBitmap(Graphics g, bool White)
             {
-                var img = White ? Properties.Resources.w_pawn_png_shadow_1024px
-                               : @Properties.Resources.b_pawn_png_shadow_1024px;
+                var img = White ? ChessAI_Bck.Properties.Resources.w_pawn_png_shadow_1024px
+                               : @ChessAI_Bck.Properties.Resources.b_pawn_png_shadow_1024px;
                 return img;
             }
 
@@ -43,8 +43,8 @@ namespace ChessAI
         {
             public Bitmap GetBitmap(Graphics g, bool White)
             {
-                var img = White ? Properties.Resources.w_rook_png_shadow_1024px
-                               : @Properties.Resources.b_rook_png_shadow_1024px;
+                var img = White ? ChessAI_Bck.Properties.Resources.w_rook_png_shadow_1024px
+                               : @ChessAI_Bck.Properties.Resources.b_rook_png_shadow_1024px;
                 return img;
             }
 
@@ -53,8 +53,8 @@ namespace ChessAI
         {
             public Bitmap GetBitmap(Graphics g, bool White)
             {
-                var img = White ? Properties.Resources.w_knight_png_shadow_1024px
-                               : @Properties.Resources.b_knight_png_shadow_1024px;
+                var img = White ? ChessAI_Bck.Properties.Resources.w_knight_png_shadow_1024px
+                               : @ChessAI_Bck.Properties.Resources.b_knight_png_shadow_1024px;
                 return img;
             }
 
@@ -63,8 +63,8 @@ namespace ChessAI
         {
             public Bitmap GetBitmap(Graphics g, bool White)
             {
-                var img = White ? Properties.Resources.w_bishop_png_shadow_1024px
-                               : @Properties.Resources.b_bishop_png_shadow_1024px;
+                var img = White ? ChessAI_Bck.Properties.Resources.w_bishop_png_shadow_1024px
+                               : @ChessAI_Bck.Properties.Resources.b_bishop_png_shadow_1024px;
                 return img;
             }
 
@@ -73,8 +73,8 @@ namespace ChessAI
         {
             public Bitmap GetBitmap(Graphics g, bool White)
             {
-                var img = White ? Properties.Resources.w_queen_png_shadow_1024px
-                               : @Properties.Resources.b_queen_png_shadow_1024px;
+                var img = White ? ChessAI_Bck.Properties.Resources.w_queen_png_shadow_1024px
+                               : @ChessAI_Bck.Properties.Resources.b_queen_png_shadow_1024px;
                 return img;
             }
 
@@ -83,8 +83,8 @@ namespace ChessAI
         {
             public Bitmap GetBitmap(Graphics g, bool White)
             {
-                var img = White ? Properties.Resources.w_king_png_shadow_1024px
-                               : @Properties.Resources.b_king_png_shadow_1024px;
+                var img = White ? ChessAI_Bck.Properties.Resources.w_king_png_shadow_1024px
+                               : @ChessAI_Bck.Properties.Resources.b_king_png_shadow_1024px;
                 return img;
             }
 

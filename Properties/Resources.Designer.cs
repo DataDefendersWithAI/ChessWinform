@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace LoginForm.Properties {
+namespace ChessAI_Bck.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace LoginForm.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("LoginForm.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ChessAI_Bck.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -63,9 +63,9 @@ namespace LoginForm.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap _1351757 {
+        internal static System.Drawing.Bitmap b_bishop_png_shadow_1024px {
             get {
-                object obj = ResourceManager.GetObject("1351757", resourceCulture);
+                object obj = ResourceManager.GetObject("b_bishop_png_shadow_1024px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace LoginForm.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap _3669170_home_ic_icon {
+        internal static System.Drawing.Bitmap b_king_png_shadow_1024px {
             get {
-                object obj = ResourceManager.GetObject("3669170_home_ic_icon", resourceCulture);
+                object obj = ResourceManager.GetObject("b_king_png_shadow_1024px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -83,9 +83,99 @@ namespace LoginForm.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap home {
+        internal static System.Drawing.Bitmap b_knight_png_shadow_1024px {
             get {
-                object obj = ResourceManager.GetObject("home", resourceCulture);
+                object obj = ResourceManager.GetObject("b_knight_png_shadow_1024px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap b_pawn_png_shadow_1024px {
+            get {
+                object obj = ResourceManager.GetObject("b_pawn_png_shadow_1024px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap b_queen_png_shadow_1024px {
+            get {
+                object obj = ResourceManager.GetObject("b_queen_png_shadow_1024px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap b_rook_png_shadow_1024px {
+            get {
+                object obj = ResourceManager.GetObject("b_rook_png_shadow_1024px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap w_bishop_png_shadow_1024px {
+            get {
+                object obj = ResourceManager.GetObject("w_bishop_png_shadow_1024px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap w_king_png_shadow_1024px {
+            get {
+                object obj = ResourceManager.GetObject("w_king_png_shadow_1024px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap w_knight_png_shadow_1024px {
+            get {
+                object obj = ResourceManager.GetObject("w_knight_png_shadow_1024px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap w_pawn_png_shadow_1024px {
+            get {
+                object obj = ResourceManager.GetObject("w_pawn_png_shadow_1024px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap w_queen_png_shadow_1024px {
+            get {
+                object obj = ResourceManager.GetObject("w_queen_png_shadow_1024px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap w_rook_png_shadow_1024px {
+            get {
+                object obj = ResourceManager.GetObject("w_rook_png_shadow_1024px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
