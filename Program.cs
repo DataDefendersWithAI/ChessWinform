@@ -1,4 +1,4 @@
-namespace LoginForm
+namespace winforms_chat
 {
     internal static class Program
     {
@@ -14,7 +14,7 @@ namespace LoginForm
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             ApplicationConfiguration.Initialize();
-            Application.Run(new MainScreen());
+            Application.Run(new SpawnClientAndServer());
         }
     }
 }
