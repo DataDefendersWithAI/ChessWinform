@@ -1,10 +1,7 @@
-<<<<<<< HEAD
-namespace winforms_chat
-=======
 using ChessAI;
-
+using winforms_chat;
 namespace winform_chat
->>>>>>> aeeec34513ef67722fa39c75a0bf65060db35545
+
 {
     internal static class Program
     {
@@ -20,11 +17,7 @@ namespace winform_chat
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             ApplicationConfiguration.Initialize();
-<<<<<<< HEAD
             Application.Run(new SpawnClientAndServer());
-=======
-            Application.Run(new SpawnServerAndClient());
->>>>>>> aeeec34513ef67722fa39c75a0bf65060db35545
         }
     }
 }

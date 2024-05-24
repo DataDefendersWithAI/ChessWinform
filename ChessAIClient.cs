@@ -15,7 +15,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace ChessAI
 {
-    public partial class SpawnServerAndClient : Form
+    public partial class ChessAIClient : Form
     {
         private BoardRenderer boardRenderer;
         private ChessBoard chessBoard;
@@ -40,7 +40,7 @@ namespace ChessAI
         // Stockfish module
         private IStockfish Stockfish { get; set; }
 
-        public SpawnServerAndClient()
+        public ChessAIClient()
         {
             InitializeComponent();
 
