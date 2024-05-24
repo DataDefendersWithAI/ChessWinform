@@ -335,6 +335,7 @@
             drawBtn.TabIndex = 15;
             drawBtn.Text = "Draw";
             drawBtn.UseVisualStyleBackColor = false;
+            drawBtn.Click += drawBtn_Click;
             // 
             // resignBtn
             // 
@@ -347,6 +348,7 @@
             resignBtn.TabIndex = 16;
             resignBtn.Text = "Resign";
             resignBtn.UseVisualStyleBackColor = false;
+            resignBtn.Click += resignBtn_Click;
             // 
             // timer1
             // 

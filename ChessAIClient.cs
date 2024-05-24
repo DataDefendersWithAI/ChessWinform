@@ -11,7 +11,7 @@ using System.Threading;
 using System.Windows.Forms;
 using winforms_chat;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
-
+using winform_chat.DashboardForm;
 
 namespace ChessAI
 {
@@ -39,8 +39,9 @@ namespace ChessAI
         private int PlayerNumber = new Random().Next(1, 2000);
         // Stockfish module
         private IStockfish Stockfish { get; set; }
+        //public int modeDepth { get; set; }
 
-        public SpawnServerAndClient()
+        public SpawnServerAndClient(int modeDepth = 1)
         {
             InitializeComponent();
 
@@ -53,13 +54,14 @@ namespace ChessAI
             boardRenderer = new BoardRenderer(); // Init new renderer
 
             this.Size = new System.Drawing.Size(1000, 800); // Add minimum offset is 75 and maybe some space
-                                                            // this.FormClosed += ClientForm_FormClosed; // Add event when form is closed
+                                                             // this.FormClosed += ClientForm_FormClosed; // Add event when form is closed
             InitUserInfo();
 
 
             //Generate stockfish default
             var pathStockFish = GetStockfishDir();
-            Stockfish = new Stockfish.NET.Stockfish(pathStockFish, depth: 2);
+
+            Stockfish = new Stockfish.NET.Stockfish(pathStockFish, depth: modeDepth);
         }
 
         /// <summary>
@@ -133,7 +135,7 @@ namespace ChessAI
             }
             Stockfish.SetFenPosition(chessBoard.ToFen());
             var bestMove = Stockfish.GetBestMove();
-            var move = new Move(bestMove.Substring(0,2),bestMove.Substring(2,2));
+            var move = new Move(bestMove.Substring(0, 2), bestMove.Substring(2, 2));
             //chessBoard.Move(moves[Random.Shared.Next(moves.Length)]);
             chessBoard.Move(move);
             panel1.Invalidate();
@@ -330,6 +332,16 @@ namespace ChessAI
         }
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void resignBtn_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void drawBtn_Click(object sender, EventArgs e)
         {
 
         }

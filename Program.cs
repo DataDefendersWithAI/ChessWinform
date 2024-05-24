@@ -16,7 +16,7 @@ namespace winform_chat
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             ApplicationConfiguration.Initialize();
-            Application.Run(new SpawnServerAndClient());
+            Application.Run(new LoginForm());
         }
     }
 }
