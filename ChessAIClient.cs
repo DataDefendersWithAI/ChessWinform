@@ -134,11 +134,15 @@ namespace ChessAI
         {
             if (!gameStarted) return; // If game not started, return
             Debug.WriteLineIf(isDebug, "X: " + e.X + " Y: " + e.Y);
-            chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard, isNormalized: false, side: Side); // Handle the click
 
+            chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard, isNormalized: false, side: Side); // Handle the click
+                
             panel1.Invalidate(); // Redraw whole board
             var mv = "MV#*" + (chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none"); //move
             LogMessage(mv);
+
+
+
             //  SendMessage(mv);
             if (currenChatMainForm != null
                 && mv != chessLastMove // prevent  spamming the same move
@@ -149,6 +153,10 @@ namespace ChessAI
             {
                 currenChatMainForm.moveSendHandler(mv);
                 chessLastMove = mv;
+            }
+            if(chessBoard.Turn != Side && isOffline)
+            {
+                OpponentAIMove();
             }
         }
 
@@ -175,6 +183,21 @@ namespace ChessAI
             panel1.Invalidate();
         }
 
+        public void OpponentAIMove()
+        {
+            //var moves = chessBoard.Moves();
+            if (chessBoard.IsEndGame)
+            {
+                Debug.WriteLine("Game end " + chessBoard.EndGame.WonSide + " won!");
+                return;
+            }
+            Stockfish.SetFenPosition(chessBoard.ToFen());
+            var bestMove = Stockfish.GetBestMove();
+            var move = new Move(bestMove.Substring(0, 2), bestMove.Substring(2, 2));
+            //chessBoard.Move(moves[Random.Shared.Next(moves.Length)]);
+            chessBoard.Move(move);
+            panel1.Invalidate();
+        }
         /// <summary>
         /// Parsing mesage and moving the piece as other player move receive from server
         /// </summary>
