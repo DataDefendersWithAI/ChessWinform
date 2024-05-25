@@ -26,7 +26,7 @@ namespace ChessAI
 
         private TimeSpan timeOur;
         private TimeSpan timeOpponent;
-        private EndgameType endgameType;
+        private bool isTimeoutEndGame = false;
 
         private int timeIncrement = 0; // Time increment in seconds
 
@@ -48,6 +48,11 @@ namespace ChessAI
         private int PlayerNumber = new Random().Next(1, 2000);
         // Stockfish module
         private IStockfish Stockfish { get; set; }
+
+        private string timeSyncStr()
+        {
+            return Side == PieceColor.White ? "[T]" + timeOur.TotalSeconds + "|" + timeOpponent.TotalSeconds: "[T]" + timeOpponent.TotalSeconds + "|" + timeOur.TotalSeconds;
+        }
 
         public ChessAIClient(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, bool DebugMode = false, PieceColor setSide = null)
         {
@@ -79,6 +84,7 @@ namespace ChessAI
             RestartAsk.Visible = false;
 
 
+
             if (isDebug == false)
             {
                 OppMoveButton.Visible = false; // Hide the debug button
@@ -104,7 +110,7 @@ namespace ChessAI
         /// Begin the game when the message is received/ Connected to another player
         /// </summary>
         /// <param name="message"></param>
-        private void InitGame(PieceColor side, string timeCtrl = "10|0")
+        private void InitGame(PieceColor side, string timeCtrl = "10s|0")
         {
             if (gameStarted) return; // If game already started, return
 
@@ -126,14 +132,16 @@ namespace ChessAI
         private void GameEnded(object sender, EndgameEventArgs e)
         {
             timer1.Stop();
-            if (chessBoard.EndGame.EndgameType == EndgameType.Checkmate) reasonEndGame = "Checkmate";
-            if (chessBoard.EndGame.EndgameType == EndgameType.Resigned) reasonEndGame = "Resigned";
-            if (chessBoard.EndGame.EndgameType == EndgameType.Stalemate) reasonEndGame = "Stalemate";
-            if (chessBoard.EndGame.EndgameType == EndgameType.DrawDeclared) reasonEndGame = "Draw";
-            if (chessBoard.EndGame.EndgameType == EndgameType.Repetition) reasonEndGame = "Repetition";
-            if (chessBoard.EndGame.EndgameType == EndgameType.FiftyMoveRule) reasonEndGame = "Fifty Move Rule";
-            if (chessBoard.EndGame.EndgameType == EndgameType.InsufficientMaterial) reasonEndGame = "Insufficient Material";
-            if (endgameType == EndgameType.Timeout) reasonEndGame = "Timeout";
+
+            if (chessBoard.EndGame.EndgameType == EndgameType.Checkmate) { reasonEndGame = "Checkmate"; }
+            if (chessBoard.EndGame.EndgameType == EndgameType.Resigned && !isTimeoutEndGame) { reasonEndGame = "Resigned"; }
+            if (chessBoard.EndGame.EndgameType == EndgameType.Stalemate) { reasonEndGame = "Stalemate"; }
+            if (chessBoard.EndGame.EndgameType == EndgameType.DrawDeclared) { reasonEndGame = "Draw"; }
+            if (chessBoard.EndGame.EndgameType == EndgameType.Repetition) { reasonEndGame = "Repetition"; }
+            if (chessBoard.EndGame.EndgameType == EndgameType.FiftyMoveRule) { reasonEndGame = "Fifty Move Rule"; }
+            if (chessBoard.EndGame.EndgameType == EndgameType.InsufficientMaterial) { reasonEndGame = "Insufficient Material"; }
+            if (chessBoard.EndGame.EndgameType == EndgameType.Resigned && isTimeoutEndGame) { reasonEndGame = "Timeout"; }
+
 
             if (chessBoard.EndGame.WonSide == Side) // won
             {
@@ -180,6 +188,35 @@ namespace ChessAI
             AgainBtn.Visible = true;
             HomeBtn.Visible = true;
         }
+        public void EndGameOnline(string message, string timeSync)
+        {
+            message = message.Replace("ED#*", ""); //Normalize message as cmd
+            if (message == "Resign")
+            {
+                chessBoard.Resign(Side.OppositeColor());
+            }
+            if (message == "DrawAsk")
+            {
+                AskingForDraw();
+            }
+            if (message == "DrawAccept")
+            {
+                chessBoard.Draw();
+            }
+            if (message == "Timeout")
+            {
+                isTimeoutEndGame = true;
+                chessBoard.Resign(Side.OppositeColor());
+            }
+            syncTimer(timeSync);
+        }
+
+        private void AskingForDraw()
+        {
+            DrawAsk.Visible = true;
+            DrawText.Text = OpponentName + " asking for a draw. Would you accept?";
+        }
+
 
         private void RestartGame()
         {
@@ -201,12 +238,12 @@ namespace ChessAI
             {
                 if (currenChatMainForm != null)
                 {
-                    currenChatMainForm.moveSendHandler("RSTR#*RestartAsk");
+                    currenChatMainForm.moveSendHandler("RSTR#*RestartAsk" + timeSyncStr());
                 }
             }
         }
 
-        public void RestartGameOnline(string message)
+        public void RestartGameOnline(string message, string timeSync)
         {
             message = message.Replace("RSTR#*", ""); //Normalize message as cmd
             if (message == "RestartAsk")
@@ -229,23 +266,33 @@ namespace ChessAI
                 gameStarted = false;
                 InitGame(Side);
             }
+            syncTimer(timeSync);
         }
 
 
         private void timeControlInitialize(string timeControl)
         {
-            if ((isOffline)) // No time limit for offline mode
-            {
-                opponentTimer.Visible = false;
-                ourTimer.Visible = false;
-                return;
-            }
+            //if ((isOffline)) // No time limit for offline mode
+            //{
+            //    opponentTimer.Visible = false;
+            //    ourTimer.Visible = false;
+            //    return;
+            //}
             string[] timeCtrl = timeControl.Split("|");
             if (timeCtrl.Length != 2) return;
-            int timeToComplete = Convert.ToInt32(timeCtrl[0]);
+           
             timeIncrement = Convert.ToInt32(timeCtrl[1]);
-            timeOur = TimeSpan.FromMinutes(timeToComplete);
-            timeOpponent = TimeSpan.FromMinutes(timeToComplete);
+            if (timeCtrl[0].Contains("s")) // if time is in seconds
+            {
+                timeCtrl[0] = timeCtrl[0].Replace("s", "");
+                timeOur = TimeSpan.FromSeconds(Convert.ToInt32(timeCtrl[0]));
+                timeOpponent = TimeSpan.FromSeconds(Convert.ToInt32(timeCtrl[0]));
+            }
+            else
+            {
+                timeOur = TimeSpan.FromMinutes(Convert.ToInt32(timeCtrl[0]));
+                timeOpponent = TimeSpan.FromMinutes(Convert.ToInt32(timeCtrl[0]));
+            }
             opponentTimer.Text = timeOpponent.ToString(@"mm\:ss");
             ourTimer.Text = timeOur.ToString(@"mm\:ss");
             beginTimer();
@@ -284,8 +331,16 @@ namespace ChessAI
             panel1.Invalidate(); // Redraw whole board
             var mv = "MV#*" + (chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none"); //move
             LogMessage(mv);
-
-
+            
+            if (chessBoard.Turn != Side)
+            {
+                timeOur = timeOur.Add(TimeSpan.FromSeconds(timeIncrement));
+                ourTimer.Text = timeOur.ToString(@"mm\:ss");
+                if (isOffline)
+                {
+                    OpponentAIMove();
+                }
+            }
 
             //  SendMessage(mv);
             if (currenChatMainForm != null
@@ -295,13 +350,10 @@ namespace ChessAI
                 && isOffline == false // prevent sending move when offline
                 )
             {
-                currenChatMainForm.moveSendHandler(mv);
+                currenChatMainForm.moveSendHandler(mv + timeSyncStr());
                 chessLastMove = mv;
             }
-            if (chessBoard.Turn != Side && isOffline)
-            {
-                OpponentAIMove();
-            }
+           
         }
 
         /// <summary>
@@ -340,13 +392,15 @@ namespace ChessAI
             var move = new Move(bestMove.Substring(0, 2), bestMove.Substring(2, 2));
             //chessBoard.Move(moves[Random.Shared.Next(moves.Length)]);
             chessBoard.Move(move);
+            timeOpponent = timeOpponent.Add(TimeSpan.FromSeconds(timeIncrement));
+            opponentTimer.Text = timeOpponent.ToString(@"mm\:ss");
             panel1.Invalidate();
         }
         /// <summary>
         /// Parsing mesage and moving the piece as other player move receive from server
         /// </summary>
         /// <param name="message"></param>
-        public void MoveAsMessage(string message)
+        public void MoveAsMessage(string message, string timeSync)
         {
             message = message.Replace("MV#*", ""); //Normalize message as SAN
             // EX: split e4e5 to e4 e5
@@ -368,33 +422,10 @@ namespace ChessAI
             }
             chessBoard.Move(move);
             panel1.Invalidate();
+            syncTimer(timeSync);
         }
 
-        public void EndGameOnline(string message)
-        {
-            message = message.Replace("ED#*", ""); //Normalize message as cmd
-            if (message == "Resign")
-            {
-                chessBoard.Resign(Side.OppositeColor());
-                endgameType = EndgameType.Resigned;
-            }
-            if (message == "DrawAsk")
-            {
-                AskingForDraw();
-            }
-            if (message == "DrawAccept")
-            {
-                chessBoard.Draw();
-                endgameType = EndgameType.DrawDeclared;
-            }
-        }
-
-        private void AskingForDraw()
-        {
-            DrawAsk.Visible = true;
-            DrawText.Text = OpponentName + " asking for a draw. Would you accept?";
-        }
-
+    
         /// <summary>
         /// Promotion UI for the pawn/ not implemeted yet
         /// </summary>
@@ -449,7 +480,7 @@ namespace ChessAI
             if (currenChatMainForm != null)
             {
                 Console.WriteLine("Joined room with : " + currenChatMainForm.Side);
-                InitGame(currenChatMainForm.Side, "10|0");
+                InitGame(currenChatMainForm.Side, "1|5");
             }
         }
 
@@ -522,6 +553,29 @@ namespace ChessAI
             timer1.Start();
         }
 
+        private void syncTimer(string timeSync)
+        {
+            try
+            {
+                if (timeSync == "") return;
+                string[] timeLeft = timeSync.Split("|");
+                if (timeLeft.Length != 2) return;
+                if (Side == PieceColor.White)
+                {
+                    timeOur = TimeSpan.FromSeconds(Convert.ToInt32(timeLeft[0]));
+                    timeOpponent = TimeSpan.FromSeconds(Convert.ToInt32(timeLeft[1]));
+                }
+                else if (Side == PieceColor.Black)
+                {
+                    timeOur = TimeSpan.FromSeconds(Convert.ToInt32(timeLeft[1]));
+                    timeOpponent = TimeSpan.FromSeconds(Convert.ToInt32(timeLeft[0]));
+                }
+            }catch (Exception e)
+            {
+                Debug.WriteLine("Error in syncTimer: " + e.Message);
+            }
+        }
+
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (gameStarted)
@@ -530,28 +584,35 @@ namespace ChessAI
                 {
                     timeOur = timeOur.Subtract(TimeSpan.FromSeconds(1));
                     ourTimer.Text = timeOur.ToString(@"mm\:ss");
-                    ourTimer.BackColor = Color.PaleGreen;
+                    ourTimer.BackColor = Color.Chartreuse;
                     opponentTimer.BackColor = Color.LightGray;
                     if (timeOur.TotalSeconds <= 0)
                     {
                         timer1.Stop();
                         LogMessage(PlayerName + "'s time is up!");
+                        isTimeoutEndGame = true;
                         chessBoard.Resign(Side);
-                        endgameType = EndgameType.Timeout;
+                        
+                        if (currenChatMainForm != null)
+                        {
+                            currenChatMainForm.moveSendHandler("ED#*Timeout"+timeSyncStr());
+                        }
                     }
                 }
                 else
                 {
+                    
                     timeOpponent = timeOpponent.Subtract(TimeSpan.FromSeconds(1));
                     opponentTimer.Text = timeOpponent.ToString(@"mm\:ss");
-                    opponentTimer.BackColor = Color.PaleGreen;
+                    opponentTimer.BackColor = Color.Chartreuse;
                     ourTimer.BackColor = Color.LightGray;
                     if (timeOpponent.TotalSeconds <= 0)
                     {
                         timer1.Stop();
                         LogMessage("Opponent's time is up!");
+                        isTimeoutEndGame = true;
                         chessBoard.Resign(Side.OppositeColor());
-                        endgameType = EndgameType.Timeout;
+                        
                     }
                 }
             }
@@ -605,7 +666,7 @@ namespace ChessAI
             {
                 if (currenChatMainForm != null)
                 {
-                    currenChatMainForm.moveSendHandler("ED#*DrawAsk");
+                    currenChatMainForm.moveSendHandler("ED#*DrawAsk"+timeSyncStr());
                 }
             }
         }
@@ -622,7 +683,7 @@ namespace ChessAI
             {
                 if (currenChatMainForm != null)
                 {
-                    currenChatMainForm.moveSendHandler("ED#*Resign");
+                    currenChatMainForm.moveSendHandler("ED#*Resign" + timeSyncStr());
                     chessBoard.Resign(Side);
                 }
             }
@@ -634,7 +695,7 @@ namespace ChessAI
             chessBoard.Draw();
             if (currenChatMainForm != null)
             {
-                currenChatMainForm.moveSendHandler("ED#*DrawAccept");
+                currenChatMainForm.moveSendHandler("ED#*DrawAccept"+timeSyncStr());
             }
         }
 
@@ -650,7 +711,7 @@ namespace ChessAI
             {
                 Side = Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
                 currenChatMainForm.moveSendHandler("RSTR#*RestartAccept-"+Side.OppositeColor());
-                RestartGameOnline("RSTR#*RestartAccept-" + Side);
+                RestartGameOnline("RSTR#*RestartAccept-" + Side ,"");
             }
         }
 
