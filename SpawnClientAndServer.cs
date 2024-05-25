@@ -28,7 +28,7 @@ namespace winforms_chat
         private void btn_client_Click(object sender, EventArgs e)
         {
             // Start the client form ChatClientJoin.cs
-            SpawnServerAndClient client = new SpawnServerAndClient();
+            ChessAIClient client = new ChessAIClient();
            // ChatClientJoin client = new ChatClientJoin();
             client.Show();
         }

@@ -29,10 +29,10 @@ namespace winforms_chat
         string serverIP = ChessAI.ChatServerAndClient.Constants.serverIP;
         int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
 
-        SpawnServerAndClient chessClient;
+        ChessAIClient chessClient;
         public PieceColor Side { get; private set; }
 
-    public ChatMainForm(string tableCode = "123456", string userName = "testUser" , SpawnServerAndClient chClient = null, String side = "")
+    public ChatMainForm(string tableCode = "123456", string userName = "testUser" , ChessAIClient chClient = null, String side = "")
 		{
             if (ChatMainForm.isMainThread)
             {

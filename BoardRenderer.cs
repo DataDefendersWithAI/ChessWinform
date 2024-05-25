@@ -45,7 +45,7 @@ namespace ChessAI
 
         //========= SETTINGS ========//
 
-        public void DrawBoard(Graphics g, ChessBoard chessBoard, int edgeSet = 800, int offsetX = 75, int offsetY = 75, bool isDebug = false, PieceColor side = null)
+        public void DrawBoard(Graphics g, ChessBoard chessBoard, int edgeSet = 800, bool isDebug = false, PieceColor side = null)
         {
            
             if (g == null)
@@ -54,8 +54,9 @@ namespace ChessAI
             }
             debugMode = isDebug;
             edge = edgeSet;
-            TileSize = new Size(edge / noOfTiles, edge / noOfTiles);
-            Offset = new Size(offsetX, offsetY);
+            Offset = new Size((int)Math.Floor(edge * 0.1), (int)Math.Floor(edge * 0.1));
+            TileSize = new Size(( int) (edge - Offset.Width*2) / noOfTiles,(int) (edge-Offset.Height*2) /noOfTiles);
+            
 
             try
             {
@@ -297,7 +298,7 @@ namespace ChessAI
             if (chessBoard[selectedPiece.toSAN()].Type == PieceType.Pawn && (pieceMoveTo.Y == 0 || pieceMoveTo.Y == 7))
             {
                 Debug.WriteLineIf(debugMode, "Pawn promotion");
-                selectedPromotion = new SpawnServerAndClient().PromotePawnUIAsync();
+                selectedPromotion = new ChessAIClient().PromotePawnUIAsync();
             }
 
             // Execute the move

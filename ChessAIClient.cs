@@ -6,16 +6,17 @@ using System;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using winforms_chat;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
-using winform_chat.DashboardForm;
+
 
 namespace ChessAI
 {
-    public partial class SpawnServerAndClient : Form
+    public partial class ChessAIClient : Form
     {
         private BoardRenderer boardRenderer;
         private ChessBoard chessBoard;
@@ -24,8 +25,10 @@ namespace ChessAI
         private TimeSpan timeOur;
         private TimeSpan timeOpponent;
 
+        private int timeIncrement = 0; // Time increment in seconds
+
         private bool gameStarted = false;
-        private bool isDebug = true;
+        private bool isDebug = false;
         private bool isOffline = false; // Playing offline with bots/ AI
 
         private PromotionType selectedPromotion;
@@ -39,9 +42,8 @@ namespace ChessAI
         private int PlayerNumber = new Random().Next(1, 2000);
         // Stockfish module
         private IStockfish Stockfish { get; set; }
-        //public int modeDepth { get; set; }
 
-        public SpawnServerAndClient(int modeDepth = 1)
+        public ChessAIClient()
         {
             InitializeComponent();
 
@@ -53,32 +55,65 @@ namespace ChessAI
             chessBoard.OnPromotePawn += PromotePawn; // Add event when pawn is promoted
             boardRenderer = new BoardRenderer(); // Init new renderer
 
-            this.Size = new System.Drawing.Size(1000, 800); // Add minimum offset is 75 and maybe some space
-                                                             // this.FormClosed += ClientForm_FormClosed; // Add event when form is closed
-            InitUserInfo();
+            this.Size = new System.Drawing.Size(1300, 750); // Add minimum offset is 75 and maybe some space
+                                                            // this.FormClosed += ClientForm_FormClosed; // Add event when form is closed
+                                                            // panel1.Size = new System.Drawing.Size(this.Size.Height - 100 , this.Size.Height - 100 ); // Set the panel size
+            panel1.Size = new System.Drawing.Size(650, 650);
 
+            this.MaximizeBox = false; // Prevent maximizing the window
+            this.MinimizeBox = false; // Prevent minimizing the window
+
+            if (isDebug == false)
+            {
+                button1.Visible = false; // Hide the debug button
+                button2.Visible = false; // Hide the offline button
+                cntSvr.Visible = false; // Hide the server button
+                richTextBox2.Visible = false; // Hide the log
+            }
 
             //Generate stockfish default
             var pathStockFish = GetStockfishDir();
-
-            Stockfish = new Stockfish.NET.Stockfish(pathStockFish, depth: modeDepth);
+            Stockfish = new Stockfish.NET.Stockfish(pathStockFish, depth: 2);
         }
 
         /// <summary>
         /// Begin the game when the message is received/ Connected to another player
         /// </summary>
         /// <param name="message"></param>
-        private void InitGame(PieceColor side)
+        private void InitGame(PieceColor side, string timeCtrl, bool isOffl = true)
         {
             if (gameStarted) return; // If game already started, return
             // Set the side
             Side = side;
-
+            // isOflineMode
+            isOffline = isOffl;
             // Set the game started
             gameStarted = true;
             isOffline = false;
             LogMessage("Game started! You are: " + Side);
-            panel1.Invalidate(); // Redraw whole screen 
+            panel1.Invalidate(); // Redraw whole board
+            timeControlInitialize(timeCtrl);
+            InitUserInfo();
+        }
+
+        private void timeControlInitialize(string timeControl)
+        {
+            string[] timeCtrl = timeControl.Split("|");
+            if(timeCtrl.Length != 2) return;
+            int timeToComplete = Convert.ToInt32(timeCtrl[0]);
+            timeIncrement = Convert.ToInt32(timeCtrl[1]);
+            timeOur = TimeSpan.FromMinutes(timeToComplete);
+            timeOpponent = TimeSpan.FromMinutes(timeToComplete);
+            opponentTimer.Text = timeOpponent.ToString(@"mm\:ss");
+            ourTimer.Text = timeOur.ToString(@"mm\:ss");
+        }
+
+        private void boardResize(object sender, EventArgs e)
+        {
+            panel1.Size = new System.Drawing.Size(650, 650); //this.Size.Height - 100, this.Size.Height - 100); // Set the panel size
+            panel1.Invalidate(); // Redraw whole board
+            this.Size = new System.Drawing.Size(1300, 750); // Add minimum offset is 75 and maybe some space
+                                                            // this.FormClosed += ClientForm_FormClosed; // Add event when form is closed
         }
 
         /// <summary>
@@ -88,7 +123,7 @@ namespace ChessAI
         private void boardPaint(object sender, PaintEventArgs e) // Update continuously
         {
             if (!gameStarted) return; // If game not started, return
-            boardRenderer.DrawBoard(e.Graphics, chessBoard, 500, isDebug: isDebug, side: Side); // Draw the board
+            boardRenderer.DrawBoard(e.Graphics, chessBoard, panel1.Size.Height, isDebug: isDebug, side: Side); // Draw the board
             richTextBox1.Text = chessBoard.ToPgn(); // Show the moves     
         }
 
@@ -102,7 +137,7 @@ namespace ChessAI
             Debug.WriteLineIf(isDebug, "X: " + e.X + " Y: " + e.Y);
             chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard, isNormalized: false, side: Side); // Handle the click
 
-            panel1.Invalidate(); // Redraw whole screen 
+            panel1.Invalidate(); // Redraw whole board
             var mv = "MV#*" + (chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none"); //move
             LogMessage(mv);
             //  SendMessage(mv);
@@ -208,6 +243,7 @@ namespace ChessAI
 
         private void ClientForm_Load(object sender, EventArgs e)
         {
+            if(isOffline) return; // If offline mode, return
             // Do something when form is loaded
             x = new ChatClientJoin();
             x.Show();
@@ -222,7 +258,7 @@ namespace ChessAI
             if (currenChatMainForm != null)
             {
                 Console.WriteLine("Joined room with : " + currenChatMainForm.Side);
-                InitGame(currenChatMainForm.Side);
+                InitGame(currenChatMainForm.Side,"10|0");
             }
         }
 
@@ -246,13 +282,10 @@ namespace ChessAI
         /// <param name="message"></param>
         private void OfflineButton_Click(object sender, EventArgs e)
         {
-            if (gameStarted) return; // If game already started, return
-            gameStarted = true;
-            isOffline = true;
+           
             // Set the side randomly
             Side = Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
-            LogMessage("Game started! You are: " + Side);
-            panel1.Invalidate(); // Redraw whole screen
+            InitGame(Side, "10|0", true);
         }
 
         public static string GetStockfishDir()
@@ -281,7 +314,7 @@ namespace ChessAI
         {
             ourName.Text = PlayerName + " ( " + PlayerNumber + " )";
             opponentName.Text = "Opponent";
-            beginTimer();
+           
 
         }
         private void beginTimer()
@@ -336,14 +369,6 @@ namespace ChessAI
 
         }
 
-        private void resignBtn_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void drawBtn_Click(object sender, EventArgs e)
-        {
-
-        }
+      
     }
 }
