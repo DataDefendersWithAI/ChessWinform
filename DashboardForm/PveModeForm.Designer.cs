@@ -73,7 +73,6 @@
             label2.Size = new Size(270, 144);
             label2.TabIndex = 16;
             label2.Text = "You have choose \r\n      PVE mode \r\nPlease choose \r\nyour play mode";
-            label2.Click += label2_Click;
             // 
             // EasyButton
             // 
