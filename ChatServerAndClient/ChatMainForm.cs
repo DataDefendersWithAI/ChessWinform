@@ -122,26 +122,27 @@ namespace winforms_chat
                         else if (msg.type == "chess")
                         {
                             // Add message to chat panel
-                            ChatForm.TextChatModel chatModel = new ChatForm.TextChatModel();
-                            chatModel.Author = msg.from;
-                            chatModel.Body = msg.message;
-                            chatModel.Inbound = true;
-                            chatModel.Time = msg.date;
-                            chat_panel.AddMessage(chatModel);
-
+                            //ChatForm.TextChatModel chatModel = new ChatForm.TextChatModel();
+                            //chatModel.Author = msg.from;
+                            //chatModel.Body = msg.message;
+                            //chatModel.Inbound = true;
+                            //chatModel.Time = msg.date;
+                            //chat_panel.AddMessage(chatModel);
+                            string timeSync = msg.message.Split("[T]")[1];
+                            msg.message = msg.message.Split("[T]")[0];
                             if (chessClient != null)
                             {
                                 if (msg.message.Contains("MV#*"))
                                 {
-                                    chessClient.MoveAsMessage(msg.message);
+                                    chessClient.MoveAsMessage(msg.message,timeSync);
                                 }
                                 if (msg.message.Contains("ED#*"))
                                 {
-                                    chessClient.EndGameOnline(msg.message);
+                                    chessClient.EndGameOnline(msg.message, timeSync);
                                 }
                                 if (msg.message.Contains("RSTR#*"))
                                 {
-                                    chessClient.RestartGameOnline(msg.message);
+                                    chessClient.RestartGameOnline(msg.message, timeSync);
                                 }
                             }
                         }   
