@@ -103,7 +103,10 @@ namespace ChessAI
             Side = side;
             // Set the game started
             gameStarted = true;
-
+            if (Side == PieceColor.Black && isOffline)
+            {
+                OpponentAIMove(); // first move for AI white
+            }
             LogMessage("Game started! You are: " + Side);
             panel1.Invalidate(); // Redraw whole board
             timeControlInitialize(timeCtrl);
