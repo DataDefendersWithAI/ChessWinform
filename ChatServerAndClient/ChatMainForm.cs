@@ -135,6 +135,14 @@ namespace winforms_chat
                                 {
                                     chessClient.MoveAsMessage(msg.message);
                                 }
+                                if (msg.message.Contains("ED#*"))
+                                {
+                                    chessClient.EndGameOnline(msg.message);
+                                }
+                                if (msg.message.Contains("RSTR#*"))
+                                {
+                                    chessClient.RestartGameOnline(msg.message);
+                                }
                             }
                         }   
                     }

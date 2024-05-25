@@ -47,6 +47,8 @@
             reasonText = new Label();
             WLText = new Label();
             WLinnerPanel = new Panel();
+            WLAgain = new Button();
+            WLHome = new Button();
             uELO = new Label();
             WLok = new Button();
             oppPanel = new Panel();
@@ -69,12 +71,24 @@
             resignBtn = new Button();
             timer1 = new System.Windows.Forms.Timer(components);
             label2 = new Label();
+            AgainBtn = new Button();
+            HomeBtn = new Button();
+            DrawAsk = new Panel();
+            DrawN = new Button();
+            DrawY = new Button();
+            DrawText = new Label();
+            RestartAsk = new Panel();
+            ResN = new Button();
+            ResY = new Button();
+            RestartText = new Label();
             flowLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
             WLouterPanel.SuspendLayout();
             WLinnerPanel.SuspendLayout();
             oppPanel.SuspendLayout();
             userPanel.SuspendLayout();
+            DrawAsk.SuspendLayout();
+            RestartAsk.SuspendLayout();
             SuspendLayout();
             // 
             // richTextBox1
@@ -271,6 +285,8 @@
             // WLinnerPanel
             // 
             WLinnerPanel.BackColor = Color.LightCoral;
+            WLinnerPanel.Controls.Add(WLAgain);
+            WLinnerPanel.Controls.Add(WLHome);
             WLinnerPanel.Controls.Add(uELO);
             WLinnerPanel.Controls.Add(WLok);
             WLinnerPanel.Controls.Add(oppPanel);
@@ -280,6 +296,32 @@
             WLinnerPanel.Name = "WLinnerPanel";
             WLinnerPanel.Size = new Size(458, 394);
             WLinnerPanel.TabIndex = 0;
+            // 
+            // WLAgain
+            // 
+            WLAgain.BackColor = Color.PaleGreen;
+            WLAgain.Font = new Font("Segoe UI", 15F);
+            WLAgain.Location = new Point(304, 314);
+            WLAgain.Margin = new Padding(3, 2, 3, 2);
+            WLAgain.Name = "WLAgain";
+            WLAgain.Size = new Size(119, 54);
+            WLAgain.TabIndex = 24;
+            WLAgain.Text = "Again";
+            WLAgain.UseVisualStyleBackColor = false;
+            WLAgain.Click += WLAgain_Click;
+            // 
+            // WLHome
+            // 
+            WLHome.BackColor = SystemColors.Control;
+            WLHome.Font = new Font("Segoe UI", 15F);
+            WLHome.Location = new Point(36, 314);
+            WLHome.Margin = new Padding(3, 2, 3, 2);
+            WLHome.Name = "WLHome";
+            WLHome.Size = new Size(56, 54);
+            WLHome.TabIndex = 23;
+            WLHome.Text = "\U0001f6d6";
+            WLHome.UseVisualStyleBackColor = false;
+            WLHome.Click += WLHome_Click;
             // 
             // uELO
             // 
@@ -298,7 +340,7 @@
             // 
             WLok.BackColor = SystemColors.Control;
             WLok.Font = new Font("Segoe UI", 15F);
-            WLok.Location = new Point(176, 316);
+            WLok.Location = new Point(181, 314);
             WLok.Margin = new Padding(3, 2, 3, 2);
             WLok.Name = "WLok";
             WLok.Size = new Size(117, 54);
@@ -513,6 +555,7 @@
             drawBtn.TabIndex = 15;
             drawBtn.Text = "Draw";
             drawBtn.UseVisualStyleBackColor = false;
+            drawBtn.Click += drawBtn_Click;
             // 
             // resignBtn
             // 
@@ -525,6 +568,7 @@
             resignBtn.TabIndex = 16;
             resignBtn.Text = "Resign";
             resignBtn.UseVisualStyleBackColor = false;
+            resignBtn.Click += resignBtn_Click;
             // 
             // timer1
             // 
@@ -544,12 +588,136 @@
             label2.Text = "Game log";
             label2.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // AgainBtn
+            // 
+            AgainBtn.BackColor = Color.PaleGreen;
+            AgainBtn.Font = new Font("Segoe UI", 15F);
+            AgainBtn.Location = new Point(683, 418);
+            AgainBtn.Margin = new Padding(3, 2, 3, 2);
+            AgainBtn.Name = "AgainBtn";
+            AgainBtn.Size = new Size(119, 54);
+            AgainBtn.TabIndex = 25;
+            AgainBtn.Text = "Again";
+            AgainBtn.UseVisualStyleBackColor = false;
+            AgainBtn.Click += Again_Click;
+            // 
+            // HomeBtn
+            // 
+            HomeBtn.BackColor = SystemColors.Control;
+            HomeBtn.Font = new Font("Segoe UI", 15F);
+            HomeBtn.Location = new Point(819, 418);
+            HomeBtn.Margin = new Padding(3, 2, 3, 2);
+            HomeBtn.Name = "HomeBtn";
+            HomeBtn.Size = new Size(56, 54);
+            HomeBtn.TabIndex = 25;
+            HomeBtn.Text = "\U0001f6d6";
+            HomeBtn.UseVisualStyleBackColor = false;
+            HomeBtn.Click += Home_Click;
+            // 
+            // DrawAsk
+            // 
+            DrawAsk.BackColor = Color.PaleTurquoise;
+            DrawAsk.Controls.Add(DrawN);
+            DrawAsk.Controls.Add(DrawY);
+            DrawAsk.Controls.Add(DrawText);
+            DrawAsk.Location = new Point(683, 289);
+            DrawAsk.Name = "DrawAsk";
+            DrawAsk.Size = new Size(242, 124);
+            DrawAsk.TabIndex = 26;
+            // 
+            // DrawN
+            // 
+            DrawN.BackColor = Color.FromArgb(255, 128, 128);
+            DrawN.Font = new Font("Segoe UI", 15F);
+            DrawN.Location = new Point(151, 87);
+            DrawN.Margin = new Padding(3, 2, 3, 2);
+            DrawN.Name = "DrawN";
+            DrawN.Size = new Size(91, 35);
+            DrawN.TabIndex = 28;
+            DrawN.Text = "No";
+            DrawN.UseVisualStyleBackColor = false;
+            DrawN.Click += DrawN_Click;
+            // 
+            // DrawY
+            // 
+            DrawY.BackColor = Color.PaleGreen;
+            DrawY.Font = new Font("Segoe UI", 15F);
+            DrawY.Location = new Point(0, 90);
+            DrawY.Margin = new Padding(3, 2, 3, 2);
+            DrawY.Name = "DrawY";
+            DrawY.Size = new Size(91, 35);
+            DrawY.TabIndex = 27;
+            DrawY.Text = "Yes";
+            DrawY.UseVisualStyleBackColor = false;
+            DrawY.Click += DrawY_Click;
+            // 
+            // DrawText
+            // 
+            DrawText.Font = new Font("Segoe UI", 13F);
+            DrawText.Location = new Point(0, 0);
+            DrawText.Name = "DrawText";
+            DrawText.Size = new Size(242, 88);
+            DrawText.TabIndex = 0;
+            DrawText.Text = "Player X is asking for a draw. Would you accept?";
+            DrawText.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // RestartAsk
+            // 
+            RestartAsk.BackColor = Color.PaleGoldenrod;
+            RestartAsk.Controls.Add(ResN);
+            RestartAsk.Controls.Add(ResY);
+            RestartAsk.Controls.Add(RestartText);
+            RestartAsk.Location = new Point(683, 289);
+            RestartAsk.Name = "RestartAsk";
+            RestartAsk.Size = new Size(242, 124);
+            RestartAsk.TabIndex = 29;
+            // 
+            // ResN
+            // 
+            ResN.BackColor = Color.FromArgb(255, 128, 128);
+            ResN.Font = new Font("Segoe UI", 15F);
+            ResN.Location = new Point(151, 87);
+            ResN.Margin = new Padding(3, 2, 3, 2);
+            ResN.Name = "ResN";
+            ResN.Size = new Size(91, 35);
+            ResN.TabIndex = 28;
+            ResN.Text = "No";
+            ResN.UseVisualStyleBackColor = false;
+            ResN.Click += ResN_Click;
+            // 
+            // ResY
+            // 
+            ResY.BackColor = Color.PaleGreen;
+            ResY.Font = new Font("Segoe UI", 15F);
+            ResY.Location = new Point(0, 90);
+            ResY.Margin = new Padding(3, 2, 3, 2);
+            ResY.Name = "ResY";
+            ResY.Size = new Size(91, 35);
+            ResY.TabIndex = 27;
+            ResY.Text = "Yes";
+            ResY.UseVisualStyleBackColor = false;
+            ResY.Click += ResY_Click;
+            // 
+            // RestartText
+            // 
+            RestartText.Font = new Font("Segoe UI", 13F);
+            RestartText.Location = new Point(0, 0);
+            RestartText.Name = "RestartText";
+            RestartText.Size = new Size(242, 88);
+            RestartText.TabIndex = 0;
+            RestartText.Text = "Player X is asking for a draw. Would you accept?";
+            RestartText.TextAlign = ContentAlignment.MiddleCenter;
+            // 
             // ChessAIClient
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.MintCream;
             ClientSize = new Size(1280, 707);
+            Controls.Add(RestartAsk);
+            Controls.Add(DrawAsk);
+            Controls.Add(HomeBtn);
+            Controls.Add(AgainBtn);
             Controls.Add(OfflineButton);
             Controls.Add(cntSvr);
             Controls.Add(label2);
@@ -581,6 +749,8 @@
             WLinnerPanel.ResumeLayout(false);
             oppPanel.ResumeLayout(false);
             userPanel.ResumeLayout(false);
+            DrawAsk.ResumeLayout(false);
+            RestartAsk.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -626,5 +796,17 @@
         private Panel WLouterPanel;
         private Label WLText;
         private Label reasonText;
+        private Button WLHome;
+        private Button WLAgain;
+        private Button AgainBtn;
+        private Button HomeBtn;
+        private Panel DrawAsk;
+        private Button DrawN;
+        private Button DrawY;
+        private Label DrawText;
+        private Panel RestartAsk;
+        private Button ResN;
+        private Button ResY;
+        private Label RestartText;
     }
 }
