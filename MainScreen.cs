@@ -69,7 +69,8 @@
 
         private void PvEButton_Click(object sender, EventArgs e)
         {
-
+            var temp = new DashboardForm.PveModeForm();
+            LoadForm(temp);
         }
 
         private void LogoutButton_Click(object sender, EventArgs e)

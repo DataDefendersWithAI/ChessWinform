@@ -43,7 +43,7 @@ namespace ChessAI
         // Stockfish module
         private IStockfish Stockfish { get; set; }
 
-        public ChessAIClient()
+        public ChessAIClient(int modeDepth = 1, bool isDebug = true)
         {
             InitializeComponent();
 
@@ -65,15 +65,15 @@ namespace ChessAI
 
             if (isDebug == false)
             {
-                button1.Visible = false; // Hide the debug button
-                button2.Visible = false; // Hide the offline button
+                OppMoveButton.Visible = false; // Hide the debug button
+                OfflineButton.Visible = false; // Hide the offline button
                 cntSvr.Visible = false; // Hide the server button
                 richTextBox2.Visible = false; // Hide the log
             }
 
             //Generate stockfish default
             var pathStockFish = GetStockfishDir();
-            Stockfish = new Stockfish.NET.Stockfish(pathStockFish, depth: 2);
+            Stockfish = new Stockfish.NET.Stockfish(pathStockFish, modeDepth);
         }
 
         /// <summary>
@@ -89,7 +89,6 @@ namespace ChessAI
             isOffline = isOffl;
             // Set the game started
             gameStarted = true;
-            isOffline = false;
             LogMessage("Game started! You are: " + Side);
             panel1.Invalidate(); // Redraw whole board
             timeControlInitialize(timeCtrl);

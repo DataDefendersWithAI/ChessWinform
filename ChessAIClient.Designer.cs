@@ -31,10 +31,10 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChessAIClient));
             richTextBox1 = new RichTextBox();
-            button1 = new Button();
+            OppMoveButton = new Button();
             richTextBox2 = new RichTextBox();
             cntSvr = new Button();
-            button2 = new Button();
+            OfflineButton = new Button();
             imageList1 = new ImageList(components);
             flowLayoutPanel1 = new FlowLayoutPanel();
             Queen = new Button();
@@ -69,18 +69,18 @@
             richTextBox1.Text = "";
             richTextBox1.TextChanged += richTextBox1_TextChanged;
             // 
-            // button1
+            // OppMoveButton
             // 
-            button1.BackColor = Color.LightGreen;
-            button1.Font = new Font("Segoe UI", 13F);
-            button1.Location = new Point(1042, 396);
-            button1.Margin = new Padding(3, 2, 3, 2);
-            button1.Name = "button1";
-            button1.Size = new Size(107, 79);
-            button1.TabIndex = 2;
-            button1.Text = "Opponent move";
-            button1.UseVisualStyleBackColor = false;
-            button1.Click += OpponentMoveButton_Click;
+            OppMoveButton.BackColor = Color.LightGreen;
+            OppMoveButton.Font = new Font("Segoe UI", 13F);
+            OppMoveButton.Location = new Point(1042, 396);
+            OppMoveButton.Margin = new Padding(3, 2, 3, 2);
+            OppMoveButton.Name = "OppMoveButton";
+            OppMoveButton.Size = new Size(107, 79);
+            OppMoveButton.TabIndex = 4;
+            OppMoveButton.Text = "Opponent move";
+            OppMoveButton.UseVisualStyleBackColor = false;
+            OppMoveButton.Click += OpponentMoveButton_Click;
             // 
             // richTextBox2
             // 
@@ -104,18 +104,18 @@
             cntSvr.UseVisualStyleBackColor = false;
             cntSvr.Click += cntSvr_Click;
             // 
-            // button2
+            // OfflineButton
             // 
-            button2.BackColor = Color.PaleGoldenrod;
-            button2.Font = new Font("Segoe UI", 13F);
-            button2.Location = new Point(954, 396);
-            button2.Margin = new Padding(3, 2, 3, 2);
-            button2.Name = "button2";
-            button2.Size = new Size(82, 79);
-            button2.TabIndex = 5;
-            button2.Text = "Offline";
-            button2.UseVisualStyleBackColor = false;
-            button2.Click += OfflineButton_Click;
+            OfflineButton.BackColor = Color.PaleGoldenrod;
+            OfflineButton.Font = new Font("Segoe UI", 13F);
+            OfflineButton.Location = new Point(954, 396);
+            OfflineButton.Margin = new Padding(3, 2, 3, 2);
+            OfflineButton.Name = "OfflineButton";
+            OfflineButton.Size = new Size(82, 79);
+            OfflineButton.TabIndex = 5;
+            OfflineButton.Text = "Offline";
+            OfflineButton.UseVisualStyleBackColor = false;
+            OfflineButton.Click += OfflineButton_Click;
             // 
             // imageList1
             // 
@@ -372,6 +372,8 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1280, 707);
+            Controls.Add(OfflineButton);
+            Controls.Add(cntSvr);
             Controls.Add(label2);
             Controls.Add(resignBtn);
             Controls.Add(drawBtn);
@@ -385,10 +387,8 @@
             Controls.Add(opponentTimer);
             Controls.Add(panel1);
             Controls.Add(flowLayoutPanel1);
-            Controls.Add(button2);
-            Controls.Add(cntSvr);
             Controls.Add(richTextBox2);
-            Controls.Add(button1);
+            Controls.Add(OppMoveButton);
             Controls.Add(richTextBox1);
             FormBorderStyle = FormBorderStyle.Fixed3D;
             Margin = new Padding(3, 2, 3, 2);
@@ -405,10 +405,10 @@
         #endregion
 
         private RichTextBox richTextBox1;
-        private Button button1;
+        private Button OppMoveButton;
         private RichTextBox richTextBox2;
         private Button cntSvr;
-        private Button button2;
+        private Button OfflineButton;
         private ImageList imageList1;
         private FlowLayoutPanel flowLayoutPanel1;
         private Button Queen;
