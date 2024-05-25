@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
@@ -31,6 +32,8 @@ namespace ChessAI
         private bool isDebug;
         private bool isOffline; // Playing offline with bots/ AI
 
+        private string reasonEndGame = "Checkmate";
+
         private PromotionType selectedPromotion;
         ChatClientJoin x;
         ChatMainForm currenChatMainForm;
@@ -38,6 +41,7 @@ namespace ChessAI
 
         // Random player name
         private string PlayerName = "Player" + new Random().Next(1000, 24000);
+        private string OpponentName = "Opponent";
         // Random player number in range 1-2000
         private int PlayerNumber = new Random().Next(1, 2000);
         // Stockfish module
@@ -56,7 +60,7 @@ namespace ChessAI
 
             chessBoard = new ChessBoard() { AutoEndgameRules = AutoEndgameRules.All }; // Init new board
             chessBoard.OnPromotePawn += PromotePawn; // Add event when pawn is promoted
-            chessBoard.OnEndGame += GameEnded;
+            chessBoard.OnEndGame += GameEnded; // Add event when game is ended
             boardRenderer = new BoardRenderer(); // Init new renderer
 
             this.Size = new System.Drawing.Size(1300, 750); // Add minimum offset is 75 and maybe some space
@@ -65,7 +69,7 @@ namespace ChessAI
             panel1.Size = new System.Drawing.Size(650, 650);
             this.MaximizeBox = false; // Prevent maximizing the window
             this.MinimizeBox = false; // Prevent minimizing the window
-
+            WLouterPanel.Visible = false;
 
             if (isDebug == false)
             {
@@ -83,8 +87,8 @@ namespace ChessAI
 
                 // Set the side randomly
                 Side = Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
-                InitGame(Side, timeCtrl, true);
-
+                OpponentName = "AI";
+                InitGame(Side);
             }
         }
 
@@ -92,44 +96,67 @@ namespace ChessAI
         /// Begin the game when the message is received/ Connected to another player
         /// </summary>
         /// <param name="message"></param>
-        private void InitGame(PieceColor side, string timeCtrl, bool isOffl = true)
+        private void InitGame(PieceColor side, string timeCtrl = "10|0")
         {
             if (gameStarted) return; // If game already started, return
             // Set the side
             Side = side;
-            // isOflineMode
-            isOffline = isOffl;
             // Set the game started
             gameStarted = true;
-
-            if (isOffline) // if player playing Offline
-            {
-
-            }
-
 
             LogMessage("Game started! You are: " + Side);
             panel1.Invalidate(); // Redraw whole board
             timeControlInitialize(timeCtrl);
-            InitUserInfo();
-
+            InitUserInfo(OpponentName);
         }
-        private void GameEnded(object sender)
+        private void GameEnded(object sender, EndgameEventArgs e)
         {
-           WLouterPanel.Visible = true;
-            if (chessBoard.EndGame.WonSide == Side)
+
+            if (chessBoard.EndGame.WonSide == Side) // won
             {
                 WLText.Text = "You won!";
-
+                reasonText.Text = reasonEndGame;
+                userPanel.BackColor = System.Drawing.Color.GreenYellow;
+                oppPanel.BackColor = System.Drawing.Color.Transparent;
+                WLinnerPanel.BackColor = System.Drawing.Color.LightGreen;
+                Score01.Text = "1 : 0";
+                uELO.Text = "ELO:";
+                uELO.Visible = false;
             }
-            else
+            else if (chessBoard.EndGame.WonSide != Side) // lose
             {
                 WLText.Text = "You lost!";
+                reasonText.Text = reasonEndGame;
+                userPanel.BackColor = System.Drawing.Color.Transparent;
+                oppPanel.BackColor = System.Drawing.Color.GreenYellow;
+                WLinnerPanel.BackColor = System.Drawing.Color.LightCoral;
+                Score01.Text = "0 : 1";
+                uELO.Text = "ELO:";
+                uELO.Visible = false;
             }
+            else // draw
+            {
+                WLText.Text = "Draw!";
+                reasonText.Text = reasonEndGame;
+                userPanel.BackColor = System.Drawing.Color.Transparent;
+                oppPanel.BackColor = System.Drawing.Color.Transparent;
+                WLinnerPanel.BackColor = System.Drawing.Color.LightGray;
+                Score01.Text = "1/2 : 1/2";
+                uELO.Text = "ELO:";
+                uELO.Visible = false;
+            }
+            WLouterPanel.Visible = true;
         }
+
 
         private void timeControlInitialize(string timeControl)
         {
+            if ((isOffline)) // No time limit for offline mode
+            {
+                opponentTimer.Visible = false;
+                ourTimer.Visible = false;
+                return;
+            }
             string[] timeCtrl = timeControl.Split("|");
             if (timeCtrl.Length != 2) return;
             int timeToComplete = Convert.ToInt32(timeCtrl[0]);
@@ -170,7 +197,7 @@ namespace ChessAI
             Debug.WriteLineIf(isDebug, "X: " + e.X + " Y: " + e.Y);
 
             chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard, isNormalized: false, side: Side); // Handle the click
-                
+
             panel1.Invalidate(); // Redraw whole board
             var mv = "MV#*" + (chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none"); //move
             LogMessage(mv);
@@ -188,7 +215,7 @@ namespace ChessAI
                 currenChatMainForm.moveSendHandler(mv);
                 chessLastMove = mv;
             }
-            if(chessBoard.Turn != Side && isOffline)
+            if (chessBoard.Turn != Side && isOffline)
             {
                 OpponentAIMove();
             }
@@ -340,7 +367,9 @@ namespace ChessAI
         {
             // Set the side randomly
             Side = Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
-            InitGame(Side, "10|0", true);
+            isOffline = true;
+            OpponentName = "AI";
+            InitGame(Side);
         }
 
         public static string GetStockfishDir()
@@ -367,8 +396,14 @@ namespace ChessAI
         }
         private void InitUserInfo(string oppName = "Opponent")
         {
+            // init display
             ourName.Text = PlayerName + " ( " + PlayerNumber + " )";
             opponentName.Text = oppName;
+            // init end game
+            uName1.Text = PlayerName + " ( " + PlayerNumber + " )";
+            uName2.Text = oppName;
+
+
         }
         private void beginTimer()
         {
@@ -420,5 +455,9 @@ namespace ChessAI
 
         }
 
+        private void WLok_Click(object sender, EventArgs e)
+        {
+            WLouterPanel.Visible = false;
+        }
     }
 }

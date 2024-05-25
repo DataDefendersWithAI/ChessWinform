@@ -249,9 +249,9 @@
             reasonText.BackColor = Color.Transparent;
             reasonText.FlatStyle = FlatStyle.Flat;
             reasonText.Font = new Font("Cascadia Code", 18F);
-            reasonText.Location = new Point(92, 52);
+            reasonText.Location = new Point(3, 64);
             reasonText.Name = "reasonText";
-            reasonText.Size = new Size(273, 44);
+            reasonText.Size = new Size(457, 32);
             reasonText.TabIndex = 23;
             reasonText.Text = "By checkmate";
             reasonText.TextAlign = ContentAlignment.MiddleCenter;
@@ -261,9 +261,9 @@
             WLText.BackColor = Color.Transparent;
             WLText.FlatStyle = FlatStyle.Flat;
             WLText.Font = new Font("Copperplate Gothic Bold", 35F, FontStyle.Bold);
-            WLText.Location = new Point(92, 0);
+            WLText.Location = new Point(0, 0);
             WLText.Name = "WLText";
-            WLText.Size = new Size(273, 63);
+            WLText.Size = new Size(457, 64);
             WLText.TabIndex = 23;
             WLText.Text = "You win!";
             WLText.TextAlign = ContentAlignment.MiddleCenter;
@@ -305,6 +305,7 @@
             WLok.TabIndex = 18;
             WLok.Text = "Ok";
             WLok.UseVisualStyleBackColor = false;
+            WLok.Click += WLok_Click;
             // 
             // oppPanel
             // 
@@ -383,9 +384,9 @@
             Score01.BackColor = Color.Transparent;
             Score01.FlatStyle = FlatStyle.Flat;
             Score01.Font = new Font("Cascadia Code", 20F);
-            Score01.Location = new Point(141, 20);
+            Score01.Location = new Point(54, 0);
             Score01.Name = "Score01";
-            Score01.Size = new Size(181, 41);
+            Score01.Size = new Size(353, 61);
             Score01.TabIndex = 20;
             Score01.Text = "0 | 1";
             Score01.TextAlign = ContentAlignment.MiddleCenter;
