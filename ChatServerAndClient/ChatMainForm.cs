@@ -32,7 +32,8 @@ namespace winforms_chat
         ChessAIClient chessClient;
         public PieceColor Side { get; private set; }
 
-    public ChatMainForm(string tableCode = "123456", string userName = "testUser" , ChessAIClient chClient = null, String side = "")
+
+        public ChatMainForm(string tableCode = "123456", string userName = "testUser" , ChessAIClient chClient = null, String side = "")
 		{
             if (ChatMainForm.isMainThread)
             {
@@ -79,8 +80,18 @@ namespace winforms_chat
             ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message(tableCode, "chess", userName, opponentUserName, move, DateTime.Now);
             if (msg == null || comm == null) return;
             comm.SendMessage(msg.ToJson());
+            if (chessClient != null)
+            {
+                chessClient.timeSyncSend();
+            }
         }
-
+        public void timeSyncSendHandler(string move) // write in a diff func to prevent recuresive call
+        {
+            // Send message: {"TableCode": newTableCode, "type": "chess", "from": userName, "to": opponentUserName, "message": move, "date": DateTime.Now}
+            ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message(tableCode, "chess", userName, opponentUserName, move, DateTime.Now);
+            if (msg == null || comm == null) return;
+            comm.SendMessage(msg.ToJson());
+        }
 
         private void LogMessage(string message)
 		{
@@ -128,21 +139,23 @@ namespace winforms_chat
                             //chatModel.Inbound = true;
                             //chatModel.Time = msg.date;
                             //chat_panel.AddMessage(chatModel);
-                            string timeSync = msg.message.Split("[T]")[1];
-                            msg.message = msg.message.Split("[T]")[0];
                             if (chessClient != null)
                             {
-                                if (msg.message.Contains("MV#*"))
+                                if (msg.message.Contains(ChatCommand.Move.ToString() ))
                                 {
-                                    chessClient.MoveAsMessage(msg.message,timeSync);
+                                    chessClient.MoveAsMessage(msg.message.Replace(ChatCommand.Move.ToString(),""));
                                 }
-                                if (msg.message.Contains("ED#*"))
+                                if (msg.message.Contains(ChatCommand.EndGame.ToString()))
                                 {
-                                    chessClient.EndGameOnline(msg.message, timeSync);
+                                    chessClient.EndGameOnline(msg.message.Replace(ChatCommand.EndGame.ToString(), ""));
                                 }
-                                if (msg.message.Contains("RSTR#*"))
+                                if (msg.message.Contains(ChatCommand.Rematch.ToString()))
                                 {
-                                    chessClient.RestartGameOnline(msg.message, timeSync);
+                                    chessClient.RestartGameOnline(msg.message.Replace(ChatCommand.Rematch.ToString(), ""));
+                                }
+                                if (msg.message.Contains(ChatCommand.TimeSync.ToString()))
+                                {
+                                    chessClient.syncTimer(msg.message.Replace(ChatCommand.TimeSync.ToString(), ""));
                                 }
                             }
                         }   
@@ -152,7 +165,8 @@ namespace winforms_chat
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Warning");
+                //MessageBox.Show(ex.Message, "Warning");
+                Console.WriteLine(ex.Message);
             }
         }
 
@@ -207,13 +221,10 @@ namespace winforms_chat
             // Send last message: {"TableCode": newTableCode, "type": "chat", "from": userName, "to": opponentUserName, "message": "disconnect", "date": DateTime.Now} and and also send to server: {"TableCode": "000000", "type": "chat", "from": userName, "to": "server", "message": "disconnect", "date": DateTime.Now}
             if (comm == null) return;
             ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message(tableCode, "chat", userName, opponentUserName, "disconnect", DateTime.Now);
-			comm.SendMessage(msg.ToJson());
-			ChessAI.ChatServerAndClient.Message msg2 = new ChessAI.ChatServerAndClient.Message("000000", "chat", userName, "server", "disconnect", DateTime.Now);
-			comm.SendMessage(msg2.ToJson());
+            comm.SendMessage(msg.ToJson());
+            ChessAI.ChatServerAndClient.Message msg2 = new ChessAI.ChatServerAndClient.Message("000000", "chat", userName, "server", "disconnect", DateTime.Now);
+            comm.SendMessage(msg2.ToJson());
             comm.ClientClose();
-
-
-
         }
-	}
+    }
 }

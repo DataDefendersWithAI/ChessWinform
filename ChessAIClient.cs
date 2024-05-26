@@ -49,9 +49,23 @@ namespace ChessAI
         // Stockfish module
         private IStockfish Stockfish { get; set; }
 
-        private string timeSyncStr()
+        /// <summary>
+        /// Handle the sync time when msg is sent
+        /// </summary>
+        public void timeSyncSend()
         {
-            return Side == PieceColor.White ? "[T]" + timeOur.TotalSeconds + "|" + timeOpponent.TotalSeconds: "[T]" + timeOpponent.TotalSeconds + "|" + timeOur.TotalSeconds;
+            try {
+                string timeSyncStr = Side == PieceColor.White ? timeOur.TotalSeconds + "|" + timeOpponent.TotalSeconds :  timeOpponent.TotalSeconds + "|" + timeOur.TotalSeconds;
+                if (currenChatMainForm != null)
+                {
+                    currenChatMainForm.timeSyncSendHandler(ChatCommand.TimeSync.ToString() + timeSyncStr); // sync display time
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Error in timeSyncStr: " + e.Message);
+                return;
+            }
         }
 
         public ChessAIClient(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, bool DebugMode = false, PieceColor setSide = null)
@@ -129,6 +143,9 @@ namespace ChessAI
             Invalidate();
         }
 
+        /// <summary>
+        /// Handle the end game
+        /// </summary>
         private void GameEnded(object sender, EndgameEventArgs e)
         {
             timer1.Stop();
@@ -179,6 +196,9 @@ namespace ChessAI
 
             Parallel.Invoke(() => ShowPanelWithDelay());
         }
+        /// <summary>
+        /// Show the end game panel with delay
+        /// </summary>
         private async void ShowPanelWithDelay()
         {
             // Add a 2-second delay
@@ -188,9 +208,12 @@ namespace ChessAI
             AgainBtn.Visible = true;
             HomeBtn.Visible = true;
         }
-        public void EndGameOnline(string message, string timeSync)
+
+        /// <summary>
+        /// Handle the end game when online/ received message
+        /// </summary>
+        public void EndGameOnline(string message)
         {
-            message = message.Replace("ED#*", ""); //Normalize message as cmd
             if (message == "Resign")
             {
                 chessBoard.Resign(Side.OppositeColor());
@@ -208,16 +231,20 @@ namespace ChessAI
                 isTimeoutEndGame = true;
                 chessBoard.Resign(Side.OppositeColor());
             }
-            syncTimer(timeSync);
         }
 
+        /// <summary>
+        /// Display the asking for draw message
+        /// </summary>
         private void AskingForDraw()
         {
             DrawAsk.Visible = true;
             DrawText.Text = OpponentName + " asking for a draw. Would you accept?";
         }
 
-
+        /// <summary>
+        /// Handle the restart/rematch game when offline
+        /// </summary>
         private void RestartGame()
         {
             WLouterPanel.Visible = false;
@@ -238,14 +265,16 @@ namespace ChessAI
             {
                 if (currenChatMainForm != null)
                 {
-                    currenChatMainForm.moveSendHandler("RSTR#*RestartAsk" + timeSyncStr());
+                    currenChatMainForm.moveSendHandler(ChatCommand.Rematch.ToString()+ "RestartAsk" );
                 }
             }
         }
 
-        public void RestartGameOnline(string message, string timeSync)
+        /// <summary>
+        /// Handle the restart/rematch game when the message is received online
+        /// </summary>
+        public void RestartGameOnline(string message)
         {
-            message = message.Replace("RSTR#*", ""); //Normalize message as cmd
             if (message == "RestartAsk")
             {
                 RestartAsk.Visible = true;
@@ -266,10 +295,11 @@ namespace ChessAI
                 gameStarted = false;
                 InitGame(Side);
             }
-            syncTimer(timeSync);
         }
 
-
+        /// <summary>
+        /// Initialize the time control for the game
+        /// </summary>
         private void timeControlInitialize(string timeControl)
         {
             //if ((isOffline)) // No time limit for offline mode
@@ -298,6 +328,9 @@ namespace ChessAI
             beginTimer();
         }
 
+        /// <summary>
+        /// Rescale the board when the form is resized
+        /// </summary>
         private void boardResize(object sender, EventArgs e)
         {
             panel1.Size = new System.Drawing.Size(650, 650); //this.Size.Height - 100, this.Size.Height - 100); // Set the panel size
@@ -329,7 +362,7 @@ namespace ChessAI
             chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard, isNormalized: false, side: Side); // Handle the click
 
             panel1.Invalidate(); // Redraw whole board
-            var mv = "MV#*" + (chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none"); //move
+            var mv = ChatCommand.Move.ToString() + (chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none"); //move
             LogMessage(mv);
             
             if (chessBoard.Turn != Side)
@@ -345,12 +378,12 @@ namespace ChessAI
             //  SendMessage(mv);
             if (currenChatMainForm != null
                 && mv != chessLastMove // prevent  spamming the same move
-                && mv != "MV#*none" // prevent sending none move
+                && mv != (ChatCommand.Move.ToString() + "none") // prevent sending none move
                 && chessBoard.Turn != Side  //prevent sending move when it's not our turn // using != because it's end of our turn
                 && isOffline == false // prevent sending move when offline
                 )
             {
-                currenChatMainForm.moveSendHandler(mv + timeSyncStr());
+                currenChatMainForm.moveSendHandler(mv);
                 chessLastMove = mv;
             }
            
@@ -400,9 +433,8 @@ namespace ChessAI
         /// Parsing mesage and moving the piece as other player move receive from server
         /// </summary>
         /// <param name="message"></param>
-        public void MoveAsMessage(string message, string timeSync)
+        public void MoveAsMessage(string message)
         {
-            message = message.Replace("MV#*", ""); //Normalize message as SAN
             // EX: split e4e5 to e4 e5
             //string Sfrom = message.Substring(0, 2);
             //string Sto = message.Substring(2, 2);
@@ -422,7 +454,6 @@ namespace ChessAI
             }
             chessBoard.Move(move);
             panel1.Invalidate();
-            syncTimer(timeSync);
         }
 
     
@@ -553,7 +584,7 @@ namespace ChessAI
             timer1.Start();
         }
 
-        private void syncTimer(string timeSync)
+        public void syncTimer(string timeSync)
         {
             try
             {
@@ -570,7 +601,10 @@ namespace ChessAI
                     timeOur = TimeSpan.FromSeconds(Convert.ToInt32(timeLeft[1]));
                     timeOpponent = TimeSpan.FromSeconds(Convert.ToInt32(timeLeft[0]));
                 }
-            }catch (Exception e)
+                ourTimer.Text = timeOur.ToString(@"mm\:ss");
+                opponentTimer.Text = timeOpponent.ToString(@"mm\:ss");
+            }
+            catch (Exception e)
             {
                 Debug.WriteLine("Error in syncTimer: " + e.Message);
             }
@@ -595,7 +629,7 @@ namespace ChessAI
                         
                         if (currenChatMainForm != null)
                         {
-                            currenChatMainForm.moveSendHandler("ED#*Timeout"+timeSyncStr());
+                            currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "Timeout" );
                         }
                     }
                 }
@@ -666,7 +700,7 @@ namespace ChessAI
             {
                 if (currenChatMainForm != null)
                 {
-                    currenChatMainForm.moveSendHandler("ED#*DrawAsk"+timeSyncStr());
+                    currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "DrawAsk" );
                 }
             }
         }
@@ -683,7 +717,7 @@ namespace ChessAI
             {
                 if (currenChatMainForm != null)
                 {
-                    currenChatMainForm.moveSendHandler("ED#*Resign" + timeSyncStr());
+                    currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "Resign" );
                     chessBoard.Resign(Side);
                 }
             }
@@ -695,7 +729,7 @@ namespace ChessAI
             chessBoard.Draw();
             if (currenChatMainForm != null)
             {
-                currenChatMainForm.moveSendHandler("ED#*DrawAccept"+timeSyncStr());
+                currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "DrawAccept" );
             }
         }
 
@@ -710,14 +744,31 @@ namespace ChessAI
             if (currenChatMainForm != null)
             {
                 Side = Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
-                currenChatMainForm.moveSendHandler("RSTR#*RestartAccept-"+Side.OppositeColor());
-                RestartGameOnline("RSTR#*RestartAccept-" + Side ,"");
+                currenChatMainForm.moveSendHandler(ChatCommand.Rematch.ToString() + "RestartAccept-" +Side.OppositeColor());
+                RestartGameOnline(ChatCommand.Rematch.ToString() + "RestartAccept-" + Side);
             }
         }
 
         private void ResN_Click(object sender, EventArgs e)
         {
             RestartAsk.Visible = false;
+        }
+        
+        private void ClientForm_Closed(object sender, FormClosingEventArgs e)
+        {
+            if (isOffline)
+            {
+                // Close the stockfish process?
+            }
+            else
+            {
+                if (currenChatMainForm != null)
+                {
+                    currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "Resign");
+                    chessBoard.Resign(Side);
+                    currenChatMainForm.Close();
+                }
+            }
         }
     }
 }

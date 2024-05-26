@@ -192,7 +192,8 @@ namespace winforms_chat.ChatForm
                     //Limits the size of the attachment to 1.45 MB, which is less than the max possible size of an SMS attachment of 1.5 MB.
                     if (file.Length > 1450000)
                     {
-                        MessageBox.Show("The attachment provided " + fileDialog.SafeFileName + " is too big to be sent by SMS. Please select another.", "Attachment not added.");
+                        //MessageBox.Show("The attachment provided " + fileDialog.SafeFileName + " is too big to be sent by SMS. Please select another.", "Attachment not added.");
+                        Console.WriteLine("The attachment provided " + fileDialog.SafeFileName + " is too big to be sent by SMS. Please select another.");
                         return;
                     }
                     else
@@ -202,7 +203,8 @@ namespace winforms_chat.ChatForm
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("There was an issue with retrieving the file.", "File Operation Error");
+                    //MessageBox.Show("There was an issue with retrieving the file.", "File Operation Error");
+                    Console.WriteLine("There was an issue with retrieving the file.");
                 }
             }
             else
