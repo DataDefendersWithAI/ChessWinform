@@ -136,7 +136,7 @@
             label5.TabIndex = 9;
             label5.Text = "Note: In this demo, you must enter distinct name to identify you on server. Real app identify you by unique UUID";
             // 
-            // ChatClientJoin
+            // PvpWaitingForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -144,8 +144,8 @@
             Controls.Add(label5);
             Controls.Add(pnl_join);
             Controls.Add(pnl_wait);
-            Name = "ChatClientJoin";
-            Text = "ChatClientJoin";
+            Name = "PvpWaitingForm";
+            Text = "PvpWaitingForm";
             FormClosing += ClientForm_FormClosing;
             Load += ClientForm_Load;
             pnl_wait.ResumeLayout(false);
