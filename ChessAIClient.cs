@@ -30,6 +30,9 @@ namespace ChessAI
 
         private int timeIncrement = 0; // Time increment in seconds
 
+        private float initialDpi = 96f; // 100% =96  125% = 120, 150% = 144, 175% = 168, 200% = 192
+        private float currentScale = 1.0f; // Current scale of the form
+
         private bool gameStarted = false;
         private bool isDebug;
         private bool isOffline; // Playing offline with bots/ AI
@@ -85,10 +88,12 @@ namespace ChessAI
             chessBoard.OnEndGame += GameEnded; // Add event when game is ended
             boardRenderer = new BoardRenderer(); // Init new renderer
 
-            this.Size = new System.Drawing.Size(1300, 750); // Add minimum offset is 75 and maybe some space
-                                                            // this.FormClosed += ClientForm_FormClosed; // Add event when form is closed
-                                                            // panel1.Size = new System.Drawing.Size(this.Size.Height - 100 , this.Size.Height - 100 ); // Set the panel size
-            panel1.Size = new System.Drawing.Size(650, 650);
+            currentScale = initialDpi / this.DeviceDpi; // Get the current scale of the form
+        
+          //  this.Width = (int)(this.Width * currentScale); // Scale the width
+            this.Height = (int)(this.Height * currentScale); // Scale the height
+            // panel1.Size = new System.Drawing.Size((int)Math.Floor(this.Size.Height - 100 * currentScale) , (int)Math.Floor(this.Size.Height - 100 * currentScale));
+
             this.MaximizeBox = false; // Prevent maximizing the window
             this.MinimizeBox = false; // Prevent minimizing the window
             WLouterPanel.Visible = false;
@@ -96,8 +101,6 @@ namespace ChessAI
             HomeBtn.Visible = false;
             DrawAsk.Visible = false;
             RestartAsk.Visible = false;
-
-
 
             if (isDebug == false)
             {
@@ -216,6 +219,7 @@ namespace ChessAI
         {
             if (message == "Resign")
             {
+                if (chessBoard.IsEndGame) return; // if game already ended, return; 
                 chessBoard.Resign(Side.OppositeColor());
             }
             if (message == "DrawAsk")
@@ -333,12 +337,10 @@ namespace ChessAI
         /// </summary>
         private void boardResize(object sender, EventArgs e)
         {
-            panel1.Size = new System.Drawing.Size(650, 650); //this.Size.Height - 100, this.Size.Height - 100); // Set the panel size
             panel1.Invalidate(); // Redraw whole board
-            this.Size = new System.Drawing.Size(1300, 750); // Add minimum offset is 75 and maybe some space
-                                                            // this.FormClosed += ClientForm_FormClosed; // Add event when form is closed
         }
 
+ 
         /// <summary>
         /// Redraw the board
         /// </summary>
@@ -496,6 +498,7 @@ namespace ChessAI
 
         private void ClientForm_Load(object sender, EventArgs e)
         {
+            ScaleControls(currentScale);
             if (isOffline) return; // If offline mode, return
             // Do something when form is loaded
             x = new ChatClientJoin();
@@ -514,6 +517,7 @@ namespace ChessAI
                 InitGame(currenChatMainForm.Side, "1|5");
             }
         }
+
 
         /// <summary>
         /// Log message for debugging
@@ -765,10 +769,46 @@ namespace ChessAI
                 if (currenChatMainForm != null)
                 {
                     currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "Resign");
-                    chessBoard.Resign(Side);
                     currenChatMainForm.Close();
+                    if (chessBoard.IsEndGame) return; // if game already ended, return; 
+                    chessBoard.Resign(Side);
                 }
             }
         }
+
+        private void ScaleControls(float scale)
+        {
+            //rescale the panel1
+            var oldPanel1_Width = panel1.Width;
+            panel1.Size = new System.Drawing.Size((int)Math.Floor(this.Size.Height - 100 * scale), (int)Math.Floor(this.Size.Height - 100 * scale));
+            var deltaWidth = Math.Abs(panel1.Width - oldPanel1_Width);
+         //this.Width = (int)(this.Width + deltaWidth); // Scale the width
+            WLouterPanel.Left = (int)(WLouterPanel.Left + deltaWidth);
+
+            foreach (Control control in this.Controls)
+            {
+                Debug.WriteLine(control.Name);
+                if (control.Name == "panel1") continue;
+                ScaleControl(control, deltaWidth, true,scale);
+            }
+            foreach (Control childControl in panel1.Controls)
+            {
+                ScaleControl(childControl, deltaWidth, true,scale);
+            }
+        }
+        private void ScaleControl(Control control, int deltaWidth, bool usingDelta , float scale )
+        {
+            control.Left = usingDelta? (int)(control.Left  + deltaWidth): (int)(control.Left *scale);  
+            control.Width = (int)(control.Width *scale);
+            control.Height = (int)(control.Height * scale);
+            control.Top = (int)(control.Top * currentScale);
+            control.Font = new System.Drawing.Font(control.Font.FontFamily, control.Font.Size * scale);
+
+            foreach (Control childControl in control.Controls)
+            {
+                ScaleControl(childControl, deltaWidth, false ,scale);
+            }
+        }
+
     }
 }

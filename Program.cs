@@ -1,7 +1,8 @@
 using ChessAI;
 using winforms_chat;
-namespace winform_chat
+using System.Windows.Forms;
 
+namespace winform_chat
 {
     internal static class Program
     {
@@ -13,11 +14,13 @@ namespace winform_chat
         {
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
+   
+
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             ApplicationConfiguration.Initialize();
-            Application.Run(new SpawnClientAndServer());
+            Application.Run(new MainScreen());
         }
     }
 }

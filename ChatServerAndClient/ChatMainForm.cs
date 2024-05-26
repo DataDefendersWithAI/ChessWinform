@@ -12,6 +12,7 @@ using Message = ChessAI.ChatServerAndClient.Message;
 using System.Threading;
 using ChessAI;
 using Chess;
+using System.Diagnostics;
 
 namespace winforms_chat
 {
@@ -187,7 +188,7 @@ namespace winforms_chat
                 this.Controls.Add(chat_panel);
 
                 // Add a welcome message
-                chat_panel.AddMessage(new ChatForm.TextChatModel() { Author = "System", Body = $"Welcome back, {userName}! Joined chat in table {tableCode}!", Inbound = true, Time = DateTime.Now });
+                chat_panel.AddMessage(new ChatForm.TextChatModel() { Author = "System", Body = $"Welcome , {userName} joined chat [ID:{tableCode}]. Let's begin a fair game!", Inbound = true, Time = DateTime.Now });
 
                 // Start communication
                 comm = new ClientCommunication(serverIP, serverPort, LogMessage);
@@ -220,11 +221,16 @@ namespace winforms_chat
 		{
             // Send last message: {"TableCode": newTableCode, "type": "chat", "from": userName, "to": opponentUserName, "message": "disconnect", "date": DateTime.Now} and and also send to server: {"TableCode": "000000", "type": "chat", "from": userName, "to": "server", "message": "disconnect", "date": DateTime.Now}
             if (comm == null) return;
+            Debug.WriteLine("ChatMainFrom_FormClosing");
+ 
             ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message(tableCode, "chat", userName, opponentUserName, "disconnect", DateTime.Now);
             comm.SendMessage(msg.ToJson());
+
             ChessAI.ChatServerAndClient.Message msg2 = new ChessAI.ChatServerAndClient.Message("000000", "chat", userName, "server", "disconnect", DateTime.Now);
             comm.SendMessage(msg2.ToJson());
+
             comm.ClientClose();
+
         }
     }
 }
