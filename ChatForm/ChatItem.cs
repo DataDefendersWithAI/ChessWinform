@@ -106,11 +106,13 @@ namespace winforms_chat.ChatForm
                 }
 
                 System.IO.File.WriteAllBytes(fullpath, attachmentmodel.Attachment);
-                MessageBox.Show("Attachment " + attachmentmodel.Filename + " was downloaded to the path " + fullpath, "File Downloaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //MessageBox.Show("Attachment " + attachmentmodel.Filename + " was downloaded to the path " + fullpath, "File Downloaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Console.WriteLine("Attachment " + attachmentmodel.Filename + " was downloaded to the path " + fullpath);
             }
             else
             {
-                MessageBox.Show("Attachment " + attachmentmodel.Filename + " could not be found.", "File Not Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                //MessageBox.Show("Attachment " + attachmentmodel.Filename + " could not be found.", "File Not Found", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Console.WriteLine("Attachment " + attachmentmodel.Filename + " could not be found.");
             }
         }
 

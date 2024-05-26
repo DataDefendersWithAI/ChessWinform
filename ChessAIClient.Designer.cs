@@ -742,6 +742,7 @@
             Text = "Form1";
             Load += ClientForm_Load;
             SizeChanged += boardResize;
+            FormClosing += ClientForm_Closed;
             flowLayoutPanel1.ResumeLayout(false);
             flowLayoutPanel1.PerformLayout();
             panel1.ResumeLayout(false);
