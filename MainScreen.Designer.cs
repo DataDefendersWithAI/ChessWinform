@@ -68,17 +68,19 @@
             SideBar.Controls.Add(panel7);
             SideBar.Dock = DockStyle.Left;
             SideBar.Location = new Point(0, 0);
-            SideBar.MaximumSize = new Size(235, 688);
-            SideBar.MinimumSize = new Size(60, 688);
+            SideBar.Margin = new Padding(3, 2, 3, 2);
+            SideBar.MaximumSize = new Size(206, 516);
+            SideBar.MinimumSize = new Size(52, 516);
             SideBar.Name = "SideBar";
-            SideBar.Size = new Size(235, 688);
+            SideBar.Size = new Size(206, 516);
             SideBar.TabIndex = 1;
             // 
             // pictureBox2
             // 
             pictureBox2.BackColor = Color.Transparent;
             pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(3, 3);
+            pictureBox2.Location = new Point(3, 2);
+            pictureBox2.Margin = new Padding(3, 2, 3, 2);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(230, 75);
             pictureBox2.SizeMode = PictureBoxSizeMode.AutoSize;
@@ -88,21 +90,23 @@
             // panel5
             // 
             panel5.Controls.Add(MenuButton);
-            panel5.Location = new Point(3, 84);
+            panel5.Location = new Point(3, 81);
+            panel5.Margin = new Padding(3, 2, 3, 2);
             panel5.Name = "panel5";
-            panel5.Size = new Size(211, 62);
+            panel5.Size = new Size(185, 46);
             panel5.TabIndex = 6;
             // 
             // MenuButton
             // 
             MenuButton.FlatStyle = FlatStyle.Flat;
-            MenuButton.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            MenuButton.Font = new Font("Showcard Gothic", 18F, FontStyle.Bold);
             MenuButton.Image = (Image)resources.GetObject("MenuButton.Image");
             MenuButton.ImageAlign = ContentAlignment.MiddleLeft;
-            MenuButton.Location = new Point(-18, -16);
+            MenuButton.Location = new Point(-16, -12);
+            MenuButton.Margin = new Padding(3, 2, 3, 2);
             MenuButton.Name = "MenuButton";
-            MenuButton.Padding = new Padding(30, 0, 0, 0);
-            MenuButton.Size = new Size(245, 97);
+            MenuButton.Padding = new Padding(26, 0, 0, 0);
+            MenuButton.Size = new Size(214, 73);
             MenuButton.TabIndex = 0;
             MenuButton.Text = "Menu";
             MenuButton.UseVisualStyleBackColor = true;
@@ -111,21 +115,23 @@
             // HomePanel
             // 
             HomePanel.Controls.Add(HomeButton);
-            HomePanel.Location = new Point(3, 152);
+            HomePanel.Location = new Point(3, 131);
+            HomePanel.Margin = new Padding(3, 2, 3, 2);
             HomePanel.Name = "HomePanel";
-            HomePanel.Size = new Size(211, 62);
+            HomePanel.Size = new Size(185, 46);
             HomePanel.TabIndex = 4;
             // 
             // HomeButton
             // 
             HomeButton.FlatStyle = FlatStyle.Flat;
-            HomeButton.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            HomeButton.Font = new Font("Showcard Gothic", 18F, FontStyle.Bold);
             HomeButton.Image = (Image)resources.GetObject("HomeButton.Image");
             HomeButton.ImageAlign = ContentAlignment.MiddleLeft;
-            HomeButton.Location = new Point(-18, -16);
+            HomeButton.Location = new Point(-16, -12);
+            HomeButton.Margin = new Padding(3, 2, 3, 2);
             HomeButton.Name = "HomeButton";
-            HomeButton.Padding = new Padding(30, 0, 0, 0);
-            HomeButton.Size = new Size(254, 97);
+            HomeButton.Padding = new Padding(26, 0, 0, 0);
+            HomeButton.Size = new Size(222, 73);
             HomeButton.TabIndex = 0;
             HomeButton.Text = "Home";
             HomeButton.UseVisualStyleBackColor = true;
@@ -134,21 +140,23 @@
             // panel6
             // 
             panel6.Controls.Add(ProfileButton);
-            panel6.Location = new Point(3, 220);
+            panel6.Location = new Point(3, 181);
+            panel6.Margin = new Padding(3, 2, 3, 2);
             panel6.Name = "panel6";
-            panel6.Size = new Size(211, 62);
+            panel6.Size = new Size(185, 46);
             panel6.TabIndex = 6;
             // 
             // ProfileButton
             // 
             ProfileButton.FlatStyle = FlatStyle.Flat;
-            ProfileButton.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            ProfileButton.Font = new Font("Showcard Gothic", 18F, FontStyle.Bold);
             ProfileButton.Image = (Image)resources.GetObject("ProfileButton.Image");
             ProfileButton.ImageAlign = ContentAlignment.MiddleLeft;
-            ProfileButton.Location = new Point(-18, -16);
+            ProfileButton.Location = new Point(-16, -12);
+            ProfileButton.Margin = new Padding(3, 2, 3, 2);
             ProfileButton.Name = "ProfileButton";
-            ProfileButton.Padding = new Padding(30, 0, 0, 0);
-            ProfileButton.Size = new Size(264, 97);
+            ProfileButton.Padding = new Padding(26, 0, 0, 0);
+            ProfileButton.Size = new Size(231, 73);
             ProfileButton.TabIndex = 0;
             ProfileButton.Text = "Profile";
             ProfileButton.UseVisualStyleBackColor = true;
@@ -157,19 +165,21 @@
             // panel1
             // 
             panel1.Controls.Add(PvEButton);
-            panel1.Location = new Point(3, 288);
+            panel1.Location = new Point(3, 231);
+            panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(211, 62);
+            panel1.Size = new Size(185, 46);
             panel1.TabIndex = 2;
             // 
             // PvEButton
             // 
             PvEButton.FlatStyle = FlatStyle.Flat;
-            PvEButton.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            PvEButton.Font = new Font("Showcard Gothic", 18F, FontStyle.Bold);
             PvEButton.ImageAlign = ContentAlignment.MiddleLeft;
-            PvEButton.Location = new Point(-41, -16);
+            PvEButton.Location = new Point(-36, -12);
+            PvEButton.Margin = new Padding(3, 2, 3, 2);
             PvEButton.Name = "PvEButton";
-            PvEButton.Size = new Size(277, 97);
+            PvEButton.Size = new Size(242, 73);
             PvEButton.TabIndex = 0;
             PvEButton.Text = "🤖 PvE 🤖 ";
             PvEButton.UseVisualStyleBackColor = true;
@@ -178,19 +188,21 @@
             // panel2
             // 
             panel2.Controls.Add(PvPButton);
-            panel2.Location = new Point(3, 356);
+            panel2.Location = new Point(3, 281);
+            panel2.Margin = new Padding(3, 2, 3, 2);
             panel2.Name = "panel2";
-            panel2.Size = new Size(211, 62);
+            panel2.Size = new Size(185, 46);
             panel2.TabIndex = 3;
             // 
             // PvPButton
             // 
             PvPButton.FlatStyle = FlatStyle.Flat;
-            PvPButton.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            PvPButton.Font = new Font("Showcard Gothic", 18F, FontStyle.Bold);
             PvPButton.ImageAlign = ContentAlignment.MiddleLeft;
-            PvPButton.Location = new Point(-50, -16);
+            PvPButton.Location = new Point(-44, -12);
+            PvPButton.Margin = new Padding(3, 2, 3, 2);
             PvPButton.Name = "PvPButton";
-            PvPButton.Size = new Size(286, 97);
+            PvPButton.Size = new Size(250, 73);
             PvPButton.TabIndex = 0;
             PvPButton.Text = "⚔ PvP ⚔️";
             PvPButton.UseVisualStyleBackColor = true;
@@ -199,21 +211,23 @@
             // panel7
             // 
             panel7.Controls.Add(LogoutButton);
-            panel7.Location = new Point(3, 424);
+            panel7.Location = new Point(3, 331);
+            panel7.Margin = new Padding(3, 2, 3, 2);
             panel7.Name = "panel7";
-            panel7.Size = new Size(211, 62);
+            panel7.Size = new Size(185, 46);
             panel7.TabIndex = 7;
             // 
             // LogoutButton
             // 
             LogoutButton.FlatStyle = FlatStyle.Flat;
-            LogoutButton.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            LogoutButton.Font = new Font("Showcard Gothic", 18F, FontStyle.Bold);
             LogoutButton.Image = (Image)resources.GetObject("LogoutButton.Image");
             LogoutButton.ImageAlign = ContentAlignment.MiddleLeft;
-            LogoutButton.Location = new Point(-18, -16);
+            LogoutButton.Location = new Point(-16, -12);
+            LogoutButton.Margin = new Padding(3, 2, 3, 2);
             LogoutButton.Name = "LogoutButton";
-            LogoutButton.Padding = new Padding(30, 0, 0, 0);
-            LogoutButton.Size = new Size(254, 97);
+            LogoutButton.Padding = new Padding(26, 0, 0, 0);
+            LogoutButton.Size = new Size(222, 73);
             LogoutButton.TabIndex = 0;
             LogoutButton.Text = "Logout";
             LogoutButton.UseVisualStyleBackColor = true;
@@ -227,18 +241,20 @@
             // MainPanel
             // 
             MainPanel.Dock = DockStyle.Fill;
-            MainPanel.Location = new Point(235, 0);
+            MainPanel.Location = new Point(206, 0);
+            MainPanel.Margin = new Padding(3, 2, 3, 2);
             MainPanel.Name = "MainPanel";
-            MainPanel.Size = new Size(877, 688);
+            MainPanel.Size = new Size(767, 516);
             MainPanel.TabIndex = 2;
             // 
             // MainScreen
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1112, 688);
+            ClientSize = new Size(973, 516);
             Controls.Add(MainPanel);
             Controls.Add(SideBar);
+            Margin = new Padding(3, 2, 3, 2);
             Name = "MainScreen";
             Text = "MainScreen";
             Load += MainScreen_Load;

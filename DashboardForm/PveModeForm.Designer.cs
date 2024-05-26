@@ -45,11 +45,12 @@
             EvilButton.BackgroundImageLayout = ImageLayout.Stretch;
             EvilButton.FlatAppearance.BorderSize = 0;
             EvilButton.FlatStyle = FlatStyle.Flat;
-            EvilButton.Font = new Font("Microsoft Sans Serif", 22.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            EvilButton.Location = new Point(110, 324);
+            EvilButton.Font = new Font("Showcard Gothic", 22.2F, FontStyle.Bold);
+            EvilButton.ForeColor = Color.Indigo;
+            EvilButton.Location = new Point(110, 368);
             EvilButton.Margin = new Padding(3, 2, 3, 2);
             EvilButton.Name = "EvilButton";
-            EvilButton.Size = new Size(249, 58);
+            EvilButton.Size = new Size(272, 58);
             EvilButton.TabIndex = 14;
             EvilButton.Text = "😈 Evil";
             EvilButton.UseVisualStyleBackColor = false;
@@ -67,12 +68,12 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Microsoft Sans Serif", 22.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.Location = new Point(420, 138);
+            label2.Font = new Font("Showcard Gothic", 22.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label2.Location = new Point(438, 181);
             label2.Name = "label2";
-            label2.Size = new Size(270, 144);
+            label2.Size = new Size(289, 74);
             label2.TabIndex = 16;
-            label2.Text = "You have choose \r\n      PVE mode \r\nPlease choose \r\nyour play mode";
+            label2.Text = "Please choose \r\nyour play mode";
             // 
             // EasyButton
             // 
@@ -81,11 +82,12 @@
             EasyButton.BackgroundImageLayout = ImageLayout.Stretch;
             EasyButton.FlatAppearance.BorderSize = 0;
             EasyButton.FlatStyle = FlatStyle.Flat;
-            EasyButton.Font = new Font("Microsoft Sans Serif", 22.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            EasyButton.Location = new Point(110, 138);
+            EasyButton.Font = new Font("Showcard Gothic", 22.2F, FontStyle.Bold);
+            EasyButton.ForeColor = Color.Teal;
+            EasyButton.Location = new Point(110, 109);
             EasyButton.Margin = new Padding(3, 2, 3, 2);
             EasyButton.Name = "EasyButton";
-            EasyButton.Size = new Size(249, 58);
+            EasyButton.Size = new Size(272, 58);
             EasyButton.TabIndex = 17;
             EasyButton.Text = "Easy";
             EasyButton.UseVisualStyleBackColor = false;
@@ -98,11 +100,12 @@
             BabyButton.BackgroundImageLayout = ImageLayout.Stretch;
             BabyButton.FlatAppearance.BorderSize = 0;
             BabyButton.FlatStyle = FlatStyle.Flat;
-            BabyButton.Font = new Font("Microsoft Sans Serif", 22.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            BabyButton.Location = new Point(110, 76);
+            BabyButton.Font = new Font("Showcard Gothic", 22.2F, FontStyle.Bold);
+            BabyButton.ForeColor = Color.ForestGreen;
+            BabyButton.Location = new Point(110, 22);
             BabyButton.Margin = new Padding(3, 2, 3, 2);
             BabyButton.Name = "BabyButton";
-            BabyButton.Size = new Size(249, 58);
+            BabyButton.Size = new Size(272, 58);
             BabyButton.TabIndex = 18;
             BabyButton.Text = "👶 Baby";
             BabyButton.UseVisualStyleBackColor = false;
@@ -115,13 +118,14 @@
             IntermidiateButton.BackgroundImageLayout = ImageLayout.Stretch;
             IntermidiateButton.FlatAppearance.BorderSize = 0;
             IntermidiateButton.FlatStyle = FlatStyle.Flat;
-            IntermidiateButton.Font = new Font("Microsoft Sans Serif", 22.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            IntermidiateButton.Location = new Point(110, 200);
+            IntermidiateButton.Font = new Font("Showcard Gothic", 22.2F, FontStyle.Bold);
+            IntermidiateButton.ForeColor = Color.DarkGoldenrod;
+            IntermidiateButton.Location = new Point(110, 197);
             IntermidiateButton.Margin = new Padding(3, 2, 3, 2);
             IntermidiateButton.Name = "IntermidiateButton";
-            IntermidiateButton.Size = new Size(249, 58);
+            IntermidiateButton.Size = new Size(272, 58);
             IntermidiateButton.TabIndex = 19;
-            IntermidiateButton.Text = "Intermidiate";
+            IntermidiateButton.Text = "Intermediate";
             IntermidiateButton.UseVisualStyleBackColor = false;
             IntermidiateButton.Click += IntermidiateButton_Click;
             // 
@@ -132,11 +136,12 @@
             HardButton.BackgroundImageLayout = ImageLayout.Stretch;
             HardButton.FlatAppearance.BorderSize = 0;
             HardButton.FlatStyle = FlatStyle.Flat;
-            HardButton.Font = new Font("Microsoft Sans Serif", 22.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            HardButton.Location = new Point(110, 262);
+            HardButton.Font = new Font("Showcard Gothic", 22.2F, FontStyle.Bold);
+            HardButton.ForeColor = Color.Sienna;
+            HardButton.Location = new Point(110, 279);
             HardButton.Margin = new Padding(3, 2, 3, 2);
             HardButton.Name = "HardButton";
-            HardButton.Size = new Size(249, 58);
+            HardButton.Size = new Size(272, 58);
             HardButton.TabIndex = 20;
             HardButton.Text = "Hard";
             HardButton.UseVisualStyleBackColor = false;
@@ -146,6 +151,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.Wheat;
             ClientSize = new Size(766, 455);
             Controls.Add(HardButton);
             Controls.Add(IntermidiateButton);
