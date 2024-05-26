@@ -199,6 +199,7 @@ namespace ChessAI.ChatServerAndClient
             {
                 LogMessage("Error: " + ex.Message);
             }
+            
         }
         /// <summary>
         /// Logs a message using the receive handler.

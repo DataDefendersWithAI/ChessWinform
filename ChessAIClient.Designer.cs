@@ -64,9 +64,7 @@
             ourCaptured = new FlowLayoutPanel();
             ourName = new Label();
             opponentName = new Label();
-            opponentFlag = new Button();
             imageList2 = new ImageList(components);
-            ourFlag = new Button();
             drawBtn = new Button();
             resignBtn = new Button();
             timer1 = new System.Windows.Forms.Timer(components);
@@ -253,7 +251,7 @@
             WLouterPanel.Controls.Add(reasonText);
             WLouterPanel.Controls.Add(WLText);
             WLouterPanel.Controls.Add(WLinnerPanel);
-            WLouterPanel.Location = new Point(85, 87);
+            WLouterPanel.Location = new Point(94, 72);
             WLouterPanel.Name = "WLouterPanel";
             WLouterPanel.Size = new Size(460, 493);
             WLouterPanel.TabIndex = 0;
@@ -506,18 +504,6 @@
             opponentName.Text = "Mittens (1)";
             opponentName.TextAlign = ContentAlignment.MiddleLeft;
             // 
-            // opponentFlag
-            // 
-            opponentFlag.ImageIndex = 1;
-            opponentFlag.ImageList = imageList2;
-            opponentFlag.Location = new Point(884, 133);
-            opponentFlag.Margin = new Padding(3, 2, 3, 2);
-            opponentFlag.Name = "opponentFlag";
-            opponentFlag.Size = new Size(37, 32);
-            opponentFlag.TabIndex = 5;
-            opponentFlag.Text = " ";
-            opponentFlag.UseVisualStyleBackColor = true;
-            // 
             // imageList2
             // 
             imageList2.ColorDepth = ColorDepth.Depth8Bit;
@@ -531,18 +517,6 @@
             imageList2.Images.SetKeyName(5, "WKnight");
             imageList2.Images.SetKeyName(6, "WQueen");
             imageList2.Images.SetKeyName(7, "WRook");
-            // 
-            // ourFlag
-            // 
-            ourFlag.ImageIndex = 1;
-            ourFlag.ImageList = imageList2;
-            ourFlag.Location = new Point(884, 502);
-            ourFlag.Margin = new Padding(3, 2, 3, 2);
-            ourFlag.Name = "ourFlag";
-            ourFlag.Size = new Size(37, 32);
-            ourFlag.TabIndex = 14;
-            ourFlag.Text = " ";
-            ourFlag.UseVisualStyleBackColor = true;
             // 
             // drawBtn
             // 
@@ -723,13 +697,11 @@
             Controls.Add(label2);
             Controls.Add(resignBtn);
             Controls.Add(drawBtn);
-            Controls.Add(ourFlag);
             Controls.Add(opponentName);
             Controls.Add(ourName);
             Controls.Add(ourCaptured);
             Controls.Add(opponentCaptured);
             Controls.Add(ourTimer);
-            Controls.Add(opponentFlag);
             Controls.Add(opponentTimer);
             Controls.Add(panel1);
             Controls.Add(flowLayoutPanel1);
@@ -740,9 +712,9 @@
             Margin = new Padding(3, 2, 3, 2);
             Name = "ChessAIClient";
             Text = "Form1";
+            FormClosing += ClientForm_Closed;
             Load += ClientForm_Load;
             SizeChanged += boardResize;
-            FormClosing += ClientForm_Closed;
             flowLayoutPanel1.ResumeLayout(false);
             flowLayoutPanel1.PerformLayout();
             panel1.ResumeLayout(false);
@@ -777,9 +749,7 @@
         private FlowLayoutPanel ourCaptured;
         private Label ourName;
         private Label opponentName;
-        private Button opponentFlag;
         private ImageList imageList2;
-        private Button ourFlag;
         private Button drawBtn;
         private Button resignBtn;
         private System.Windows.Forms.Timer timer1;

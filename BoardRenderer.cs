@@ -56,7 +56,7 @@ namespace ChessAI
             edge = edgeSet;
             Offset = new Size((int)Math.Floor(edge * 0.1), (int)Math.Floor(edge * 0.1));
             TileSize = new Size(( int) (edge - Offset.Width*2) / noOfTiles,(int) (edge-Offset.Height*2) /noOfTiles);
-            
+
 
             try
             {
