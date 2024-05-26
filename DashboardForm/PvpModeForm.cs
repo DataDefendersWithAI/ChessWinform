@@ -10,6 +10,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using ChessAI;
+using System.Diagnostics;
 
 namespace winform_chat.DashboardForm;
 
@@ -21,13 +23,36 @@ public partial class PvpModeForm : Form
 
     // Variables
     private Communication comm;
+    // Constants
     string serverIP = ChessAI.ChatServerAndClient.Constants.serverIP;
     int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
+
     private System.Windows.Forms.Timer autoPickTimer;
     private bool isAutoPicking = false;
     private List<PlayerRoom> playerRooms;
 
-    public PvpModeForm()
+    MainScreen ParentForm;
+
+    // Predefined array of time control strings
+    public static Dictionary<string, string> TimeControls = new Dictionary<string, string>()
+    {
+
+        { "1|0", "Blitz"},   // 1 minute, no increment
+        { "3|0", "Blitz"},    // 3 minutes, no increment
+        { "5|0", "Blitz"},    // 5 minutes, no increment
+        { "10|0", "Rapid"},   // 10 minute, no increment
+        { "10|5", "Rapid"},   // 10 minutes, 5 seconds increment
+        { "15|0", "Rapid"},   // 15 minutes, no increment
+        { "30|0", "Rapid"},   // 30 minutes, no increment   
+        { "15|10", "Rapid"},  // 15 minutes, 10 seconds increment
+        { "30|20", "Rapid"},  // 30 minutes, 20 seconds increment
+        { "60|0", "Classical"},// 60 minutes, no increment
+        { "60|30", "Classical"},// 60 minutes, 30 seconds increment
+        { "90|30", "Classical"},// 90 minutes, 30 seconds increment
+        { "120|60", "Classical"},// 120 minutes, 60 seconds increment
+    };
+
+    public PvpModeForm(MainScreen ParentF)
     {
         InitializeComponent();
         // Initialize timer
@@ -36,39 +61,47 @@ public partial class PvpModeForm : Form
         autoPickTimer.Tick += btn_joinRandom_Click;
         InitializePlayerRooms();
         FillListBoxPlayerRooms();
-        comboBox1.Items.AddRange(TimeControls);
-    }
+        // Add items to the ComboBox
+        foreach (var timeControl in TimeControls)
+        {
+            comboBox1.Items.Add($"{timeControl.Key} - {timeControl.Value}");
+        }
+        comboBox1.SelectedIndex = 3;
 
-    // Predefined array of time control strings
-    public static string[] TimeControls = new string[]
-    {
-        "1|0",   // 1 minute, no increment
-        "3|0",   // 3 minutes, no increment
-        "5|0",   // 5 minutes, no increment
-        "10|0",  // 10 minutes, no increment
-        "15|0",  // 15 minutes, no increment
-        "30|0",  // 30 minutes, no increment
-        "3|2",   // 3 minutes, 2-second increment
-        "5|5",   // 5 minutes, 5-second increment
-        "10|10", // 10 minutes, 10-second increment
-        "15|10", // 15 minutes, 10-second increment
-        "30|30", // 30 minutes, 30-second increment
-        "60|0",  // 60 minutes, no increment
-        "60|30"  // 60 minutes, 30-second increment
-    };
+        // Add column name "Code" and "Player"
+        listview_userQueue.View = View.Details;
+        listview_userQueue.Columns.Add("Code", 50);
+        listview_userQueue.Columns.Add("Player", 100);
+        
+        ParentForm = ParentF;
+        
+    }
 
     private void InitializePlayerRooms()
     {
         this.playerRooms = new List<PlayerRoom>
         {
-            new PlayerRoom("Kiên", "10|0"),
-            new PlayerRoom("Phong", "15|0"),
-            new PlayerRoom("Thành", "15|15")
+           new PlayerRoom("Kiên", "10|0"),
+           new PlayerRoom("Phong", "15|0"),
+           new PlayerRoom("Thành", "15|15")
         };
+    }
+
+    private void ParseStringToPlayerRooms(string playerRoomsString)
+    {
+        playerRooms.Clear();
+        string[] playerRoomStrings = playerRoomsString.Split('~'); // Split by "~"
+        foreach (var playerRoomString in playerRoomStrings)
+        {
+            string[] playerRoom = playerRoomString.Split('#'); // Split by "#"/ player name, game mode
+            playerRooms.Add(new PlayerRoom(playerRoom[0], playerRoom[1]));
+        }
+        FillListBoxPlayerRooms();
     }
 
     private void FillListBoxPlayerRooms()
     {
+        listBoxPlayerRooms.Items.Clear();
         foreach (var playerRoom in playerRooms)
         {
             listBoxPlayerRooms.Items.Add(playerRoom);
@@ -93,16 +126,17 @@ public partial class PvpModeForm : Form
     }
 
 
-    private void ClientForm_Load(object sender, EventArgs e)
+    private void ClientForm_Load(object sender, EventArgs e) 
+    {
+        Thread t = new Thread(connectToServer);
+        t.Start();
+    }
+
+    private void connectToServer()
     {
         comm = new Communication(serverIP, serverPort, LogMessage);
         comm.ClientLoad();
-        // Add column name "Code" and "Player"
-        listview_userQueue.View = View.Details;
-        listview_userQueue.Columns.Add("Code", 50);
-        listview_userQueue.Columns.Add("Player", 100);
     }
-
     private void LogMessage(string message)
     {
         // No log message
@@ -115,7 +149,7 @@ public partial class PvpModeForm : Form
                 return;
             }
             // ------------ All received logic here -------------
-            Console.WriteLine("Server code received: " + message);
+
             // If message is not valid JSON, return
             if (!message.Contains("TableCode") || !message.Contains("type") || !message.Contains("from") || !message.Contains("to") || !message.Contains("message") || !message.Contains("date"))
             {
@@ -126,31 +160,15 @@ public partial class PvpModeForm : Form
             ChessAI.ChatServerAndClient.Message msg = ChessAI.ChatServerAndClient.Message.FromJson(message);
             if (msg != null)
             {
-                // Check if message is correct format: Join the chat: {"TableCode": "000000", "type": "join", "from": userName, "to": "server", "message": "", "date": DateTime.Now}
-                if (msg.type == "join" && msg.TableCode == "000000")
+                // Check if message is correct format: Join the chat: {"TableCode": "000000", "type": "update", "from": "server", "to": "all", "message": "", "date": DateTime.Now}
+                if (msg.type == "update" && msg.TableCode == "000000")
                 {
-                    // If message is empty, it means user want to join the chat queue
-                    // If message is "cancel", it means user want to cancel the chat queue
-                    if (msg.message == "")
+                    // If message contains "USER_LIST", update listview_userQueue
+                    if (msg.message.Contains("USER_LIST#*"))
                     {
-                        // Add user to listview
-                        ListViewItem item = new ListViewItem(msg.TableCode);
-                        item.SubItems.Add(msg.from);
-                        listview_userQueue.Items.Add(item);
+                        msg.message = msg.message.Replace("USER_LIST#*", "");
+                        ParseStringToPlayerRooms(msg.message);
                     }
-                    else if (msg.message == "cancel" || msg.message == "disconnect")
-                    {
-                        // Remove user from listview
-                        foreach (ListViewItem item in listview_userQueue.Items)
-                        {
-                            if (item.SubItems[1].Text == msg.from)
-                            {
-                                listview_userQueue.Items.Remove(item);
-                                break;
-                            }
-                        }
-                    }
-                    else return;
                 }
             }
 
@@ -217,28 +235,50 @@ public partial class PvpModeForm : Form
     private void btn_autoJoin_Click(object sender, EventArgs e)
     {
         // It like btn_joinRandom_Click but it will auto pick 2 users from listview
+        if (comboBox1.SelectedIndex == -1)
+        {
+            label3.Visible = true;
+            return;
+        }
         if (isAutoPicking)
         {
             // Stop auto pick
             autoPickTimer.Stop();
             isAutoPicking = false;
             btn_autoJoin.Text = "🔄 Auto matching";
-
+          
         }
         else
         {
             // Start auto pick
             autoPickTimer.Start();
             isAutoPicking = true;
-            btn_autoJoin.Text = "Stop Auto-Pick";
-
+            btn_autoJoin.Text = "Cancel matching";
+            if (ParentForm != null)
+            {
+                ParentForm.LoadForm(new PvpWaitingForm(ParentForm));
+            }
         }
+
     }
 
     private void btn_createRoom_Click(object sender, EventArgs e)
     {
-        PvpWaitingForm pvpWaitingForm = new PvpWaitingForm();
-        pvpWaitingForm.Show();
+        if (comboBox1.SelectedIndex == -1)
+        {
+            label3.Visible = true;
+            return;
+        }
+        if(ParentForm != null)
+        {
+            ParentForm.LoadForm(new PvpWaitingForm(ParentForm));
+        }
+        
+    }
+
+    private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        label3.Visible = false;
     }
 }
 

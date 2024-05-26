@@ -38,28 +38,33 @@
             // 
             // label1
             // 
+            label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label1.AutoSize = true;
-            label1.Location = new Point(87, 22);
+            label1.Font = new Font("Segoe UI", 23F);
+            label1.Location = new Point(134, 180);
             label1.Name = "label1";
-            label1.Size = new Size(143, 15);
+            label1.Size = new Size(372, 42);
             label1.TabIndex = 0;
             label1.Text = "Your game will start soon!";
             // 
             // label2
             // 
+            label2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label2.AutoSize = true;
-            label2.Location = new Point(56, 56);
+            label2.Font = new Font("Segoe UI", 13F);
+            label2.Location = new Point(174, 258);
             label2.Name = "label2";
-            label2.Size = new Size(205, 15);
+            label2.Size = new Size(303, 25);
             label2.TabIndex = 1;
             label2.Text = "To cancel request, click Cancel below!";
             // 
             // btn_cancel
             // 
-            btn_cancel.Location = new Point(119, 94);
+            btn_cancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btn_cancel.Location = new Point(249, 285);
             btn_cancel.Margin = new Padding(3, 2, 3, 2);
             btn_cancel.Name = "btn_cancel";
-            btn_cancel.Size = new Size(82, 22);
+            btn_cancel.Size = new Size(142, 39);
             btn_cancel.TabIndex = 2;
             btn_cancel.Text = "Cancel";
             btn_cancel.UseVisualStyleBackColor = true;
@@ -67,30 +72,35 @@
             // 
             // label3
             // 
+            label3.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label3.AutoSize = true;
-            label3.Location = new Point(27, 128);
+            label3.Font = new Font("Segoe UI", 12F);
+            label3.Location = new Point(140, 354);
             label3.Name = "label3";
-            label3.Size = new Size(279, 15);
+            label3.Size = new Size(366, 21);
             label3.TabIndex = 3;
             label3.Text = "This dialog will automatically close after game start.";
+            label3.Click += label3_Click;
             // 
             // pnl_wait
             // 
+            pnl_wait.BackColor = Color.MintCream;
             pnl_wait.Controls.Add(label2);
             pnl_wait.Controls.Add(btn_cancel);
             pnl_wait.Controls.Add(label1);
             pnl_wait.Controls.Add(label3);
-            pnl_wait.Location = new Point(13, 11);
+            pnl_wait.Dock = DockStyle.Fill;
+            pnl_wait.Location = new Point(0, 0);
             pnl_wait.Margin = new Padding(3, 2, 3, 2);
             pnl_wait.Name = "pnl_wait";
-            pnl_wait.Size = new Size(324, 163);
+            pnl_wait.Size = new Size(672, 397);
             pnl_wait.TabIndex = 6;
             // 
             // PvpWaitingForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(349, 188);
+            ClientSize = new Size(672, 397);
             Controls.Add(pnl_wait);
             Margin = new Padding(3, 2, 3, 2);
             Name = "PvpWaitingForm";

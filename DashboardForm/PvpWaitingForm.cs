@@ -30,22 +30,25 @@ namespace winform_chat.DashboardForm
         public event EventHandler Joined;
 
         ChessAIClient chessClient;
+        MainScreen ParentForm;
 
-
-        public PvpWaitingForm()
+        public PvpWaitingForm(MainScreen ParentF)
         {
             InitializeComponent();
             isGameStarted = false;
+            ParentForm = ParentF;
 
         }
         private void ClientForm_Load(object sender, EventArgs e)
         {
+            // make this for alwaays center its content
+
 
         }
 
         private void LogMessage(string message)
         {
-            
+
         }
 
         protected virtual void OnJoined(EventArgs e)
@@ -65,7 +68,14 @@ namespace winform_chat.DashboardForm
 
         private void btn_cancel_Click(object sender, EventArgs e)
         {
+            var temp = new DashboardForm.PvpModeForm(ParentForm);
+            ParentForm.LoadForm(temp);
             this.Close();
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

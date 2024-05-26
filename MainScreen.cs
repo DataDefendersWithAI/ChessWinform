@@ -14,6 +14,8 @@
         {
             var temp = new DashboardForm.HomeForm();
             LoadForm(temp);
+            temp.ChildPvEButton_Click += new EventHandler(PvEButton_Click);
+            temp.ChildPvPButton_Click += new EventHandler(PvPButton_Click);
         }
 
         private void SideBarTimer_Tick(object sender, EventArgs e)
@@ -53,17 +55,19 @@
             Child.TopLevel = false;
             Child.FormBorderStyle = FormBorderStyle.None;
             Child.Dock = DockStyle.Fill;
+           // make the child form center
+            Child.Location = new Point((MainPanel.Width - Child.Width) / 2, (MainPanel.Height - Child.Height) / 2);
             MainPanel.Controls.Add(Child);
             MainPanel.Tag = Child;
             Child.BringToFront();
             Child.Show();
-
         }
         private void HomeButton_Click(object sender, EventArgs e)
         {
             var temp = new DashboardForm.HomeForm();
             LoadForm(temp);
             temp.ChildPvEButton_Click += new EventHandler(PvEButton_Click);
+            temp.ChildPvPButton_Click += new EventHandler(PvPButton_Click);
 
         }
 
@@ -80,7 +84,7 @@
 
         private void PvPButton_Click(object sender, EventArgs e)
         {
-            var temp = new DashboardForm.PvpModeForm();
+            var temp = new DashboardForm.PvpModeForm(this);
             LoadForm(temp);
         }
 
