@@ -27,9 +27,9 @@ namespace winforms_chat
 
         private void btn_client_Click(object sender, EventArgs e)
         {
-            // Start the client form ChatClientJoin.cs
+            // Start the client form PvpWaitingForm.cs
             ChessAIClient client = new ChessAIClient();
-           // ChatClientJoin client = new ChatClientJoin();
+           // PvpWaitingForm client = new PvpWaitingForm();
             client.Show();
         }
     }
