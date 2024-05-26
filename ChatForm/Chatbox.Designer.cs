@@ -55,10 +55,10 @@ namespace winforms_chat.ChatForm
             topPanel.Dock = DockStyle.Top;
             topPanel.ForeColor = SystemColors.ButtonHighlight;
             topPanel.Location = new Point(0, 0);
-            topPanel.Margin = new Padding(5, 4, 5, 4);
+            topPanel.Margin = new Padding(4, 3, 4, 3);
             topPanel.Name = "topPanel";
-            topPanel.Padding = new Padding(21, 23, 21, 23);
-            topPanel.Size = new Size(547, 119);
+            topPanel.Padding = new Padding(18, 17, 18, 17);
+            topPanel.Size = new Size(479, 89);
             topPanel.TabIndex = 0;
             topPanel.Paint += topPanel_Paint;
             // 
@@ -68,10 +68,10 @@ namespace winforms_chat.ChatForm
             statusLabel.Dock = DockStyle.Right;
             statusLabel.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             statusLabel.ForeColor = SystemColors.ControlLightLight;
-            statusLabel.Location = new Point(441, 55);
-            statusLabel.Margin = new Padding(5, 0, 5, 0);
+            statusLabel.Location = new Point(394, 42);
+            statusLabel.Margin = new Padding(4, 0, 4, 0);
             statusLabel.Name = "statusLabel";
-            statusLabel.Size = new Size(85, 20);
+            statusLabel.Size = new Size(67, 15);
             statusLabel.TabIndex = 2;
             statusLabel.Text = "LastViewed";
             // 
@@ -81,10 +81,10 @@ namespace winforms_chat.ChatForm
             phoneLabel.Dock = DockStyle.Bottom;
             phoneLabel.Font = new Font("Segoe UI Semibold", 12F, FontStyle.Bold);
             phoneLabel.ForeColor = SystemColors.ControlLightLight;
-            phoneLabel.Location = new Point(21, 68);
-            phoneLabel.Margin = new Padding(5, 0, 5, 0);
+            phoneLabel.Location = new Point(18, 51);
+            phoneLabel.Margin = new Padding(4, 0, 4, 0);
             phoneLabel.Name = "phoneLabel";
-            phoneLabel.Size = new Size(148, 28);
+            phoneLabel.Size = new Size(117, 21);
             phoneLabel.TabIndex = 1;
             phoneLabel.Text = "(408) 262-9190";
             // 
@@ -94,10 +94,10 @@ namespace winforms_chat.ChatForm
             clientnameLabel.Dock = DockStyle.Top;
             clientnameLabel.Font = new Font("Segoe UI Semibold", 14F, FontStyle.Bold);
             clientnameLabel.ForeColor = SystemColors.ControlLightLight;
-            clientnameLabel.Location = new Point(21, 23);
-            clientnameLabel.Margin = new Padding(5, 0, 5, 0);
+            clientnameLabel.Location = new Point(18, 17);
+            clientnameLabel.Margin = new Padding(4, 0, 4, 0);
             clientnameLabel.Name = "clientnameLabel";
-            clientnameLabel.Size = new Size(149, 32);
+            clientnameLabel.Size = new Size(119, 25);
             clientnameLabel.TabIndex = 0;
             clientnameLabel.Text = "Client Name";
             // 
@@ -111,24 +111,24 @@ namespace winforms_chat.ChatForm
             bottomPanel.Controls.Add(sendButton);
             bottomPanel.Dock = DockStyle.Bottom;
             bottomPanel.ForeColor = SystemColors.ControlLightLight;
-            bottomPanel.Location = new Point(0, 844);
-            bottomPanel.Margin = new Padding(5, 4, 5, 4);
+            bottomPanel.Location = new Point(0, 633);
+            bottomPanel.Margin = new Padding(4, 3, 4, 3);
             bottomPanel.Name = "bottomPanel";
-            bottomPanel.Padding = new Padding(21, 16, 21, 16);
-            bottomPanel.Size = new Size(547, 83);
+            bottomPanel.Padding = new Padding(18, 12, 18, 12);
+            bottomPanel.Size = new Size(479, 62);
             bottomPanel.TabIndex = 1;
             // 
             // chatTextbox
             // 
             chatTextbox.Dock = DockStyle.Fill;
             chatTextbox.Font = new Font("Segoe UI", 12F);
-            chatTextbox.Location = new Point(21, 16);
-            chatTextbox.Margin = new Padding(5, 4, 5, 4);
+            chatTextbox.Location = new Point(18, 12);
+            chatTextbox.Margin = new Padding(4, 3, 4, 3);
             chatTextbox.MaxLength = 128;
             chatTextbox.Multiline = true;
             chatTextbox.Name = "chatTextbox";
             chatTextbox.PlaceholderText = "Please enter a message...";
-            chatTextbox.Size = new Size(285, 51);
+            chatTextbox.Size = new Size(251, 38);
             chatTextbox.TabIndex = 7;
             // 
             // btn_emojis
@@ -140,10 +140,10 @@ namespace winforms_chat.ChatForm
             btn_emojis.FlatStyle = FlatStyle.Flat;
             btn_emojis.ForeColor = SystemColors.ControlText;
             btn_emojis.ImageAlign = ContentAlignment.MiddleLeft;
-            btn_emojis.Location = new Point(306, 16);
-            btn_emojis.Margin = new Padding(5, 4, 5, 4);
+            btn_emojis.Location = new Point(269, 12);
+            btn_emojis.Margin = new Padding(4, 3, 4, 3);
             btn_emojis.Name = "btn_emojis";
-            btn_emojis.Size = new Size(47, 51);
+            btn_emojis.Size = new Size(41, 38);
             btn_emojis.TabIndex = 6;
             btn_emojis.TextAlign = ContentAlignment.MiddleRight;
             btn_emojis.UseVisualStyleBackColor = false;
@@ -158,10 +158,10 @@ namespace winforms_chat.ChatForm
             attachButton.FlatStyle = FlatStyle.Flat;
             attachButton.ForeColor = SystemColors.ControlText;
             attachButton.ImageAlign = ContentAlignment.MiddleLeft;
-            attachButton.Location = new Point(353, 16);
-            attachButton.Margin = new Padding(5, 4, 5, 4);
+            attachButton.Location = new Point(310, 12);
+            attachButton.Margin = new Padding(4, 3, 4, 3);
             attachButton.Name = "attachButton";
-            attachButton.Size = new Size(47, 51);
+            attachButton.Size = new Size(41, 38);
             attachButton.TabIndex = 6;
             attachButton.TextAlign = ContentAlignment.MiddleRight;
             attachButton.UseVisualStyleBackColor = false;
@@ -174,10 +174,10 @@ namespace winforms_chat.ChatForm
             removeButton.FlatStyle = FlatStyle.Popup;
             removeButton.Font = new Font("Segoe UI Symbol", 9.75F, FontStyle.Bold);
             removeButton.ForeColor = SystemColors.ControlLightLight;
-            removeButton.Location = new Point(400, 16);
-            removeButton.Margin = new Padding(5, 4, 5, 4);
+            removeButton.Location = new Point(351, 12);
+            removeButton.Margin = new Padding(4, 3, 4, 3);
             removeButton.Name = "removeButton";
-            removeButton.Size = new Size(25, 51);
+            removeButton.Size = new Size(22, 38);
             removeButton.TabIndex = 5;
             removeButton.Text = "X";
             removeButton.UseVisualStyleBackColor = false;
@@ -189,10 +189,10 @@ namespace winforms_chat.ChatForm
             sendButton.Dock = DockStyle.Right;
             sendButton.FlatStyle = FlatStyle.Flat;
             sendButton.Font = new Font("Segoe UI Semibold", 9.75F, FontStyle.Bold);
-            sendButton.Location = new Point(425, 16);
-            sendButton.Margin = new Padding(5, 4, 5, 4);
+            sendButton.Location = new Point(373, 12);
+            sendButton.Margin = new Padding(4, 3, 4, 3);
             sendButton.Name = "sendButton";
-            sendButton.Size = new Size(101, 51);
+            sendButton.Size = new Size(88, 38);
             sendButton.TabIndex = 1;
             sendButton.Text = "Send";
             sendButton.UseVisualStyleBackColor = false;
@@ -201,10 +201,10 @@ namespace winforms_chat.ChatForm
             // 
             itemsPanel.AutoScroll = true;
             itemsPanel.Dock = DockStyle.Fill;
-            itemsPanel.Location = new Point(0, 119);
-            itemsPanel.Margin = new Padding(5, 4, 5, 4);
+            itemsPanel.Location = new Point(0, 89);
+            itemsPanel.Margin = new Padding(4, 3, 4, 3);
             itemsPanel.Name = "itemsPanel";
-            itemsPanel.Size = new Size(547, 725);
+            itemsPanel.Size = new Size(479, 544);
             itemsPanel.TabIndex = 2;
             // 
             // flp_emojisList
@@ -212,24 +212,25 @@ namespace winforms_chat.ChatForm
             flp_emojisList.Anchor = AnchorStyles.Bottom;
             flp_emojisList.AutoScroll = true;
             flp_emojisList.BackColor = Color.RoyalBlue;
-            flp_emojisList.Location = new Point(183, 472);
+            flp_emojisList.Location = new Point(160, 354);
+            flp_emojisList.Margin = new Padding(3, 2, 3, 2);
             flp_emojisList.Name = "flp_emojisList";
-            flp_emojisList.Size = new Size(288, 365);
+            flp_emojisList.Size = new Size(252, 274);
             flp_emojisList.TabIndex = 2;
             flp_emojisList.Visible = false;
             // 
             // Chatbox
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.White;
             Controls.Add(flp_emojisList);
             Controls.Add(itemsPanel);
             Controls.Add(bottomPanel);
             Controls.Add(topPanel);
-            Margin = new Padding(5, 4, 5, 4);
+            Margin = new Padding(4, 3, 4, 3);
             Name = "Chatbox";
-            Size = new Size(547, 927);
+            Size = new Size(479, 695);
             topPanel.ResumeLayout(false);
             topPanel.PerformLayout();
             bottomPanel.ResumeLayout(false);

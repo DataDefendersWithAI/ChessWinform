@@ -80,7 +80,8 @@
 
         private void PvPButton_Click(object sender, EventArgs e)
         {
-
+            var temp = new DashboardForm.PvpModeForm();
+            LoadForm(temp);
         }
 
         private void ProfileButton_Click(object sender, EventArgs e)

@@ -29,10 +29,10 @@ namespace winforms_chat.ChatForm
         /// </summary>
         private void InitializeComponent()
         {
-            authorPanel = new System.Windows.Forms.Panel();
-            authorLabel = new System.Windows.Forms.Label();
-            bodyPanel = new System.Windows.Forms.Panel();
-            bodyTextBox = new System.Windows.Forms.TextBox();
+            authorPanel = new Panel();
+            authorLabel = new Label();
+            bodyPanel = new Panel();
+            bodyTextBox = new TextBox();
             authorPanel.SuspendLayout();
             bodyPanel.SuspendLayout();
             SuspendLayout();
@@ -40,67 +40,67 @@ namespace winforms_chat.ChatForm
             // authorPanel
             // 
             authorPanel.Controls.Add(authorLabel);
-            authorPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-            authorPanel.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            authorPanel.ForeColor = System.Drawing.SystemColors.ButtonShadow;
-            authorPanel.Location = new System.Drawing.Point(14, 69);
-            authorPanel.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            authorPanel.Dock = DockStyle.Bottom;
+            authorPanel.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
+            authorPanel.ForeColor = SystemColors.ButtonShadow;
+            authorPanel.Location = new Point(12, 52);
+            authorPanel.Margin = new Padding(4, 3, 4, 3);
             authorPanel.Name = "authorPanel";
-            authorPanel.Padding = new System.Windows.Forms.Padding(0, 8, 0, 0);
-            authorPanel.Size = new System.Drawing.Size(780, 40);
+            authorPanel.Padding = new Padding(0, 6, 0, 0);
+            authorPanel.Size = new Size(683, 30);
             authorPanel.TabIndex = 8;
             // 
             // authorLabel
             // 
             authorLabel.AutoSize = true;
-            authorLabel.Dock = System.Windows.Forms.DockStyle.Left;
-            authorLabel.Font = new System.Drawing.Font("Segoe UI Semibold", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            authorLabel.Location = new System.Drawing.Point(0, 8);
-            authorLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            authorLabel.Dock = DockStyle.Left;
+            authorLabel.Font = new Font("Segoe UI Semibold", 8.25F, FontStyle.Bold);
+            authorLabel.Location = new Point(0, 6);
+            authorLabel.Margin = new Padding(4, 0, 4, 0);
             authorLabel.Name = "authorLabel";
-            authorLabel.Size = new System.Drawing.Size(142, 19);
+            authorLabel.Size = new Size(110, 13);
             authorLabel.TabIndex = 0;
             authorLabel.Text = "System - 10/22/2020";
             // 
             // bodyPanel
             // 
-            bodyPanel.BackColor = System.Drawing.Color.RoyalBlue;
+            bodyPanel.BackColor = Color.RoyalBlue;
             bodyPanel.Controls.Add(bodyTextBox);
-            bodyPanel.Dock = System.Windows.Forms.DockStyle.Left;
-            bodyPanel.Location = new System.Drawing.Point(14, 8);
-            bodyPanel.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            bodyPanel.Dock = DockStyle.Left;
+            bodyPanel.Location = new Point(12, 6);
+            bodyPanel.Margin = new Padding(4, 3, 4, 3);
             bodyPanel.Name = "bodyPanel";
-            bodyPanel.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            bodyPanel.Size = new System.Drawing.Size(485, 61);
+            bodyPanel.Padding = new Padding(2);
+            bodyPanel.Size = new Size(424, 46);
             bodyPanel.TabIndex = 9;
             // 
             // bodyTextBox
             // 
-            bodyTextBox.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-            bodyTextBox.BackColor = System.Drawing.Color.RoyalBlue;
-            bodyTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            bodyTextBox.Font = new System.Drawing.Font("Segoe UI Emoji", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            bodyTextBox.ForeColor = System.Drawing.Color.White;
-            bodyTextBox.Location = new System.Drawing.Point(7, 8);
-            bodyTextBox.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            bodyTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            bodyTextBox.BackColor = Color.RoyalBlue;
+            bodyTextBox.BorderStyle = BorderStyle.None;
+            bodyTextBox.Font = new Font("Segoe UI Emoji", 9F);
+            bodyTextBox.ForeColor = Color.White;
+            bodyTextBox.Location = new Point(6, 6);
+            bodyTextBox.Margin = new Padding(4, 3, 4, 3);
             bodyTextBox.Multiline = true;
             bodyTextBox.Name = "bodyTextBox";
             bodyTextBox.ReadOnly = true;
-            bodyTextBox.Size = new System.Drawing.Size(471, 47);
+            bodyTextBox.Size = new Size(412, 35);
             bodyTextBox.TabIndex = 4;
             bodyTextBox.Text = "Hello there. This is a test for the longer word usage.";
             // 
             // ChatItem
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            BackColor = System.Drawing.SystemColors.ControlLightLight;
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.ControlLightLight;
             Controls.Add(bodyPanel);
             Controls.Add(authorPanel);
-            Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
+            Margin = new Padding(4, 3, 4, 3);
             Name = "ChatItem";
-            Padding = new System.Windows.Forms.Padding(14, 8, 14, 8);
-            Size = new System.Drawing.Size(808, 117);
+            Padding = new Padding(12, 6, 12, 6);
+            Size = new Size(707, 88);
             Load += ChatItem_Load;
             authorPanel.ResumeLayout(false);
             authorPanel.PerformLayout();

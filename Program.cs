@@ -1,4 +1,5 @@
 using ChessAI;
+using winform_chat.DashboardForm;
 using winforms_chat;
 using System.Windows.Forms;
 
@@ -20,7 +21,7 @@ namespace winform_chat
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             ApplicationConfiguration.Initialize();
-            Application.Run(new MainScreen());
+            Application.Run(new PvpModeForm());
         }
     }
 }
