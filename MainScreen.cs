@@ -4,7 +4,8 @@
     {
         bool sideBarExpanded = false;
         private Form childForm;
-        public string username;
+        public string username { get; set;}
+        public int ELO { get; set; }
         public MainScreen()
         {
             InitializeComponent();
@@ -74,6 +75,8 @@
         private void PvEButton_Click(object sender, EventArgs e)
         {
             var temp = new DashboardForm.PveModeForm();
+            temp.current_username = username;
+            temp.ELO = ELO;
             LoadForm(temp);
         }
 
