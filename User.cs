@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChessAI_Bck;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,6 +14,15 @@ namespace winform_chat
         public string Password { get; set; }
         public string Email { get; set; }
 
+        public int ELO { get; set; }
 
+        
+        public List<PGNLog> MatchHistory = new List<PGNLog>();
+
+        public bool AddMatch(PGNLog match)
+        {
+            MatchHistory.Add(match);
+            return true;
+        }
     }
 }

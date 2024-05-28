@@ -98,8 +98,9 @@ namespace winform_chat
                     StatusText.Text = "Current Status: Login successful";
                     this.Hide();
                     MainScreen newMain = new MainScreen();
-                    newMain.ShowDialog();
                     newMain.username = AccountBox.Text;
+                    newMain.ELO = find_user.ELO;
+                    newMain.ShowDialog();
                     this.Show();
                 }
                 else

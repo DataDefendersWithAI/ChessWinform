@@ -2,6 +2,8 @@ using Ardalis.SmartEnum.Core;
 using Chess;
 using ChessAI;
 using ChessAI_Bck;
+using FireSharp.Config;
+using FireSharp.Interfaces;
 using Stockfish.NET;
 using System;
 using System.Diagnostics;
@@ -14,12 +16,25 @@ using System.Threading;
 using System.Windows.Forms;
 using winforms_chat;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
-
+using System.Security.Cryptography;
+using ChessAI_Bck;
 
 namespace ChessAI
 {
     public partial class ChessAIClient : Form
     {
+        //Firebase config
+        IFirebaseConfig config = new FirebaseConfig
+        {
+            AuthSecret = "RZxEKkX6ffq8XZgw9p0jbPYhqLYXQOeH1FIcmGIa",
+            BasePath = "https://chess-database-a25f7-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+        IFirebaseClient Client;
+
+        // Current username:
+
+        //public string current_username { get; set; }
+
         private BoardRenderer boardRenderer;
         private ChessBoard chessBoard;
         private PieceColor Side;
@@ -33,6 +48,7 @@ namespace ChessAI
 
         private float initialDpi = 96f; // 100% =96  125% = 120, 150% = 144, 175% = 168, 200% = 192
         private float currentScale = 1.0f; // Current scale of the form
+        private string timeControl; // Default time control
 
         private bool gameStarted = false;
         private bool isDebug;
@@ -72,7 +88,7 @@ namespace ChessAI
             }
         }
 
-        public ChessAIClient(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, bool DebugMode = false, PieceColor setSide = null)
+        public ChessAIClient(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, bool DebugMode = false, PieceColor setSide = null, string NamePlayer = null, int UserELO = 0)
         {
             InitializeComponent();
 
@@ -104,6 +120,19 @@ namespace ChessAI
             DrawAsk.Visible = false;
             RestartAsk.Visible = false;
 
+            //Set name player:
+            if (NamePlayer != null)
+            {
+                PlayerName = NamePlayer;
+            }
+
+            if (UserELO != 0)
+            {
+                PlayerNumber = UserELO;
+            }
+            // Set the time control
+            timeControl = timeCtrl;
+
             if (isDebug == false)
             {
                 OppMoveButton.Visible = false; // Hide the debug button
@@ -121,7 +150,7 @@ namespace ChessAI
                 // Set the side randomly or preset
                 Side = presetSide != null ? presetSide : Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
                 OpponentName = "AI";
-                InitGame(Side);
+                InitGame(Side, timeControl);
             }
         }
 
@@ -135,6 +164,7 @@ namespace ChessAI
             new SoundFXHandler(chessBoard, "", "start"); // start game sound
             resignBtn.Visible = true;
             drawBtn.Visible = true;
+            timeControl = timeCtrl;
             // Set the side
             Side = side;
             // Set the game started
@@ -208,8 +238,44 @@ namespace ChessAI
                 uELO.Text = "ELO:";
                 uELO.Visible = false;
             }
+            Parallel.Invoke(() => ShowPanelWithDelay(),() => SaveToDatabase(Score01.Text, 400, 400, reasonEndGame, pgn));
+        }
 
-            Parallel.Invoke(() => ShowPanelWithDelay());
+        private async void SaveToDatabase(string FinalResult, int WhiteELO, int BlackELO, string reasonEndGame, string PGN)
+        {
+            Client = new FireSharp.FirebaseClient(config);
+            if (Client != null)
+            {
+                var current_username = PlayerName;
+                if (current_username == null) return;
+                var match_id = Guid.NewGuid().ToString();
+                var save_PGN = new PGNLog
+                {
+                    ID = match_id,
+                    Date = DateTime.Now.ToString("yyyy-MM-dd"),
+                    White = PlayerName,
+                    Black = OpponentName,
+                    Result = FinalResult,
+                    WhiteELO = WhiteELO,
+                    BlackELO = BlackELO,
+                    TimeControl = timeControl,
+                    Termination = reasonEndGame,
+                    PGN = PGN
+
+                };
+                var save_match = await Client.SetAsync("Users/" + EncodeSha256(current_username) + "/UserMatchHistory/" + match_id, save_PGN);
+            }
+            else
+            {
+                return;
+            }
+        }
+        private string EncodeSha256(string input)
+        {
+            byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+            byte[] inputHashByte = SHA256.Create().ComputeHash(inputBytes);
+            string result = BitConverter.ToString(inputHashByte).Replace("-", string.Empty).ToLower();
+            return result;
         }
         /// <summary>
         /// Show the end game panel with delay
@@ -724,6 +790,7 @@ namespace ChessAI
         private void WLHome_Click(object sender, EventArgs e)
         {
             new SoundFXHandler(null, "", "click");
+            this.Close();
         }
 
         private void Again_Click(object sender, EventArgs e)
@@ -735,6 +802,7 @@ namespace ChessAI
         private void Home_Click(object sender, EventArgs e)
         {
             new SoundFXHandler(null, "", "click");
+            this.Close();
         }
 
         private void drawBtn_Click(object sender, EventArgs e)

@@ -5,7 +5,8 @@ namespace winform_chat
     {
         bool sideBarExpanded = false;
         private Form childForm;
-        public string username;
+        public string username { get; set;}
+        public int ELO { get; set; }
         public MainScreen()
         {
             InitializeComponent();
@@ -78,6 +79,8 @@ namespace winform_chat
         {
             new SoundFXHandler(null, "", "click");
             var temp = new DashboardForm.PveModeForm();
+            temp.current_username = username;
+            temp.ELO = ELO;
             LoadForm(temp);
         }
 

@@ -69,7 +69,7 @@ namespace winform_chat.DashboardForm
 
         private void btn_cancel_Click(object sender, EventArgs e)
         {
-            new SoundFXHandler(null, "", "click");
+           
             var temp = new DashboardForm.PvpModeForm(ParentForm);
             ParentForm.LoadForm(temp);
             this.Close();
