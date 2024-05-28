@@ -225,7 +225,15 @@ namespace ChessAI
                 uELO.Text = "ELO:";
                 uELO.Visible = false;
             }
-            Parallel.Invoke(() => ShowPanelWithDelay(),() => SaveToDatabase(Score01.Text, 400, 400, reasonEndGame, pgn));
+            if (Side == PieceColor.Black)
+            {
+                Parallel.Invoke(() => ShowPanelWithDelay(), () => SaveToDatabase(Score01.Text, 400, PlayerNumber, reasonEndGame, pgn));
+            }
+            else if (Side == PieceColor.White)
+            {
+                Parallel.Invoke(() => ShowPanelWithDelay(), () => SaveToDatabase(Score01.Text, PlayerNumber, 400, reasonEndGame, pgn));
+            }
+            
         }
 
         private async void SaveToDatabase(string FinalResult, int WhiteELO, int BlackELO, string reasonEndGame, string PGN)
