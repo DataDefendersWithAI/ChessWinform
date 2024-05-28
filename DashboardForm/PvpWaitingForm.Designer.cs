@@ -40,10 +40,10 @@
             // 
             label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 23F);
-            label1.Location = new Point(134, 180);
+            label1.Font = new Font("Showcard Gothic", 22.8000011F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label1.Location = new Point(103, 179);
             label1.Name = "label1";
-            label1.Size = new Size(372, 42);
+            label1.Size = new Size(474, 38);
             label1.TabIndex = 0;
             label1.Text = "Your game will start soon!";
             // 
@@ -61,13 +61,15 @@
             // btn_cancel
             // 
             btn_cancel.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            btn_cancel.BackColor = Color.LightCoral;
+            btn_cancel.Font = new Font("Segoe UI", 15F);
             btn_cancel.Location = new Point(249, 285);
             btn_cancel.Margin = new Padding(3, 2, 3, 2);
             btn_cancel.Name = "btn_cancel";
             btn_cancel.Size = new Size(142, 39);
             btn_cancel.TabIndex = 2;
             btn_cancel.Text = "Cancel";
-            btn_cancel.UseVisualStyleBackColor = true;
+            btn_cancel.UseVisualStyleBackColor = false;
             btn_cancel.Click += btn_cancel_Click;
             // 
             // label3

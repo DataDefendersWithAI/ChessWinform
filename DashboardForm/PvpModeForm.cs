@@ -72,9 +72,9 @@ public partial class PvpModeForm : Form
         listview_userQueue.View = View.Details;
         listview_userQueue.Columns.Add("Code", 50);
         listview_userQueue.Columns.Add("Player", 100);
-        
+
         ParentForm = ParentF;
-        
+
     }
 
     private void InitializePlayerRooms()
@@ -126,7 +126,7 @@ public partial class PvpModeForm : Form
     }
 
 
-    private void ClientForm_Load(object sender, EventArgs e) 
+    private void ClientForm_Load(object sender, EventArgs e)
     {
         Thread t = new Thread(connectToServer);
         t.Start();
@@ -246,7 +246,7 @@ public partial class PvpModeForm : Form
             autoPickTimer.Stop();
             isAutoPicking = false;
             btn_autoJoin.Text = "🔄 Auto matching";
-          
+
         }
         else
         {
@@ -269,17 +269,22 @@ public partial class PvpModeForm : Form
             label3.Visible = true;
             return;
         }
-        if(ParentForm != null)
+        if (ParentForm != null)
         {
             ParentForm.LoadForm(new PvpWaitingForm(ParentForm));
         }
-        
+
     }
 
     private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
     {
         label3.Visible = false;
     }
+
+    private void label2_Click(object sender, EventArgs e)
+    {
+
+     }
 }
 
 

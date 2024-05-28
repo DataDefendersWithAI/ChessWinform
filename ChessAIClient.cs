@@ -127,7 +127,7 @@ namespace ChessAI
         /// Begin the game when the message is received/ Connected to another player
         /// </summary>
         /// <param name="message"></param>
-        private void InitGame(PieceColor side, string timeCtrl = "10s|0")
+        private void InitGame(PieceColor side, string timeCtrl = "10|0")
         {
             if (gameStarted) return; // If game already started, return
 
@@ -152,7 +152,7 @@ namespace ChessAI
         private void GameEnded(object sender, EndgameEventArgs e)
         {
             timer1.Stop();
-
+            var pgn = chessBoard.ToPgn();
             if (chessBoard.EndGame.EndgameType == EndgameType.Checkmate) { reasonEndGame = "Checkmate"; }
             if (chessBoard.EndGame.EndgameType == EndgameType.Resigned && !isTimeoutEndGame) { reasonEndGame = "Resigned"; }
             if (chessBoard.EndGame.EndgameType == EndgameType.Stalemate) { reasonEndGame = "Stalemate"; }

@@ -79,11 +79,12 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Showcard Gothic", 13F);
-            label2.Location = new Point(543, 27);
+            label2.Location = new Point(515, 27);
             label2.Name = "label2";
             label2.Size = new Size(113, 23);
             label2.TabIndex = 5;
             label2.Text = "Game mode";
+            label2.Click += label2_Click;
             // 
             // comboBox1
             // 
