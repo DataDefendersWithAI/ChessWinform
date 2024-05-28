@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChessAI_Bck;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -24,11 +25,13 @@ namespace winform_chat.DashboardForm
         private void PvEButton_Click(object sender, EventArgs e)
         {
             ChildPvEButton_Click?.Invoke(this, e);
+            new SoundFXHandler(null, "", "click");
         }
 
         private void PvPButton_Click(object sender, EventArgs e)
         {
             ChildPvPButton_Click?.Invoke(this, e);
+            new SoundFXHandler(null, "", "click");
         }
     }
 }

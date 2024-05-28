@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using ChessAI;
 using ChessAI.ChatServerAndClient;
+using ChessAI_Bck;
 
 namespace winform_chat.DashboardForm
 {
@@ -68,6 +69,7 @@ namespace winform_chat.DashboardForm
 
         private void btn_cancel_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(null, "", "click");
             var temp = new DashboardForm.PvpModeForm(ParentForm);
             ParentForm.LoadForm(temp);
             this.Close();

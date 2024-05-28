@@ -1,4 +1,5 @@
-﻿namespace winform_chat
+﻿using ChessAI_Bck;
+namespace winform_chat
 {
     public partial class MainScreen : Form
     {
@@ -42,6 +43,7 @@
 
         private void MenuButton_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(null,"","click");
             SideBarTimer.Start();
         }
 
@@ -64,6 +66,7 @@
         }
         private void HomeButton_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(null, "", "click");
             var temp = new DashboardForm.HomeForm();
             LoadForm(temp);
             temp.ChildPvEButton_Click += new EventHandler(PvEButton_Click);
@@ -73,23 +76,27 @@
 
         private void PvEButton_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(null, "", "click");
             var temp = new DashboardForm.PveModeForm();
             LoadForm(temp);
         }
 
         private void LogoutButton_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(null, "", "click");
             this.Close();
         }
 
         private void PvPButton_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(null, "", "click");
             var temp = new DashboardForm.PvpModeForm(this);
             LoadForm(temp);
         }
 
         private void ProfileButton_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(null, "", "click");
             var temp = new DashboardForm.ProfileForm();
             LoadForm(temp);
         }

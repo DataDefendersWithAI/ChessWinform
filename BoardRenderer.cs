@@ -6,6 +6,8 @@ using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Chess;
 using System.Diagnostics;
+using System.Media;
+using ChessAI_Bck;
 
 namespace ChessAI
 {
@@ -224,92 +226,104 @@ namespace ChessAI
 
         public ChessBoard onClicked(Position clickedPosition, ChessBoard chessBoard, bool isNormalized = false, PieceColor side = null)
         {
-
-            if (checkForEndgame(chessBoard) == true) return chessBoard; // check if the game has ended
-
-
-            // Normalize the clicked position if needed
-            if (isNormalized == false)
+            try
             {
-                clickedPosition = NormalizePosition(clickedPosition, side);
-                Debug.WriteLineIf(debugMode, "Normalized position: " + clickedPosition.toSAN());
-            }
+                if (checkForEndgame(chessBoard) == true) return chessBoard; // check if the game has ended
 
-            // Check if the clicked position is within the board range from (0,0) to (7,7)
-            if (!IsInBoard(clickedPosition))
-            {
-                Debug.WriteLineIf(debugMode, "Clicked position is out of board");
-                ResetSelection();
-                return chessBoard;
-            }
 
-            // If no piece is selected, try to select one
-            if (selectedPiece == null)
-            {
-                if (!SelectPiece(clickedPosition, chessBoard))
+                // Normalize the clicked position if needed
+                if (isNormalized == false)
                 {
-                    Debug.WriteLineIf(debugMode, "No piece on clicked position");
+                    clickedPosition = NormalizePosition(clickedPosition, side);
+                    Debug.WriteLineIf(debugMode, "Normalized position: " + clickedPosition.toSAN());
+                }
+
+                // Check if the clicked position is within the board range from (0,0) to (7,7)
+                if (!IsInBoard(clickedPosition))
+                {
+                    Debug.WriteLineIf(debugMode, "Clicked position is out of board");
                     ResetSelection();
                     return chessBoard;
                 }
-            }
-            else
-            {
-                // If a piece is already selected, move to the clicked position
-                pieceMoveTo = clickedPosition;
 
-                // Change selected piece if the clicked position has a piece in same side or a piece is not be taken by current selected piece
-                if (chessBoard[pieceMoveTo.toSAN()] != null && !IsValidMove(selectedPiece, pieceMoveTo, chessBoard))
+                // If no piece is selected, try to select one
+                if (selectedPiece == null)
                 {
-                    Debug.WriteLineIf(debugMode, "Change select piece on " + chessBoard[pieceMoveTo.toSAN()]);
-                    selectedPiece = pieceMoveTo;
-                    pieceMoveTo = null;
+                    if (!SelectPiece(clickedPosition, chessBoard))
+                    {
+                        Debug.WriteLineIf(debugMode, "No piece on clicked position");
+                        ResetSelection();
+                        return chessBoard;
+                    }
+                }
+                else
+                {
+                    // If a piece is already selected, move to the clicked position
+                    pieceMoveTo = clickedPosition;
+
+                    // Change selected piece if the clicked position has a piece in same side or a piece is not be taken by current selected piece
+                    if (chessBoard[pieceMoveTo.toSAN()] != null && !IsValidMove(selectedPiece, pieceMoveTo, chessBoard))
+                    {
+                        Debug.WriteLineIf(debugMode, "Change select piece on " + chessBoard[pieceMoveTo.toSAN()]);
+                        selectedPiece = pieceMoveTo;
+                        pieceMoveTo = null;
+                        return chessBoard;
+                    }
+
+                }
+
+                // Put this turn check here for click effect still active
+                if (chessBoard.Turn != side) return chessBoard; // check if it's the right turn 
+
+                // If no position is selected to move to, return
+                if (pieceMoveTo == null)
+                {
                     return chessBoard;
                 }
 
-            }
+                // If clicked on the same piece, deselect it
+                if (pieceMoveTo.Equals(selectedPiece))
+                {
+                    Debug.WriteLineIf(debugMode, "Clicked on the same piece");
+                    ResetSelection();
+                    return chessBoard;
+                }
 
-            // Put this turn check here for click effect still active
-            if (chessBoard.Turn != side) return chessBoard; // check if it's the right turn 
+                // Validate the move
+                if (!IsValidMove(selectedPiece, pieceMoveTo, chessBoard))
+                {
+                    Debug.WriteLineIf(debugMode, "Invalid Move: " + selectedPiece.toSAN() + " to " + pieceMoveTo.toSAN());
+                    new SoundFXHandler(chessBoard, pieceMoveTo.toSAN(),"invalid");
+                    ResetSelection();
+                    return chessBoard;
+                }
 
-            // If no position is selected to move to, return
-            if (pieceMoveTo == null)
-            {
-                return chessBoard;
-            }
+                // Check for pawn promotion
+                if (chessBoard[selectedPiece.toSAN()].Type == PieceType.Pawn && (pieceMoveTo.Y == 0 || pieceMoveTo.Y == 7))
+                {
+                    Debug.WriteLineIf(debugMode, "Pawn promotion");
+                    selectedPromotion = new ChessAIClient().PromotePawnUIAsync(); 
+                }
 
-            // If clicked on the same piece, deselect it
-            if (pieceMoveTo.Equals(selectedPiece))
-            {
-                Debug.WriteLineIf(debugMode, "Clicked on the same piece");
+                //add sound FX
+                new SoundFXHandler(chessBoard, pieceMoveTo.toSAN(), side: side); // castle?
+                // Execute the move
+                chessBoard.Move(new Move(selectedPiece.toSAN(), pieceMoveTo.toSAN()));
+                Debug.WriteLineIf(debugMode, "Moved piece from " + selectedPiece.toSAN() + " to " + pieceMoveTo.toSAN());
+                Debug.WriteLineIf(debugMode, chessBoard.ToAscii());
+
+                //add sound FX
+                new SoundFXHandler(chessBoard, "", side:side); // check? castle?
+
                 ResetSelection();
+
                 return chessBoard;
             }
-
-            // Validate the move
-            if (!IsValidMove(selectedPiece, pieceMoveTo, chessBoard))
+            catch (Exception e)
             {
-                Debug.WriteLineIf(debugMode, "Invalid Move: " + selectedPiece.toSAN() + " to " + pieceMoveTo.toSAN());
-                ResetSelection();
+                Debug.WriteLineIf(debugMode, "Error in onClicked: " + e.Message);
                 return chessBoard;
             }
-
-            // Check for pawn promotion
-            if (chessBoard[selectedPiece.toSAN()].Type == PieceType.Pawn && (pieceMoveTo.Y == 0 || pieceMoveTo.Y == 7))
-            {
-                Debug.WriteLineIf(debugMode, "Pawn promotion");
-                selectedPromotion = new ChessAIClient().PromotePawnUIAsync();
-            }
-
-            // Execute the move
-            chessBoard.Move(new Move(selectedPiece.toSAN(), pieceMoveTo.toSAN()));
-            Debug.WriteLineIf(debugMode, "Moved piece from " + selectedPiece.toSAN() + " to " + pieceMoveTo.toSAN());
-            Debug.WriteLineIf(debugMode, chessBoard.ToAscii());
-
-
-            ResetSelection();
-
-            return chessBoard;
         }
 
 
@@ -356,6 +370,5 @@ namespace ChessAI
                 return false;
             }
         }
-
     }
 }

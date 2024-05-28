@@ -1,6 +1,7 @@
 using Ardalis.SmartEnum.Core;
 using Chess;
 using ChessAI;
+using ChessAI_Bck;
 using Stockfish.NET;
 using System;
 using System.Diagnostics;
@@ -86,6 +87,7 @@ namespace ChessAI
             chessBoard = new ChessBoard() { AutoEndgameRules = AutoEndgameRules.All }; // Init new board
             chessBoard.OnPromotePawn += PromotePawn; // Add event when pawn is promoted
             chessBoard.OnEndGame += GameEnded; // Add event when game is ended
+            
             boardRenderer = new BoardRenderer(); // Init new renderer
 
             currentScale = initialDpi / this.DeviceDpi; // Get the current scale of the form
@@ -130,7 +132,9 @@ namespace ChessAI
         private void InitGame(PieceColor side, string timeCtrl = "10|0")
         {
             if (gameStarted) return; // If game already started, return
-
+            new SoundFXHandler(chessBoard, "", "start"); // start game sound
+            resignBtn.Visible = true;
+            drawBtn.Visible = true;
             // Set the side
             Side = side;
             // Set the game started
@@ -151,8 +155,16 @@ namespace ChessAI
         /// </summary>
         private void GameEnded(object sender, EndgameEventArgs e)
         {
+            // Hide components on end game
+            flowLayoutPanel1.Visible = false;
+            resignBtn.Visible = false;
+            drawBtn.Visible = false;
+            //
             timer1.Stop();
             var pgn = chessBoard.ToPgn();
+            new SoundFXHandler(chessBoard,"" , "end"); // end game sound
+            //
+
             if (chessBoard.EndGame.EndgameType == EndgameType.Checkmate) { reasonEndGame = "Checkmate"; }
             if (chessBoard.EndGame.EndgameType == EndgameType.Resigned && !isTimeoutEndGame) { reasonEndGame = "Resigned"; }
             if (chessBoard.EndGame.EndgameType == EndgameType.Stalemate) { reasonEndGame = "Stalemate"; }
@@ -176,7 +188,7 @@ namespace ChessAI
             }
             else if (chessBoard.EndGame.WonSide == Side.OppositeColor()) // lose
             {
-                WLText.Text = "You lost!";
+                WLText.Text = "You lose!";
                 reasonText.Text = reasonEndGame;
                 userPanel.BackColor = System.Drawing.Color.Transparent;
                 oppPanel.BackColor = System.Drawing.Color.GreenYellow;
@@ -206,10 +218,21 @@ namespace ChessAI
         {
             // Add a 2-second delay
             await Task.Delay(2000);
+       
+            new SoundFXHandler(chessBoard, "",side:Side); // win or lose sound
             // Make the panel visible after the delay
             WLouterPanel.Visible = true;
-            AgainBtn.Visible = true;
             HomeBtn.Visible = true;
+            AgainBtn.Visible = true;
+            WLAgain.Visible = true;
+
+            if (RestartAsk.Visible)
+            {
+                WLAgain.Visible = false;
+                AgainBtn.Visible = false;
+                return;
+            }
+           
         }
 
         /// <summary>
@@ -230,6 +253,12 @@ namespace ChessAI
             {
                 chessBoard.Draw();
             }
+            if (message == "DrawDecline")
+            {
+                DrawAsk.Visible = false;
+                drawBtn.Visible = true;
+                resignBtn.Visible = true;
+            }
             if (message == "Timeout")
             {
                 isTimeoutEndGame = true;
@@ -242,8 +271,11 @@ namespace ChessAI
         /// </summary>
         private void AskingForDraw()
         {
+            new SoundFXHandler(chessBoard, "", "Offer");
             DrawAsk.Visible = true;
             DrawText.Text = OpponentName + " asking for a draw. Would you accept?";
+            drawBtn.Visible = false;
+            resignBtn.Visible = false;
         }
 
         /// <summary>
@@ -281,11 +313,15 @@ namespace ChessAI
         {
             if (message == "RestartAsk")
             {
+                new SoundFXHandler(chessBoard, "", "Offer");
                 RestartAsk.Visible = true;
                 RestartText.Text = OpponentName + " asking for a rematch. Would you accept?";
+                AgainBtn.Visible = false;
+                WLAgain.Visible = false;
             }
             if (message.Contains("RestartAccept"))
             {
+                new SoundFXHandler(chessBoard, "", "accept"); 
                 WLouterPanel.Visible = false;
                 AgainBtn.Visible = false;
                 HomeBtn.Visible = false;
@@ -298,6 +334,13 @@ namespace ChessAI
                 panel1.Invalidate();
                 gameStarted = false;
                 InitGame(Side);
+            }
+            if (message == "RestartDecline")
+            {
+                new SoundFXHandler(chessBoard, "", "decline");
+                RestartAsk.Visible = false;
+                AgainBtn.Visible = true;
+                HomeBtn.Visible = true;
             }
         }
 
@@ -340,7 +383,7 @@ namespace ChessAI
             panel1.Invalidate(); // Redraw whole board
         }
 
- 
+
         /// <summary>
         /// Redraw the board
         /// </summary>
@@ -349,7 +392,8 @@ namespace ChessAI
         {
             if (!gameStarted) return; // If game not started, return
             boardRenderer.DrawBoard(e.Graphics, chessBoard, panel1.Size.Height, isDebug: isDebug, side: Side); // Draw the board
-            richTextBox1.Text = chessBoard.ToPgn(); // Show the moves     
+            richTextBox1.Text = chessBoard.ToPgn(); // Show the moves
+            panel1.BackColor = chessBoard.Turn == PieceColor.White ? System.Drawing.Color.Gainsboro : System.Drawing.Color.Gray; // Change the background color
         }
 
         /// <summary>
@@ -397,21 +441,7 @@ namespace ChessAI
         /// <param name="message"></param>
         private void OpponentMoveButton_Click(object sender, EventArgs e)
         {
-            if (!gameStarted) return; // If game not started, return
-            if (chessBoard.Turn == Side) return; // Simulate opponent when offline
-            if (isOffline == false) return; // If it's not offline mode, return
-            //var moves = chessBoard.Moves();
-            if (chessBoard.IsEndGame)
-            {
-                Debug.WriteLine("Game end " + chessBoard.EndGame.WonSide + " won!");
-                return;
-            }
-            Stockfish.SetFenPosition(chessBoard.ToFen());
-            var bestMove = Stockfish.GetBestMove();
-            var move = new Move(bestMove.Substring(0, 2), bestMove.Substring(2, 2));
-            //chessBoard.Move(moves[Random.Shared.Next(moves.Length)]);
-            chessBoard.Move(move);
-            panel1.Invalidate();
+            OpponentAIMove();
         }
 
         public void OpponentAIMove()
@@ -425,8 +455,12 @@ namespace ChessAI
             Stockfish.SetFenPosition(chessBoard.ToFen());
             var bestMove = Stockfish.GetBestMove();
             var move = new Move(bestMove.Substring(0, 2), bestMove.Substring(2, 2));
-            //chessBoard.Move(moves[Random.Shared.Next(moves.Length)]);
+            //add sound FX
+            new SoundFXHandler(chessBoard, move.NewPosition.ToString(),side:Side.OppositeColor());
             chessBoard.Move(move);
+            //add sound FX
+            new SoundFXHandler(chessBoard, "", side: Side.OppositeColor()); // castle?
+
             timeOpponent = timeOpponent.Add(TimeSpan.FromSeconds(timeIncrement));
             opponentTimer.Text = timeOpponent.ToString(@"mm\:ss");
             panel1.Invalidate();
@@ -454,7 +488,11 @@ namespace ChessAI
                 Debug.WriteLine("Game end " + chessBoard.EndGame.WonSide + " won!");
                 return;
             }
+            new SoundFXHandler(chessBoard, move.NewPosition.ToString(), side: Side.OppositeColor());
             chessBoard.Move(move);
+            //add sound FX
+            new SoundFXHandler(chessBoard, "", side: Side.OppositeColor()); // castle?
+
             panel1.Invalidate();
         }
 
@@ -494,6 +532,7 @@ namespace ChessAI
         {
             e.PromotionResult = selectedPromotion == null ? selectedPromotion : PromotionType.Default;
             //e.PromotionResult = PromotionType.ToRook;
+            new SoundFXHandler(chessBoard,"","promote");
         }
 
         private void ClientForm_Load(object sender, EventArgs e)
@@ -624,6 +663,11 @@ namespace ChessAI
                     ourTimer.Text = timeOur.ToString(@"mm\:ss");
                     ourTimer.BackColor = Color.Chartreuse;
                     opponentTimer.BackColor = Color.LightGray;
+                    if (timeOur.TotalSeconds <= 30)
+                    {
+                        new SoundFXHandler(chessBoard, "", "tenSec"); // time sound
+                        ourTimer.BackColor = Color.Salmon;
+                    }
                     if (timeOur.TotalSeconds <= 0)
                     {
                         timer1.Stop();
@@ -669,6 +713,7 @@ namespace ChessAI
         private void WLok_Click(object sender, EventArgs e)
         {
             WLouterPanel.Visible = false;
+            new SoundFXHandler(null, "", "click");
         }
 
         private void WLAgain_Click(object sender, EventArgs e)
@@ -678,7 +723,7 @@ namespace ChessAI
 
         private void WLHome_Click(object sender, EventArgs e)
         {
-
+            new SoundFXHandler(null, "", "click");
         }
 
         private void Again_Click(object sender, EventArgs e)
@@ -689,13 +734,14 @@ namespace ChessAI
 
         private void Home_Click(object sender, EventArgs e)
         {
-
+            new SoundFXHandler(null, "", "click");
         }
 
         private void drawBtn_Click(object sender, EventArgs e)
         {
             if (!gameStarted) return; // If game not started, return
             if (chessBoard.IsEndGame == true) return;
+            new SoundFXHandler(chessBoard, "", "drawOffer"); // draw offer sound
             if (isOffline)
             {
                 chessBoard.Draw();
@@ -704,6 +750,8 @@ namespace ChessAI
             {
                 if (currenChatMainForm != null)
                 {
+                    drawBtn.Visible = false;
+                    resignBtn.Visible = false;
                     currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "DrawAsk" );
                 }
             }
@@ -733,13 +781,22 @@ namespace ChessAI
             chessBoard.Draw();
             if (currenChatMainForm != null)
             {
+                new SoundFXHandler(chessBoard, "", "accept"); //accept sound
                 currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "DrawAccept" );
+                
             }
         }
 
         private void DrawN_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(chessBoard, "", "decline"); // decline sound
             DrawAsk.Visible = false;
+            drawBtn.Visible = true;
+            resignBtn.Visible = true;
+            if (currenChatMainForm != null)
+            {
+                currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "DrawDecline");
+            }
         }
 
         private void ResY_Click(object sender, EventArgs e)
@@ -747,6 +804,7 @@ namespace ChessAI
             RestartAsk.Visible = false;
             if (currenChatMainForm != null)
             {
+                new SoundFXHandler(chessBoard, "", "accept"); // accept sound
                 Side = Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
                 currenChatMainForm.moveSendHandler(ChatCommand.Rematch.ToString() + "RestartAccept-" +Side.OppositeColor());
                 RestartGameOnline(ChatCommand.Rematch.ToString() + "RestartAccept-" + Side);
@@ -755,7 +813,14 @@ namespace ChessAI
 
         private void ResN_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(chessBoard, "", "decline"); //accept sound
             RestartAsk.Visible = false;
+            AgainBtn.Visible = true;
+            HomeBtn.Visible = true;
+            if (currenChatMainForm != null)
+            {
+                currenChatMainForm.moveSendHandler(ChatCommand.Rematch.ToString() + "RestartDecline");
+            }
         }
         
         private void ClientForm_Closed(object sender, FormClosingEventArgs e)

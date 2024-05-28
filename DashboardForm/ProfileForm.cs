@@ -3,6 +3,7 @@ using System.Text;
 using FireSharp.Config;
 using FireSharp.Interfaces;
 using System.Security.Cryptography;
+using ChessAI_Bck;
 
 namespace winform_chat.DashboardForm
 {
@@ -141,6 +142,7 @@ namespace winform_chat.DashboardForm
         }
         private async void UpdateUserButton_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(null, "", "click");
             if (CurrAccountBox.Text == "Enter current username" || NewAccountBox.Text == "Enter new username")
             {
                 StatusText.Text = "Current Status: Please fill in all fields";
@@ -169,6 +171,7 @@ namespace winform_chat.DashboardForm
 
         private void UpdatePassButton_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(null, "", "click");
             if (CurrAccountBox.Text == "Enter username" || PasswordBox.Text == "Enter password" || ReTypePasswordBox.Text == "Retype password")
             {
                 StatusText.Text = "Current Status: Please fill in all fields";

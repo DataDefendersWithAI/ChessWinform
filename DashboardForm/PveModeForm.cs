@@ -1,4 +1,5 @@
 ﻿using ChessAI;
+using ChessAI_Bck;
 namespace winform_chat.DashboardForm
 {
 
@@ -14,6 +15,7 @@ namespace winform_chat.DashboardForm
 
         private void BabyButton_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(null, "", "click");
             modeDepth = 1;
             var newboard = new ChessAIClient(modeDepth, isOffl : true);
             newboard.Show();
@@ -21,6 +23,7 @@ namespace winform_chat.DashboardForm
 
         private void EasyButton_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(null, "", "click");
             modeDepth = 2;
             var newboard = new ChessAIClient(modeDepth, isOffl: true);
             newboard.Show();
@@ -28,6 +31,7 @@ namespace winform_chat.DashboardForm
 
         private void IntermidiateButton_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(null, "", "click");
             modeDepth = 4;
             var newboard = new ChessAIClient(modeDepth, isOffl: true);
             newboard.Show();
@@ -35,6 +39,7 @@ namespace winform_chat.DashboardForm
 
         private void HardButton_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(null, "", "click");
             modeDepth = 6;
             var newboard = new ChessAIClient(modeDepth, isOffl: true);
             newboard.Show();
@@ -42,6 +47,7 @@ namespace winform_chat.DashboardForm
 
         private void EvilButton_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(null, "", "click");
             modeDepth = 8;
             var newboard = new ChessAIClient(modeDepth, isOffl: true);
             newboard.Show();

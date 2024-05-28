@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using ChessAI;
 using System.Diagnostics;
+using ChessAI_Bck;
 
 namespace winform_chat.DashboardForm;
 
@@ -192,6 +193,7 @@ public partial class PvpModeForm : Form
 
     private void btn_joinRandom_Click(object sender, EventArgs e)
     {
+        new SoundFXHandler(null, "", "click");
         // Pick 2 random users from listview
         if (listview_userQueue.Items.Count >= 2)
         {
@@ -234,6 +236,7 @@ public partial class PvpModeForm : Form
     // Auto pick 2 random users from listview
     private void btn_autoJoin_Click(object sender, EventArgs e)
     {
+        new SoundFXHandler(null, "", "click");
         // It like btn_joinRandom_Click but it will auto pick 2 users from listview
         if (comboBox1.SelectedIndex == -1)
         {
