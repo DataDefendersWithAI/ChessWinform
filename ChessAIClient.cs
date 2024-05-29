@@ -17,7 +17,6 @@ using System.Windows.Forms;
 using winforms_chat;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Security.Cryptography;
-using ChessAI_Bck;
 
 namespace ChessAI
 {
@@ -37,7 +36,7 @@ namespace ChessAI
 
         private BoardRenderer boardRenderer;
         private ChessBoard chessBoard;
-        private PieceColor Side;
+        public PieceColor Side;
         private PieceColor presetSide;
 
         private TimeSpan timeOur;
@@ -56,7 +55,7 @@ namespace ChessAI
 
         private string reasonEndGame = "Checkmate";
 
-        private PromotionType selectedPromotion;
+        public PromotionType selectedPromotion;
         ChatClientJoin x;
         ChatMainForm currenChatMainForm;
         string chessLastMove; // prevent sending too much when clicking on the board
@@ -471,7 +470,7 @@ namespace ChessAI
             if (!gameStarted) return; // If game not started, return
             Debug.WriteLineIf(isDebug, "X: " + e.X + " Y: " + e.Y);
 
-            chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard, isNormalized: false, side: Side); // Handle the click
+            chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard, isNormalized: false, side: Side, chessClientUI: this); // Handle the click
 
             panel1.Invalidate(); // Redraw whole board
             var mv = ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Move) + (chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none"); //move
@@ -519,10 +518,16 @@ namespace ChessAI
                 return;
             }
             Stockfish.SetFenPosition(chessBoard.ToFen());
+
+            // Option 1: dumb AI
+            //var moves = chessBoard.Moves();
+            //chessBoard.Move(moves[Random.Shared.Next(moves.Length)]);
+
+            // Option 2: smart AI (StockFish)
             var bestMove = Stockfish.GetBestMove();
             var move = new Move(bestMove.Substring(0, 2), bestMove.Substring(2, 2));
             //add sound FX
-            new SoundFXHandler(chessBoard, move.NewPosition.ToString(),side:Side.OppositeColor());
+            new SoundFXHandler(chessBoard, move.NewPosition.ToString(), side: Side.OppositeColor());
             chessBoard.Move(move);
             //add sound FX
             new SoundFXHandler(chessBoard, "", side: Side.OppositeColor()); // castle?
@@ -567,37 +572,9 @@ namespace ChessAI
         /// Promotion UI for the pawn/ not implemeted yet
         /// </summary>
         /// <param name="message"></param>
-        public PromotionType PromotePawnUIAsync()
-        {
-            if (Side == PieceColor.White) // set up images for promotion
-            {
-                Queen.ImageKey = "WQueen";
-                Knight.ImageKey = "WKnight";
-                Rook.ImageKey = "WRook";
-                Bishop.ImageKey = "WBishop";
-            }
-            else
-            {
-                Queen.ImageKey = "BQueen";
-                Knight.ImageKey = "BKnight";
-                Rook.ImageKey = "BRook";
-                Bishop.ImageKey = "BBishop";
-            }
-
-            Queen.Click += (s, ev) => { selectedPromotion = PromotionType.ToQueen; };
-            Knight.Click += (s, ev) => { selectedPromotion = PromotionType.ToKnight; };
-            Rook.Click += (s, ev) => { selectedPromotion = PromotionType.ToRook; };
-            Bishop.Click += (s, ev) => { selectedPromotion = PromotionType.ToBishop; };
-
-            flowLayoutPanel1.Visible = true;
-            var selectedPromote = selectedPromotion;
-            return selectedPromote;
-        }
-
         private void PromotePawn(object sender, PromotionEventArgs e)
         {
-            e.PromotionResult = selectedPromotion == null ? selectedPromotion : PromotionType.Default;
-            //e.PromotionResult = PromotionType.ToRook;
+            e.PromotionResult = selectedPromotion == null ? PromotionType.Default : selectedPromotion;
             new SoundFXHandler(chessBoard,"","promote");
         }
 

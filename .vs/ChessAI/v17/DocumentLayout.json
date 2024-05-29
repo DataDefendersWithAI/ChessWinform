@@ -1,0 +1,116 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\DesktopFiles\\Project\\ChessWinform\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|d:\\desktopfiles\\project\\chesswinform\\chessaiclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|solutionrelative:chessaiclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|d:\\desktopfiles\\project\\chesswinform\\boardrenderer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|solutionrelative:boardrenderer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|D:\\DesktopFiles\\Project\\ChessWinform\\chessaiclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|solutionrelative:chessaiclient.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|d:\\desktopfiles\\project\\chesswinform\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|solutionrelative:readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|d:\\desktopfiles\\project\\chesswinform\\chessaiclient.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|solutionrelative:chessaiclient.designer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\DesktopFiles\\Project\\ChessWinform\\dashboardform\\pvpwaitingform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:dashboardform\\pvpwaitingform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "PvpWaitingForm.cs [Design]",
+              "DocumentMoniker": "D:\\DesktopFiles\\Project\\ChessWinform\\DashboardForm\\PvpWaitingForm.cs",
+              "RelativeDocumentMoniker": "DashboardForm\\PvpWaitingForm.cs",
+              "ToolTip": "D:\\DesktopFiles\\Project\\ChessWinform\\DashboardForm\\PvpWaitingForm.cs [Design]",
+              "RelativeToolTip": "DashboardForm\\PvpWaitingForm.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-28T16:06:22.242Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "BoardRenderer.cs",
+              "DocumentMoniker": "D:\\DesktopFiles\\Project\\ChessWinform\\BoardRenderer.cs",
+              "RelativeDocumentMoniker": "BoardRenderer.cs",
+              "ToolTip": "D:\\DesktopFiles\\Project\\ChessWinform\\BoardRenderer.cs",
+              "RelativeToolTip": "BoardRenderer.cs",
+              "ViewState": "AQIAANMAAAAAAAAAAAAwwOcAAAAhAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-29T05:03:06.179Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ChessAIClient.cs",
+              "DocumentMoniker": "D:\\DesktopFiles\\Project\\ChessWinform\\ChessAIClient.cs",
+              "RelativeDocumentMoniker": "ChessAIClient.cs",
+              "ToolTip": "D:\\DesktopFiles\\Project\\ChessWinform\\ChessAIClient.cs",
+              "RelativeToolTip": "ChessAIClient.cs",
+              "ViewState": "AQIAACkAAAAAAAAAAAAwwFQAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-29T05:02:04.536Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ChessAIClient.cs [Design]",
+              "DocumentMoniker": "D:\\DesktopFiles\\Project\\ChessWinform\\ChessAIClient.cs",
+              "RelativeDocumentMoniker": "ChessAIClient.cs",
+              "ToolTip": "D:\\DesktopFiles\\Project\\ChessWinform\\ChessAIClient.cs [Design]",
+              "RelativeToolTip": "ChessAIClient.cs [Design]",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-29T04:29:14.05Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "README.md",
+              "DocumentMoniker": "D:\\DesktopFiles\\Project\\ChessWinform\\README.md",
+              "RelativeDocumentMoniker": "README.md",
+              "ToolTip": "D:\\DesktopFiles\\Project\\ChessWinform\\README.md",
+              "RelativeToolTip": "README.md",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
+              "WhenOpened": "2024-05-29T04:49:40.407Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ChessAIClient.Designer.cs",
+              "DocumentMoniker": "D:\\DesktopFiles\\Project\\ChessWinform\\ChessAIClient.Designer.cs",
+              "RelativeDocumentMoniker": "ChessAIClient.Designer.cs",
+              "ToolTip": "D:\\DesktopFiles\\Project\\ChessWinform\\ChessAIClient.Designer.cs",
+              "RelativeToolTip": "ChessAIClient.Designer.cs",
+              "ViewState": "AQIAABQAAAAAAAAAAAAswBYAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-05-28T16:06:08.006Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

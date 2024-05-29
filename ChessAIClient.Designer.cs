@@ -171,10 +171,10 @@
             flowLayoutPanel1.Controls.Add(Knight);
             flowLayoutPanel1.Controls.Add(Bishop);
             flowLayoutPanel1.Controls.Add(label1);
-            flowLayoutPanel1.Location = new Point(1230, 422);
+            flowLayoutPanel1.Location = new Point(586, 109);
             flowLayoutPanel1.Margin = new Padding(3, 2, 3, 2);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(64, 225);
+            flowLayoutPanel1.Size = new Size(64, 239);
             flowLayoutPanel1.TabIndex = 6;
             flowLayoutPanel1.Visible = false;
             // 
@@ -239,6 +239,7 @@
             // 
             panel1.BackColor = Color.LightCyan;
             panel1.Controls.Add(WLouterPanel);
+            panel1.Controls.Add(flowLayoutPanel1);
             panel1.Location = new Point(16, 20);
             panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
@@ -274,7 +275,7 @@
             // 
             WLText.BackColor = Color.Transparent;
             WLText.FlatStyle = FlatStyle.Flat;
-            WLText.Font = new Font("Copperplate Gothic Bold", 35F, FontStyle.Bold);
+            WLText.Font = new Font("Microsoft Sans Serif", 35F, FontStyle.Bold);
             WLText.Location = new Point(0, 0);
             WLText.Name = "WLText";
             WLText.Size = new Size(457, 64);
@@ -706,7 +707,6 @@
             Controls.Add(ourTimer);
             Controls.Add(opponentTimer);
             Controls.Add(panel1);
-            Controls.Add(flowLayoutPanel1);
             Controls.Add(richTextBox2);
             Controls.Add(OppMoveButton);
             Controls.Add(richTextBox1);

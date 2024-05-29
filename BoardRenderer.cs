@@ -8,6 +8,7 @@ using Chess;
 using System.Diagnostics;
 using System.Media;
 using ChessAI_Bck;
+using ChessAI;
 
 namespace ChessAI
 {
@@ -302,7 +303,12 @@ namespace ChessAI
                 if (chessBoard[selectedPiece.toSAN()].Type == PieceType.Pawn && (pieceMoveTo.Y == 0 || pieceMoveTo.Y == 7))
                 {
                     Debug.WriteLineIf(debugMode, "Pawn promotion");
-                    chessClientUI.PromotePawnUIAsync(); 
+                    using (var promotionDialog = new PromotePawnForm(chessClientUI.Side))
+                    {
+                        promotionDialog.ShowDialog(); // This will block until the dialog is closed
+                        chessClientUI.selectedPromotion = promotionDialog.SelectedPromotion; 
+                    }
+                    //chessClientUI.PromotePawnUIAsync();
                 }
 
                 //add sound FX
