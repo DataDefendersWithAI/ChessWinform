@@ -76,6 +76,9 @@ namespace winforms_chat
                 ChessAI.ChatServerAndClient.Message msg = ChessAI.ChatServerAndClient.Message.FromJson(message);
                 if (msg != null)
                 {
+
+                    Debug.WriteLine("[CL] Received: " + msg.ToJson());
+                    Debug.WriteLine("[CL] player: " + ourName);
                     // Check if code is 000000, type is join, from "server", msg.to contains ourName
                     // If yes, then take message as room code, MessageBox it
                     // Then close this form and open ChatMainForm.cs
@@ -91,6 +94,7 @@ namespace winforms_chat
                         string[] userSides = mess[1].Split('-');
                         string Side = userSides[0];
                         string OpponentSide = userSides[1];
+                        string timectrl = mess[2];
                         // If user name is not equal to ourName, swap user name and opponent user name
                         if (userName != ourName)
                         {
@@ -103,18 +107,21 @@ namespace winforms_chat
                         }
                         // Merge userName and opponentUserName with "-" and pass it to ChatMainForm
                         msg.to = userName + "-" + opponentUserName;
-                      
+                        Debug.WriteLine("[CL] Begin pvp: "+ userName +" vs "+opponentUserName +" time limit "+ timectrl);
                         //MessageBox.Show("Room code: " + msg.message);
                         // Open ChatMainForm with table code and username
                         Console.WriteLine(msg.to , msg.message);
                         isFormExit = true;
-                        ChatMainForm chatMainForm = new ChatMainForm(newTableCode, msg.to , chessClient, Side);
+                        ChatMainForm chatMainForm = new ChatMainForm(newTableCode, msg.to , chessClient, Side,timectrl);
                         chatMainForm.Show();
                         currentChatMainForm = chatMainForm;
                         isJoined = true;
                         OnJoined(EventArgs.Empty);
                         this.Close();
                         this.Dispose();
+                    }else
+                    {
+                        Debug.WriteLine("[CL] Invalid message: " + msg.message);
                     }
                 }
 
@@ -151,17 +158,7 @@ namespace winforms_chat
             comm.ClientClose();
         }
 
-        private void btn_join_Click(object sender, EventArgs e)
-        {
-            // Check if user name is empty
-            if (ourName == "")
-            {
-                MessageBox.Show("Please enter your name.");
-                return;
-            }
-
-            JoiningRoom(ourName, null);
-        }
+      
 
         public void JoiningRoom(string userName, ChessAIClient chClient , bool isCreateRoom = false, string timeCtrl="10|0")
         {

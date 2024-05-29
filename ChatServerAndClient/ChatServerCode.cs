@@ -94,7 +94,8 @@ namespace winforms_chat
                             string[] players = data[1].Split('-');
                             string player1 = players[0];
                             string player2 = players[1];
-                            BeginGame(player1, player2);
+                            Debug.WriteLine("[SVR] User " + player1 + " and " + player2 + " begin the game with time control " + timectrl);
+                            BeginGame(player1, player2, timectrl);
 
                         }
                         else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerCreateRoom)))
@@ -158,7 +159,7 @@ namespace winforms_chat
                                     index2--;
                                 }
                                 listview_userQueue.Items.RemoveAt(index2);
-                                BeginGame(player1, player2);
+                                BeginGame(player1, player2, listview_userQueue.Items[index1].SubItems[2].Text);
                             }
 
                         }
@@ -185,7 +186,7 @@ namespace winforms_chat
                         }
                         // update list user for all clients
                         Debug.WriteLine("[SVR] Update list user for all clients");
-                        UpdateUserList();
+                        //UpdateUserList();
                     }
                 }
 
@@ -251,12 +252,12 @@ namespace winforms_chat
                 // Send message to 2 users
                 // Server send code to clients: {"TableCode": "000000", "type": "join", "from": "server", "to": userName + "-" + opponentUserName, "message": newTableCode +"$"+ userSide + "-" + oppSide, "date": DateTime.Now}
                 // with newTableCode is a random string from 000001 to 999998
-                BeginGame(player1, player2);
+                BeginGame(player1, player2, listview_userQueue.Items[index1].SubItems[2].Text);
 
             }
         }
 
-        private void BeginGame(string player1, string player2)
+        private void BeginGame(string player1, string player2, string timectrl)
         {
             Random random = new Random();
             string newTableCode = random.Next(1, 999999).ToString("D6");
@@ -264,8 +265,8 @@ namespace winforms_chat
             string userSide = Random.Shared.Next(2) == 0 ? "white" : "black";
             string oppSide = userSide == "white" ? "black" : "white";
 
-
-            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode + "$" + userSide + "-" + oppSide, DateTime.Now);
+            Debug.WriteLine("[SVR] Begin game with code " + newTableCode + " between " + player1 + " and " + player2 + " with time control " + timectrl);
+            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode + "$" + userSide + "-" + oppSide+"$"+timectrl, DateTime.Now);
             comm.SendMessage(msg1.ToJson());
         }
 

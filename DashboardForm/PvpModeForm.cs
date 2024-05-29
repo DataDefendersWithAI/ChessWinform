@@ -101,7 +101,7 @@ public partial class PvpModeForm : Form
             {
                 if (ParentForm != null)
                 {
-                    clientJoin = new ChatClientJoin(ParentForm);
+                    clientJoin = new ChatClientJoin(ParentForm, ourName);
                     ParentForm.LoadForm(clientJoin);
                     if (clientFormOnline != null) // clear the old form
                     {
@@ -148,8 +148,8 @@ public partial class PvpModeForm : Form
                 string timeCtrl = playerRoom[2];
                 string status = playerRoom[3];
                 string type = playerRoom[4];
-                playerRooms.Add(new PlayerRoom(tableCode,nameOfPlayer,timeCtrl,status));
-                Debug.WriteLine("PlayerRoom: " + tableCode +" "+nameOfPlayer+" "+timeCtrl+" "+status);
+                playerRooms.Add(new PlayerRoom(tableCode, nameOfPlayer, timeCtrl, status));
+                Debug.WriteLine("PlayerRoom: " + tableCode + " " + nameOfPlayer + " " + timeCtrl + " " + status);
             }
             else
             {
@@ -189,12 +189,12 @@ public partial class PvpModeForm : Form
             NameOfPlayer = nameOfPlayer;
             GameMode = gameMode;
             Status_ = status;
-            
+
         }
 
         public override string ToString()
         {
-            return $"{ RoomCode } {NameOfPlayer} {GameMode}" ;
+            return $"{RoomCode} {NameOfPlayer} {GameMode}";
         }
     }
 
@@ -260,14 +260,14 @@ public partial class PvpModeForm : Form
     {
         // Send last message to server
         // Server code close connection: {"TableCode": "000000", "type": "join", "from": "server", "to": "server", "message": "close", "date": DateTime.Now}
-        ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message("000000", "join",ourName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect), DateTime.Now);
+        ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect), DateTime.Now);
         comm.SendMessage(msg.ToJson());
         comm.ClientClose();
     }
 
     private void Auto_Matching(object sender, EventArgs e)
     {
-        ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName,"server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.AutoMatching) + selectedTimeCtrl, DateTime.Now);
+        ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.AutoMatching) + selectedTimeCtrl, DateTime.Now);
         comm.SendMessage(msg1.ToJson());
     }
 
@@ -298,7 +298,7 @@ public partial class PvpModeForm : Form
             btn_autoJoin.Text = "Cancel matching";
             if (ParentForm != null)
             {
-                ParentForm.LoadForm(new ChatClientJoin(ParentForm));
+                ParentForm.LoadForm(new ChatClientJoin(ParentForm, ourName));
             }
         }
 
@@ -313,10 +313,10 @@ public partial class PvpModeForm : Form
         }
         if (ParentForm != null)
         {
-            clientJoin = new ChatClientJoin(ParentForm);
+            clientJoin = new ChatClientJoin(ParentForm, ourName);
             ParentForm.LoadForm(clientJoin);
-            
-            if(clientFormOnline != null) // clear the old form
+
+            if (clientFormOnline != null) // clear the old form
             {
                 clientFormOnline.Close();
                 clientFormOnline.Dispose();
@@ -331,7 +331,7 @@ public partial class PvpModeForm : Form
 
     private void ClientJoin_Joined(object? sender, EventArgs e)
     {
-        if(clientFormOnline != null && clientJoin != null)
+        if (clientFormOnline != null && clientJoin != null)
         {
             Debug.WriteLine("Client joined!");
             var side = clientJoin.currentChatMainForm.Side;
@@ -356,9 +356,9 @@ public partial class PvpModeForm : Form
     {
         if (serverLog == null)
         {
-            serverLog = new ChatServerLog(true); // true = Hide the Code form after load
+            serverLog = new ChatServerLog(false); // true = Hide the Code form after load
             serverLog.Show();
-            serverLog.Hide();
+            // serverLog.Hide();
             startSvr.Text = "Stop Server";
         }
         else
@@ -368,7 +368,7 @@ public partial class PvpModeForm : Form
             serverLog.Dispose();
             serverLog = null;
         }
-        
+
     }
 
     private void cntSvr_Click(object sender, EventArgs e)
@@ -427,6 +427,15 @@ public partial class PvpModeForm : Form
     private void srvIP_TextChanged(object sender, EventArgs e)
     {
         srvIP.BackColor = Color.Azure;
+    }
+
+    private void button1_Click(object sender, EventArgs e)
+    {
+        if (comm != null)
+        {
+            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList), DateTime.Now);
+            comm.SendMessage(msg1.ToJson());
+        }
     }
 }
 

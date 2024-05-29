@@ -39,6 +39,7 @@
             startSvr = new Button();
             cntSvr = new Button();
             srvIP = new TextBox();
+            button1 = new Button();
             SuspendLayout();
             // 
             // btn_createRoom
@@ -174,12 +175,26 @@
             srvIP.Text = "Enter server IP";
             srvIP.TextChanged += srvIP_TextChanged;
             // 
+            // button1
+            // 
+            button1.BackColor = Color.Wheat;
+            button1.Font = new Font("Showcard Gothic", 13.2000008F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            button1.Location = new Point(502, 287);
+            button1.Margin = new Padding(3, 2, 3, 2);
+            button1.Name = "button1";
+            button1.Size = new Size(253, 45);
+            button1.TabIndex = 14;
+            button1.Text = "refresh";
+            button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
+            // 
             // PvpModeForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PowderBlue;
             ClientSize = new Size(772, 571);
+            Controls.Add(button1);
             Controls.Add(srvIP);
             Controls.Add(cntSvr);
             Controls.Add(startSvr);
@@ -212,5 +227,6 @@
         private Button startSvr;
         private Button cntSvr;
         private TextBox srvIP;
+        private Button button1;
     }
 }
