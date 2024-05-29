@@ -150,6 +150,9 @@ namespace winforms_chat
                                 BeginGame(player1, player2);
                             }
 
+                        }else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList)))
+                        {
+                            UpdateUserList();
                         }
                         else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect)) || msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientLeaveRoom)))
                         {
@@ -169,8 +172,7 @@ namespace winforms_chat
                         }
                         // update list user for all clients
                         Debug.WriteLine("[SVR] Update list user for all clients");
-                        ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "update", "server", "all", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList) + ParseListToString(), DateTime.Now);
-                        comm.SendMessage(msg1.ToJson());
+                        UpdateUserList();
                     }
                 }
 
@@ -183,7 +185,7 @@ namespace winforms_chat
 
         }
 
-        private string ParseListToString()
+        private void UpdateUserList()
         {
             // Parse listview_userQueue to string
             string result = "";
@@ -191,17 +193,18 @@ namespace winforms_chat
             {
                 if (item.SubItems[4].Text == "Room")
                 {
-                    result += item.SubItems[1].Text + "#" + item.SubItems[2].Text + "#" + item.SubItems[3].Text + "#" + item.SubItems[4].Text + "~";
+                    result += item.SubItems[0].Text +"#"+ item.SubItems[1].Text + "#" + item.SubItems[2].Text + "#" + item.SubItems[3].Text + "#" + item.SubItems[4].Text + "~";
                 }
             }
-            return result;
+            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "update", "server", "all", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList) + result, DateTime.Now);
+            comm.SendMessage(msg1.ToJson());
         }
 
         private void ClientForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Send last message to server
             // Server code close connection: {"TableCode": "000000", "type": "join", "from": "server", "to": "server", "message": "close", "date": DateTime.Now}
-            ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", "server", "close", DateTime.Now);
+            ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerDisconnect), DateTime.Now);
             comm.SendMessage(msg.ToJson());
             comm.ClientClose();
         }

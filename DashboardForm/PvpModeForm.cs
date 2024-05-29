@@ -85,13 +85,19 @@ public partial class PvpModeForm : Form
         }
         comboBox1.SelectedIndex = 3;
 
-        // Add column name "Code" and "Player"
-        listview_userQueue.View = View.Details;
-        listview_userQueue.Columns.Add("Code", 50);
-        listview_userQueue.Columns.Add("Player", 100);
+        listBoxPlayerRooms.Click += listBoxPlayerRooms_Click;
 
         ParentForm = ParentF;
 
+    }
+
+    private void listBoxPlayerRooms_Click(object sender, EventArgs e)
+    {
+        if (listBoxPlayerRooms.SelectedItem != null)
+        {
+            PlayerRoom selectedPlayerRoom = (PlayerRoom)listBoxPlayerRooms.SelectedItem;
+            Debug.WriteLine("Selected player room: " + selectedPlayerRoom);
+        }
     }
 
     private void InitializePlayerRooms()
@@ -104,18 +110,49 @@ public partial class PvpModeForm : Form
 
     private void ParseStringToPlayerRooms(string playerRoomsString)
     {
+        // Clear the current list of player rooms
         playerRooms.Clear();
+
+        // Split the input string into individual player room entries
         string[] playerRoomStrings = playerRoomsString.Split('~'); // Split by "~" for each row of data
+
+        // Iterate through each player room string
         foreach (var playerRoomString in playerRoomStrings)
         {
-            string[] playerRoom = playerRoomString.Split('#'); // Split by "#"/ player name, game mode, status, etc
-            playerRooms.Add(new PlayerRoom(playerRoom[0], playerRoom[1], playerRoom[2], playerRoom[3]));
+            // Split the player room string into its components (e.g., player name, game mode, status, etc.)
+            string[] playerRoom = playerRoomString.Split('#'); // Split by "#" for each component
+
+            // Ensure there are enough components in the player room string
+            if (playerRoom.Length >= 3)
+            {
+                // Add a new PlayerRoom object to the list
+                string tableCode = playerRoom[0];
+                string nameOfPlayer = playerRoom[1];
+                string timeCtrl = playerRoom[2];
+                string status = playerRoom[3];
+                string type = playerRoom[4];
+                playerRooms.Add(new PlayerRoom(tableCode,nameOfPlayer,timeCtrl,status));
+                Debug.WriteLine("PlayerRoom: " + tableCode +" "+nameOfPlayer+" "+timeCtrl+" "+status);
+            }
+            else
+            {
+                Debug.WriteLine("Invalid player room string: " + playerRoomString);
+            }
         }
+
+        // Update the ListBox with the new list of player rooms
         FillListBoxPlayerRooms();
     }
 
     private void FillListBoxPlayerRooms()
     {
+        if (InvokeRequired)
+        {
+            // Ensure we are updating the ListBox on the UI thread
+            Invoke(new Action(FillListBoxPlayerRooms));
+            return;
+        }
+
         listBoxPlayerRooms.Items.Clear();
         foreach (var playerRoom in playerRooms)
         {
@@ -140,7 +177,7 @@ public partial class PvpModeForm : Form
 
         public override string ToString()
         {
-            return $"Player: {NameOfPlayer}, Game Mode: {GameMode}";
+            return $"{ RoomCode } {NameOfPlayer} {GameMode}" ;
         }
     }
 
@@ -299,7 +336,7 @@ public partial class PvpModeForm : Form
     {
         if (serverLog == null)
         {
-            serverLog = new ChatServerLog(false); // true = Hide the Code form after load
+            serverLog = new ChatServerLog(true); // true = Hide the Code form after load
             serverLog.Show();
             serverLog.Hide();
             startSvr.Text = "Stop Server";
@@ -311,47 +348,7 @@ public partial class PvpModeForm : Form
             serverLog.Dispose();
             serverLog = null;
         }
-        //ServerCommunication serverComm = new ServerCommunication(serverIP, serverPort, LogMessage);
-        //serverComm.StartServer();
-        //if (serverComm.IsServerRunning())
-        //{
-        //    Debug.WriteLine("Server is running");
-        //}
-        //else
-        //{
-        //    Debug.WriteLine("Server is not running");
-        //}
-        //if (serverLog == null ) {
-        //    // start server btn
-        //    //serverLog = new ChatServerLog(false); // true = Hide the Code form after load
-        //    //serverLog.Show();
-        //    //serverLog.ServerForm_Load(sender, e);
-        //    //serverLog.Hide(); // hide the server log form
-
-        //    // Start server
-        //    serverComm.StartServer();
-        //    // Check status of server
-        //    if (serverComm.IsServerRunning())
-        //    {
-        //        Debug.WriteLine("Server is running");
-        //    }
-        //    else
-        //    {
-        //        Debug.WriteLine("Server is not running");
-        //    }
-        //    startSvr.Text = "Stop Server";
-        //    // Open the code form
-        //    ChatServerCode codeForm = new ChatServerCode();
-        //    codeForm.Show();
-        //}
-        //else
-        //{
-        //    //serverComm.CloseServer();
-        //    //serverLog.Close();
-        //    //startSvr.Text = "Start Server";
-        //    //serverLog.Dispose();
-        //    //serverLog = null;
-        //}
+        
     }
 
     private void cntSvr_Click(object sender, EventArgs e)
@@ -397,7 +394,7 @@ public partial class PvpModeForm : Form
         if (comm != null)
         {
             cntSvr.Text = "Connected";
-            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server", "Hello server from "+ ourName, DateTime.Now);
+            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList), DateTime.Now);
             comm.SendMessage(msg1.ToJson());
         }
         else

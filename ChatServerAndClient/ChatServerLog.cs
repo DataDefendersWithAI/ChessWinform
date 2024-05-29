@@ -39,7 +39,7 @@ namespace winforms_chat
             }
             else
             {
-                Debug.WriteLine("Server is not running");
+                Debug.WriteLine("[yes] Server is not running");
             }
         }
 
@@ -52,6 +52,7 @@ namespace winforms_chat
             if(codeForm != null)
             {
                 codeForm.Close(); // clear the code form
+                codeForm.Dispose();
             }
             codeForm = new ChatServerCode();
             codeForm.Show();

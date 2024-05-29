@@ -34,7 +34,6 @@
             label2 = new Label();
             comboBox1 = new ComboBox();
             listBoxPlayerRooms = new ListBox();
-            listview_userQueue = new ListView();
             label3 = new Label();
             label4 = new Label();
             startSvr = new Button();
@@ -46,7 +45,7 @@
             // 
             btn_createRoom.BackColor = Color.Salmon;
             btn_createRoom.Font = new Font("Showcard Gothic", 13.2000008F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btn_createRoom.Location = new Point(502, 310);
+            btn_createRoom.Location = new Point(502, 189);
             btn_createRoom.Margin = new Padding(3, 2, 3, 2);
             btn_createRoom.Name = "btn_createRoom";
             btn_createRoom.Size = new Size(253, 45);
@@ -69,7 +68,7 @@
             // 
             btn_autoJoin.BackColor = Color.Chartreuse;
             btn_autoJoin.Font = new Font("Showcard Gothic", 13.2000008F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            btn_autoJoin.Location = new Point(502, 261);
+            btn_autoJoin.Location = new Point(502, 140);
             btn_autoJoin.Margin = new Padding(3, 2, 3, 2);
             btn_autoJoin.Name = "btn_autoJoin";
             btn_autoJoin.Size = new Size(253, 45);
@@ -112,15 +111,6 @@
             listBoxPlayerRooms.Size = new Size(464, 420);
             listBoxPlayerRooms.TabIndex = 8;
             // 
-            // listview_userQueue
-            // 
-            listview_userQueue.Location = new Point(533, 128);
-            listview_userQueue.Margin = new Padding(3, 2, 3, 2);
-            listview_userQueue.Name = "listview_userQueue";
-            listview_userQueue.Size = new Size(186, 129);
-            listview_userQueue.TabIndex = 1;
-            listview_userQueue.UseCompatibleStateImageBehavior = false;
-            // 
             // label3
             // 
             label3.AutoSize = true;
@@ -148,7 +138,7 @@
             // 
             startSvr.BackColor = Color.Wheat;
             startSvr.Font = new Font("Showcard Gothic", 13.2000008F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            startSvr.Location = new Point(502, 359);
+            startSvr.Location = new Point(502, 238);
             startSvr.Margin = new Padding(3, 2, 3, 2);
             startSvr.Name = "startSvr";
             startSvr.Size = new Size(253, 45);
@@ -161,7 +151,7 @@
             // 
             cntSvr.BackColor = Color.PaleGreen;
             cntSvr.Font = new Font("Showcard Gothic", 13.2000008F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            cntSvr.Location = new Point(502, 456);
+            cntSvr.Location = new Point(502, 387);
             cntSvr.Margin = new Padding(3, 2, 3, 2);
             cntSvr.Name = "cntSvr";
             cntSvr.Size = new Size(253, 45);
@@ -176,7 +166,7 @@
             srvIP.BorderStyle = BorderStyle.None;
             srvIP.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             srvIP.ForeColor = SystemColors.InactiveCaption;
-            srvIP.Location = new Point(502, 418);
+            srvIP.Location = new Point(502, 349);
             srvIP.Margin = new Padding(3, 2, 3, 2);
             srvIP.Name = "srvIP";
             srvIP.Size = new Size(253, 25);
@@ -201,7 +191,6 @@
             Controls.Add(btn_autoJoin);
             Controls.Add(label1);
             Controls.Add(btn_createRoom);
-            Controls.Add(listview_userQueue);
             Margin = new Padding(3, 2, 3, 2);
             Name = "PvpModeForm";
             Text = "ChatServer";
@@ -218,7 +207,6 @@
         private Label label2;
         private ComboBox comboBox1;
         private ListBox listBoxPlayerRooms;
-        private ListView listview_userQueue;
         private Label label3;
         private Label label4;
         private Button startSvr;

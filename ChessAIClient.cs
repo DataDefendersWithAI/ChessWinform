@@ -17,6 +17,8 @@ using System.Windows.Forms;
 using winforms_chat;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Security.Cryptography;
+using ChessAI_Bck;
+using winform_chat;
 
 namespace ChessAI
 {
@@ -237,7 +239,15 @@ namespace ChessAI
                 uELO.Text = "ELO:";
                 uELO.Visible = false;
             }
-            Parallel.Invoke(() => ShowPanelWithDelay(),() => SaveToDatabase(Score01.Text, 400, 400, reasonEndGame, pgn));
+            if (Side == PieceColor.Black)
+            {
+                Parallel.Invoke(() => ShowPanelWithDelay(), () => SaveToDatabase(Score01.Text, 400, PlayerNumber, reasonEndGame, pgn));
+            }
+            else if (Side == PieceColor.White)
+            {
+                Parallel.Invoke(() => ShowPanelWithDelay(), () => SaveToDatabase(Score01.Text, PlayerNumber, 400, reasonEndGame, pgn));
+            }
+            
         }
 
         private async void SaveToDatabase(string FinalResult, int WhiteELO, int BlackELO, string reasonEndGame, string PGN)
@@ -247,6 +257,8 @@ namespace ChessAI
             {
                 var current_username = PlayerName;
                 if (current_username == null) return;
+                var load_user = await Client.GetAsync("Users/" + EncodeSha256(current_username));
+                User Getuser = load_user.ResultAs<User>();
                 var match_id = Guid.NewGuid().ToString();
                 var save_PGN = new PGNLog
                 {
@@ -262,7 +274,8 @@ namespace ChessAI
                     PGN = PGN
 
                 };
-                var save_match = await Client.SetAsync("Users/" + EncodeSha256(current_username) + "/UserMatchHistory/" + match_id, save_PGN);
+                Getuser.AddMatch(save_PGN);
+                var save_match = await Client.SetAsync("Users/" + EncodeSha256(current_username), Getuser);
             }
             else
             {

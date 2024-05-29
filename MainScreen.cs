@@ -15,6 +15,7 @@ namespace winform_chat
         private void MainScreen_Load(object sender, EventArgs e)
         {
             var temp = new DashboardForm.HomeForm();
+            temp.current_username = username;
             LoadForm(temp);
             temp.ChildPvEButton_Click += new EventHandler(PvEButton_Click);
             temp.ChildPvPButton_Click += new EventHandler(PvPButton_Click);
@@ -69,6 +70,7 @@ namespace winform_chat
         {
             new SoundFXHandler(null, "", "click");
             var temp = new DashboardForm.HomeForm();
+            temp.current_username = username;
             LoadForm(temp);
             temp.ChildPvEButton_Click += new EventHandler(PvEButton_Click);
             temp.ChildPvPButton_Click += new EventHandler(PvPButton_Click);
