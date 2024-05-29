@@ -79,7 +79,7 @@ namespace winforms_chat
                     // Check if code is 000000, type is join, from "server", msg.to contains ourName
                     // If yes, then take message as room code, MessageBox it
                     // Then close this form and open ChatMainForm.cs
-                    if (msg.TableCode == "000000" && msg.type == "join" && msg.from == "server" && msg.to.Contains(ourName) && !msg.message.Contains(ChatCommand.ServerDisconnect.ToString()))
+                    if (msg.TableCode == "000000" && msg.type == "join" && msg.from == "server" && msg.to.Contains(ourName) && !msg.message.Contains(ChatCommandExt.ChatCommand.ServerDisconnect.ToString()))
                     {
                         // Split msg.to by - and swap if needed to make sure that first part is user name and second part is opponent user name
                         string[] userNames = msg.to.Split('-');
@@ -146,7 +146,7 @@ namespace winforms_chat
                 return;
             }
             // When user closes the form, send message to server
-            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server", ChatCommand.ClientDisconnect.ToString(), DateTime.Now);
+            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect), DateTime.Now);
             comm.SendMessage(message.ToJson());
             comm.ClientClose();
         }
@@ -163,22 +163,23 @@ namespace winforms_chat
             JoiningRoom(ourName, null);
         }
 
-        public void JoiningRoom(string userName, ChessAIClient chClient)
+        public void JoiningRoom(string userName, ChessAIClient chClient , bool isCreateRoom = false, string timeCtrl="10|0")
         {
             chessClient = chClient;
-            Debug.WriteLine("JoiningRoom called with user name: " + userName);
             ourName = userName;
+            Debug.WriteLine("JoiningRoom called with user name: " + ourName);
+            
             // Check if user name is "server"
-            if (userName == "server")
+            if (ourName == "server")
             {
-                MessageBox.Show("Invalid user name.");
+                Debug.WriteLine("Invalid user name.");
                 return;
             }
 
             // Check if name contains special characters
-            if (userName.Any(c => !char.IsLetterOrDigit(c)))
+            if (ourName.Any(c => !char.IsLetterOrDigit(c)))
             {
-                MessageBox.Show("Invalid user name.");
+                Debug.WriteLine("User name must not have special character");
                 return;
             }
 
@@ -187,13 +188,14 @@ namespace winforms_chat
             // Send message to server using JSON
             // TableCode: 000000
             // type: join
-            // from: userName.Text
+            // from: ourName.Text
             // to: 
             // message: 
             // date: DateTime.Now
 
-            // this will be classified as normal usr
-            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", userName, "server", "", DateTime.Now);
+            // this will be classified as normal user if messafe is empty
+            string ms1 = isCreateRoom? ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerCreateRoom) +timeCtrl:"";
+            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server", ms1, DateTime.Now);
             comm.SendMessage(message.ToJson());
         }
 
@@ -207,7 +209,7 @@ namespace winforms_chat
             // to: server
             // message: cancel
             // date: DateTime.Now
-            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server",ChatCommand.ClientLeaveRoom.ToString(), DateTime.Now);
+            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server",ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientLeaveRoom), DateTime.Now);
             comm.SendMessage(message.ToJson());
             this.Close();
             this.Dispose();

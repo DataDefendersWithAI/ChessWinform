@@ -37,6 +37,11 @@ public partial class PvpModeForm : Form
     ChatServerLog serverLog;
     ChessAIClient clientFormOnline;
 
+    ///<summary>
+    /// GAME SETTINGS
+    /// </summary>
+    private string selectedTimeCtrl = "10|0"; // Default game mode
+
     // Predefined array of time control strings
     public static Dictionary<string, string> TimeControls = new Dictionary<string, string>()
     {
@@ -62,7 +67,7 @@ public partial class PvpModeForm : Form
         // Initialize timer
         autoPickTimer = new System.Windows.Forms.Timer();
         autoPickTimer.Interval = 500; // Set interval to 1 second (1000 ms)
-        autoPickTimer.Tick += btn_joinRandom_Click;
+        autoPickTimer.Tick += Auto_Matching;
         InitializePlayerRooms();
 
         srvIP.Text = serverIP;
@@ -88,20 +93,18 @@ public partial class PvpModeForm : Form
     {
         this.playerRooms = new List<PlayerRoom>
         {
-           new PlayerRoom("Kiên", "10|0"),
-           new PlayerRoom("Phong", "15|0"),
-           new PlayerRoom("Thành", "15|15")
+           new PlayerRoom("00","Kiên", "10|0","Full"),
         };
     }
 
     private void ParseStringToPlayerRooms(string playerRoomsString)
     {
         playerRooms.Clear();
-        string[] playerRoomStrings = playerRoomsString.Split('~'); // Split by "~"
+        string[] playerRoomStrings = playerRoomsString.Split('~'); // Split by "~" for each row of data
         foreach (var playerRoomString in playerRoomStrings)
         {
-            string[] playerRoom = playerRoomString.Split('#'); // Split by "#"/ player name, game mode
-            playerRooms.Add(new PlayerRoom(playerRoom[0], playerRoom[1]));
+            string[] playerRoom = playerRoomString.Split('#'); // Split by "#"/ player name, game mode, status, etc
+            playerRooms.Add(new PlayerRoom(playerRoom[0], playerRoom[1], playerRoom[2], playerRoom[3]));
         }
         FillListBoxPlayerRooms();
     }
@@ -119,11 +122,15 @@ public partial class PvpModeForm : Form
     {
         public string NameOfPlayer { get; set; }
         public string GameMode { get; set; }
-
-        public PlayerRoom(string nameOfPlayer, string gameMode)
+        public string RoomCode { get; set; }
+        public string Status_ { get; set; }
+        public PlayerRoom(string roomCode, string nameOfPlayer, string gameMode, string status)
         {
+            RoomCode = roomCode;
             NameOfPlayer = nameOfPlayer;
             GameMode = gameMode;
+            Status_ = status;
+            
         }
 
         public override string ToString()
@@ -170,10 +177,12 @@ public partial class PvpModeForm : Form
                 // Check if message is correct format: Join the chat: {"TableCode": "000000", "type": "update", "from": "server", "to": "all", "message": "", "date": DateTime.Now}
                 if (msg.type == "update" && msg.TableCode == "000000")
                 {
+                    Debug.WriteLine("Received: " + msg.message);
                     // If message contains "USER_LIST", update listview_userQueue
-                    if (msg.message.Contains("USER_LIST#*"))
+                    if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList)))
                     {
-                        msg.message = msg.message.Replace("USER_LIST#*", "");
+                        msg.message = msg.message.Replace(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList), "");
+                        Debug.WriteLine("Received: " + msg.message);
                         ParseStringToPlayerRooms(msg.message);
                     }
                 }
@@ -192,12 +201,12 @@ public partial class PvpModeForm : Form
     {
         // Send last message to server
         // Server code close connection: {"TableCode": "000000", "type": "join", "from": "server", "to": "server", "message": "close", "date": DateTime.Now}
-        ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", "server", "close", DateTime.Now);
+        ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message("000000", "join", "client", "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect), DateTime.Now);
         comm.SendMessage(msg.ToJson());
         comm.ClientClose();
     }
 
-    private void btn_joinRandom_Click(object sender, EventArgs e)
+    private void Auto_Matching(object sender, EventArgs e)
     {
         
         // Pick 2 random users from listview
@@ -243,7 +252,7 @@ public partial class PvpModeForm : Form
     private void btn_autoJoin_Click(object sender, EventArgs e)
     {
         new SoundFXHandler(null, "", "click");
-        // It like btn_joinRandom_Click but it will auto pick 2 users from listview
+        // It like Auto_Matching but it will auto pick 2 users from listview
         if (comboBox1.SelectedIndex == -1)
         {
             label3.Visible = true;
@@ -280,21 +289,34 @@ public partial class PvpModeForm : Form
         }
         if (ParentForm != null)
         {
-            ParentForm.LoadForm(new ChatClientJoin(ParentForm));
+            ChatClientJoin clientJoin = new ChatClientJoin(ParentForm);
+            ParentForm.LoadForm(clientJoin);
+            
             if(clientFormOnline != null) // clear the old form
             {
                 clientFormOnline.Close();
                 clientFormOnline.Dispose();
             }
             clientFormOnline = new ChessAIClient();
-            clientFormOnline.Show();
+            //clientFormOnline.Show();
+            clientJoin.JoiningRoom("NullFD", clientFormOnline, true, selectedTimeCtrl);
+            clientJoin.Joined += ClientJoin_Joined;
         }
 
+    }
+
+    private void ClientJoin_Joined(object? sender, EventArgs e)
+    {
+        if(clientFormOnline != null)
+        {
+            clientFormOnline.Show();
+        }
     }
 
     private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
     {
         label3.Visible = false;
+        selectedTimeCtrl = TimeControls.Keys.ToArray()[comboBox1.SelectedIndex];
     }
 
     private void label2_Click(object sender, EventArgs e)
@@ -304,7 +326,7 @@ public partial class PvpModeForm : Form
 
     private void startSvr_Click(object sender, EventArgs e)
     {
-        if(serverLog == null) { 
+        if(serverLog == null ) { 
         // start server btn
             serverLog = new ChatServerLog(false); // true = Hide the Code form after load
             serverLog.Show();

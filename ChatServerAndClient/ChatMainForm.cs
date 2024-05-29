@@ -142,21 +142,21 @@ namespace winforms_chat
                             //chat_panel.AddMessage(chatModel);
                             if (chessClient != null)
                             {
-                                if (msg.message.Contains(ChatCommand.Move.ToString() ))
+                                if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Move) ))
                                 {
-                                    chessClient.MoveAsMessage(msg.message.Replace(ChatCommand.Move.ToString(),""));
+                                    chessClient.MoveAsMessage(msg.message.Replace(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Move),""));
                                 }
-                                if (msg.message.Contains(ChatCommand.EndGame.ToString()))
+                                if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame)))
                                 {
-                                    chessClient.EndGameOnline(msg.message.Replace(ChatCommand.EndGame.ToString(), ""));
+                                    chessClient.EndGameOnline(msg.message.Replace(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame), ""));
                                 }
-                                if (msg.message.Contains(ChatCommand.Rematch.ToString()))
+                                if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Rematch)))
                                 {
-                                    chessClient.RestartGameOnline(msg.message.Replace(ChatCommand.Rematch.ToString(), ""));
+                                    chessClient.RestartGameOnline(msg.message.Replace(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Rematch), ""));
                                 }
-                                if (msg.message.Contains(ChatCommand.TimeSync.ToString()))
+                                if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.TimeSync)))
                                 {
-                                    chessClient.syncTimer(msg.message.Replace(ChatCommand.TimeSync.ToString(), ""));
+                                    chessClient.syncTimer(msg.message.Replace(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.TimeSync), ""));
                                 }
                             }
                         }   

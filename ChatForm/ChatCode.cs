@@ -1,20 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+
 namespace winforms_chat
 {
-    public enum ChatCommand
-    {
-        Move,
-        EndGame,
-        Rematch,
-        TimeSync,
-        ServerCreateRoom,
-        ClientLeaveRoom,
-        ClientDisconnect,
-        ServerDisconnect,
-    }
     public static class ChatCommandExt
     {
+        public enum ChatCommand
+        {
+            Move,
+            EndGame,
+            Rematch,
+            TimeSync,
+            ServerCreateRoom,
+            ClientLeaveRoom,
+            ClientDisconnect,
+            ServerDisconnect,
+            GetUserList,
+        }
+
         private static readonly Dictionary<ChatCommand, string> commandMap = new Dictionary<ChatCommand, string>
         {
             { ChatCommand.Move, "MV#*" },
@@ -25,6 +28,7 @@ namespace winforms_chat
             { ChatCommand.ClientLeaveRoom, "CLRR#*" },
             { ChatCommand.ClientDisconnect, "CDIS#*" },
             { ChatCommand.ServerDisconnect, "SDIS#*" },
+            { ChatCommand.GetUserList, "USER_LIST#*" },
         };
 
         public static string ToString(this ChatCommand command)

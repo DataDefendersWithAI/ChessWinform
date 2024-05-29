@@ -39,10 +39,11 @@ namespace winforms_chat
             comm.ClientLoad();
             // Add column name "Code" and "Player"
             listview_userQueue.View = View.Details;
-            listview_userQueue.Columns.Add("Code", 50);
-            listview_userQueue.Columns.Add("Player", 100);
-            listview_userQueue.Columns.Add("Mode", 100);
-            listview_userQueue.Columns.Add("Status", 50);
+            listview_userQueue.Columns.Add("Code", 150);
+            listview_userQueue.Columns.Add("Player", 200);
+            listview_userQueue.Columns.Add("Time ctrl", 200);
+            listview_userQueue.Columns.Add("Status", 100);
+            listview_userQueue.Columns.Add("Type", 200);
         }
 
         private void LogMessage(string message)
@@ -82,27 +83,29 @@ namespace winforms_chat
                             item.SubItems.Add(userName);
                             item.SubItems.Add("none");
                             item.SubItems.Add("Idle");
+                            item.SubItems.Add("Player");
                             listview_userQueue.Items.Add(item);
                         }
-                        else if (msg.message.Contains(ChatCommand.ServerCreateRoom.ToString()))
+                        else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerCreateRoom)))
                         {
                             Debug.WriteLine("[SVR] User " + msg.from + " want to join the game room queue");
                             string userName = msg.from;
-                            string mode = msg.message.Replace(ChatCommand.ServerCreateRoom.ToString(), "");
-                            // check if mode is empty
-                            if (string.IsNullOrEmpty(mode))
+                            string timeCtrl = msg.message.Replace(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerCreateRoom), "");
+                            // check if timeCtrl is empty
+                            if (string.IsNullOrEmpty(timeCtrl))
                             {
-                                Debug.WriteLine("[SVR] User " + msg.from + " want to join the game room queue but mode is empty, auto set to 10|0");
-                                return;
+                                Debug.WriteLine("[SVR] User " + msg.from + " want to join the game room queue but timeCtrl is empty, auto set to 10|0");
+                                timeCtrl = "10|0";
                             }
                             // Add user to listview
                             ListViewItem item = new ListViewItem(msg.TableCode);
                             item.SubItems.Add(userName);
-                            item.SubItems.Add(mode);
+                            item.SubItems.Add(timeCtrl);
                             item.SubItems.Add("Active");
+                            item.SubItems.Add("Room");
                             listview_userQueue.Items.Add(item);
                         }
-                        else if (msg.message.Contains(ChatCommand.ClientDisconnect.ToString()) || msg.message.Contains(ChatCommand.ClientLeaveRoom.ToString()))
+                        else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect)) || msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientLeaveRoom)))
                         {
                             // Remove user from listview
                             foreach (ListViewItem item in listview_userQueue.Items)
@@ -118,6 +121,10 @@ namespace winforms_chat
                             Debug.WriteLine("[SVR] User " + msg.from+": " + msg.message+" .... is not in expected, is it a err?");
                             return; 
                         }
+                        // update list user for all clients
+                        Debug.WriteLine("[SVR] Update list user for all clients");
+                        ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "update", "server", "all", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList) + ParseListToString(), DateTime.Now);
+                        comm.SendMessage(msg1.ToJson());
                     }
                 }
 
@@ -128,6 +135,20 @@ namespace winforms_chat
                 Console.WriteLine(ex.Message);
             }
 
+        }
+
+        private string ParseListToString()
+        {
+            // Parse listview_userQueue to string
+            string result = "";
+            foreach (ListViewItem item in listview_userQueue.Items)
+            {
+                if (item.SubItems[4].Text == "Room")
+                {
+                    result += item.SubItems[1].Text + "#" + item.SubItems[2].Text + "#" + item.SubItems[3].Text + "#" + item.SubItems[4].Text + "~";
+                }
+            }
+            return result;
         }
 
         private void ClientForm_FormClosed(object sender, FormClosedEventArgs e)

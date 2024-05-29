@@ -78,7 +78,7 @@ namespace ChessAI
                 string timeSyncStr = Side == PieceColor.White ? timeOur.TotalSeconds + "|" + timeOpponent.TotalSeconds :  timeOpponent.TotalSeconds + "|" + timeOur.TotalSeconds;
                 if (currenChatMainForm != null)
                 {
-                    currenChatMainForm.timeSyncSendHandler(ChatCommand.TimeSync.ToString() + timeSyncStr); // sync display time
+                    currenChatMainForm.timeSyncSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.TimeSync) + timeSyncStr); // sync display time
                 }
             }
             catch (Exception e)
@@ -367,7 +367,7 @@ namespace ChessAI
             {
                 if (currenChatMainForm != null)
                 {
-                    currenChatMainForm.moveSendHandler(ChatCommand.Rematch.ToString()+ "RestartAsk" );
+                    currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Rematch) + "RestartAsk" );
                 }
             }
         }
@@ -474,7 +474,7 @@ namespace ChessAI
             chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard, isNormalized: false, side: Side); // Handle the click
 
             panel1.Invalidate(); // Redraw whole board
-            var mv = ChatCommand.Move.ToString() + (chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none"); //move
+            var mv = ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Move) + (chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none"); //move
             LogMessage(mv);
             
             if (chessBoard.Turn != Side)
@@ -490,7 +490,7 @@ namespace ChessAI
             //  SendMessage(mv);
             if (currenChatMainForm != null
                 && mv != chessLastMove // prevent  spamming the same move
-                && mv != (ChatCommand.Move.ToString() + "none") // prevent sending none move
+                && mv != (ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Move) + "none") // prevent sending none move
                 && chessBoard.Turn != Side  //prevent sending move when it's not our turn // using != because it's end of our turn
                 && isOffline == false // prevent sending move when offline
                 )
@@ -606,10 +606,10 @@ namespace ChessAI
             ScaleControls(currentScale);
             if (isOffline) return; // If offline mode, return
             // Do something when form is loaded
-            x = new ChatClientJoin();
-            x.Show();
-            x.JoiningRoom(PlayerName, this);
-            x.Joined += Room_Joined;
+            //x = new ChatClientJoin();
+            //x.Show();
+            //x.JoiningRoom(PlayerName, this);
+            //x.Joined += Room_Joined;
         }
 
         private void Room_Joined(object sender, EventArgs e)
@@ -743,7 +743,7 @@ namespace ChessAI
                         
                         if (currenChatMainForm != null)
                         {
-                            currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "Timeout" );
+                            currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame) + "Timeout" );
                         }
                     }
                 }
@@ -820,7 +820,7 @@ namespace ChessAI
                 {
                     drawBtn.Visible = false;
                     resignBtn.Visible = false;
-                    currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "DrawAsk" );
+                    currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame) + "DrawAsk" );
                 }
             }
         }
@@ -837,7 +837,7 @@ namespace ChessAI
             {
                 if (currenChatMainForm != null)
                 {
-                    currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "Resign" );
+                    currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame) + "Resign" );
                     chessBoard.Resign(Side);
                 }
             }
@@ -850,7 +850,7 @@ namespace ChessAI
             if (currenChatMainForm != null)
             {
                 new SoundFXHandler(chessBoard, "", "accept"); //accept sound
-                currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "DrawAccept" );
+                currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame) + "DrawAccept" );
                 
             }
         }
@@ -863,7 +863,7 @@ namespace ChessAI
             resignBtn.Visible = true;
             if (currenChatMainForm != null)
             {
-                currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "DrawDecline");
+                currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame) + "DrawDecline");
             }
         }
 
@@ -874,8 +874,8 @@ namespace ChessAI
             {
                 new SoundFXHandler(chessBoard, "", "accept"); // accept sound
                 Side = Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
-                currenChatMainForm.moveSendHandler(ChatCommand.Rematch.ToString() + "RestartAccept-" +Side.OppositeColor());
-                RestartGameOnline(ChatCommand.Rematch.ToString() + "RestartAccept-" + Side);
+                currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Rematch) + "RestartAccept-" +Side.OppositeColor());
+                RestartGameOnline(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Rematch) + "RestartAccept-" + Side);
             }
         }
 
@@ -886,8 +886,8 @@ namespace ChessAI
             AgainBtn.Visible = true;
             HomeBtn.Visible = true;
             if (currenChatMainForm != null)
-            {
-                currenChatMainForm.moveSendHandler(ChatCommand.Rematch.ToString() + "RestartDecline");
+            {   
+                currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Rematch) + "RestartDecline");
             }
         }
         
@@ -901,7 +901,7 @@ namespace ChessAI
             {
                 if (currenChatMainForm != null)
                 {
-                    currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "Resign");
+                    currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame) + "Resign");
                     currenChatMainForm.Close();
                     if (chessBoard.IsEndGame) return; // if game already ended, return; 
                     chessBoard.Resign(Side);
