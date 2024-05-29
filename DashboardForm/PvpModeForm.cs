@@ -271,6 +271,7 @@ public partial class PvpModeForm : Form
             //clientFormOnline.Show();
             clientJoin.JoiningRoom(ourName, clientFormOnline, true, selectedTimeCtrl);
             clientJoin.Joined += ClientJoin_Joined;
+
         }
 
     }
@@ -296,11 +297,11 @@ public partial class PvpModeForm : Form
 
     private void startSvr_Click(object sender, EventArgs e)
     {
-        if(serverLog == null ) { 
-        // start server btn
+        if (serverLog == null)
+        {
             serverLog = new ChatServerLog(false); // true = Hide the Code form after load
             serverLog.Show();
-            serverLog.Hide(); // hide the server log form
+            serverLog.Hide();
             startSvr.Text = "Stop Server";
         }
         else
@@ -310,6 +311,47 @@ public partial class PvpModeForm : Form
             serverLog.Dispose();
             serverLog = null;
         }
+        //ServerCommunication serverComm = new ServerCommunication(serverIP, serverPort, LogMessage);
+        //serverComm.StartServer();
+        //if (serverComm.IsServerRunning())
+        //{
+        //    Debug.WriteLine("Server is running");
+        //}
+        //else
+        //{
+        //    Debug.WriteLine("Server is not running");
+        //}
+        //if (serverLog == null ) {
+        //    // start server btn
+        //    //serverLog = new ChatServerLog(false); // true = Hide the Code form after load
+        //    //serverLog.Show();
+        //    //serverLog.ServerForm_Load(sender, e);
+        //    //serverLog.Hide(); // hide the server log form
+
+        //    // Start server
+        //    serverComm.StartServer();
+        //    // Check status of server
+        //    if (serverComm.IsServerRunning())
+        //    {
+        //        Debug.WriteLine("Server is running");
+        //    }
+        //    else
+        //    {
+        //        Debug.WriteLine("Server is not running");
+        //    }
+        //    startSvr.Text = "Stop Server";
+        //    // Open the code form
+        //    ChatServerCode codeForm = new ChatServerCode();
+        //    codeForm.Show();
+        //}
+        //else
+        //{
+        //    //serverComm.CloseServer();
+        //    //serverLog.Close();
+        //    //startSvr.Text = "Start Server";
+        //    //serverLog.Dispose();
+        //    //serverLog = null;
+        //}
     }
 
     private void cntSvr_Click(object sender, EventArgs e)
@@ -344,7 +386,7 @@ public partial class PvpModeForm : Form
         // If IP is valid, update Constants and reset background color
         Constants.SetServerIP(ip);
         srvIP.BackColor = Color.Azure;
-
+        Debug.WriteLine("Server IP: " + Constants.serverIP);
         if (comm != null)
         {
             comm.ClientClose(); // close old connection
@@ -352,6 +394,16 @@ public partial class PvpModeForm : Form
 
         Thread t = new Thread(connectToServer); // reconnect to server
         t.Start();
+        if (comm != null)
+        {
+            cntSvr.Text = "Connected";
+            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server", "Hello server from "+ ourName, DateTime.Now);
+            comm.SendMessage(msg1.ToJson());
+        }
+        else
+        {
+            cntSvr.Text = "Connect";
+        }
     }
 
 

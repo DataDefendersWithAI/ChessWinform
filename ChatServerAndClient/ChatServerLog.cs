@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
@@ -29,13 +30,24 @@ namespace winforms_chat
             InitializeComponent();
             this.FormClosing += new FormClosingEventHandler(this.ServerForm_Closing);
             isFormHideOnLoad = hidOnLoad;
+            serverComm = new ServerCommunication(serverIP, serverPort, LogMessage);
+            serverComm.StartServer();
+
+            if (serverComm.IsServerRunning())
+            {
+                Debug.WriteLine("Server is running");
+            }
+            else
+            {
+                Debug.WriteLine("Server is not running");
+            }
         }
 
         private void ServerForm_Load(object sender, EventArgs e)
         {
-            serverComm = new ServerCommunication(serverIP, serverPort, LogMessage);
+            
 
-            serverComm.StartServer(); // auto start server
+           // serverComm.StartServer(); // auto start server
             // Open the code form
             if(codeForm != null)
             {
@@ -61,6 +73,7 @@ namespace winforms_chat
             if(serverComm != null)
             {
                 // server close
+                serverComm.CloseServer();
             }
         }
 

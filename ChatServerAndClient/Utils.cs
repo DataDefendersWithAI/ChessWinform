@@ -312,6 +312,7 @@ namespace ChessAI.ChatServerAndClient
             catch (Exception ex)
             {
                 LogMessage("Error: " + ex.Message);
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -383,12 +384,24 @@ namespace ChessAI.ChatServerAndClient
             LogMessage($"{message}");
         }
 
-        private void ServerClose()
+        public void CloseServer()
         {
             if (server != null)
             {
                 server.Stop();
             }
         }   
+        public bool IsServerRunning()
+        {
+            // Check if server is running
+            if (server != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }
