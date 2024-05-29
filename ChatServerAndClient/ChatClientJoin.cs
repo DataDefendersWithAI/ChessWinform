@@ -108,11 +108,12 @@ namespace winforms_chat
                         // Merge userName and opponentUserName with "-" and pass it to ChatMainForm
                         msg.to = userName + "-" + opponentUserName;
                         Debug.WriteLine("[CL] Begin pvp: "+ userName +" vs "+opponentUserName +" time limit "+ timectrl);
+                        Debug.WriteLine("[CL] Side: " + Side + " OpponentSide: " + OpponentSide);
                         //MessageBox.Show("Room code: " + msg.message);
                         // Open ChatMainForm with table code and username
                         Console.WriteLine(msg.to , msg.message);
                         isFormExit = true;
-                        ChatMainForm chatMainForm = new ChatMainForm(newTableCode, msg.to , chessClient, Side,timectrl);
+                        ChatMainForm chatMainForm = new ChatMainForm(newTableCode, msg.to , chessClient, Side, timectrl);
                         chatMainForm.Show();
                         currentChatMainForm = chatMainForm;
                         isJoined = true;

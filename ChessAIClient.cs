@@ -58,7 +58,6 @@ namespace ChessAI
         private string reasonEndGame = "Checkmate";
 
         public PromotionType selectedPromotion;
-        ChatClientJoin x;
         ChatMainForm currenChatMainForm;
         string chessLastMove; // prevent sending too much when clicking on the board
 
@@ -155,35 +154,48 @@ namespace ChessAI
             }
         }
 
-        public void SetupGame(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, bool DebugMode = false, PieceColor setSide = null, string NamePlayer = null, int UserELO = 0)
+        public void SetupGame( string timeCtrl = "10|0", bool isOffl = false, bool DebugMode = false, PieceColor setSide = null, string NamePlayer = null, int UserELO = 0, ChatMainForm currrchatMF=null)
         {
-
-            this.isDebug = DebugMode; // Set the debug mode 
-            this.isOffline = isOffl; // Set the offline mode
-            presetSide = setSide; // Set the preset side
-
-            //Set name player:
-            if (NamePlayer != null)
+            currenChatMainForm = currrchatMF;
+            // Add any additional actions needed once the chat is joined
+            if (currenChatMainForm != null)
             {
-                PlayerName = NamePlayer;
-            }
 
-            if (UserELO != 0)
-            {
-                PlayerNumber = UserELO;
+                Debug.WriteLine("SetupGame");
+                Debug.WriteLine("Side: " + setSide +" tctl "+ timeCtrl +" "+NamePlayer);
+                this.isDebug = DebugMode; // Set the debug mode 
+                this.isOffline = isOffl; // Set the offline mode
+                Side = setSide; // Set the preset side
+
+                //Set name player:
+                if (NamePlayer != null)
+                {
+                    PlayerName = NamePlayer;
+                }
+
+                if (UserELO != 0)
+                {
+                    PlayerNumber = UserELO;
+                }
+                // Set the time control
+                timeControl = timeCtrl;
+
+                chessBoard.Clear();
+                panel1.Invalidate();
+                gameStarted = false;
+
+                InitGame(Side, timeControl);
             }
-            // Set the time control
-            timeControl = timeCtrl;
-            InitGame(Side, timeControl);
         }
-
         /// <summary>
         /// Begin the game when the message is received/ Connected to another player
         /// </summary>
         /// <param name="message"></param>
         private void InitGame(PieceColor side, string timeCtrl = "10|0")
         {
+
             if (gameStarted) return; // If game already started, return
+
             new SoundFXHandler(chessBoard, "", "start"); // start game sound
             resignBtn.Visible = true;
             drawBtn.Visible = true;

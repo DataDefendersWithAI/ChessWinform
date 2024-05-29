@@ -337,7 +337,7 @@ public partial class PvpModeForm : Form
             var side = clientJoin.currentChatMainForm.Side;
             var timectrl = clientJoin.currentChatMainForm.timeCtrl;
             clientFormOnline.Show();
-            clientFormOnline.SetupGame(NamePlayer: ourName, UserELO: 0, timeCtrl: timectrl, DebugMode: false, setSide: side);
+            clientFormOnline.SetupGame(NamePlayer: ourName, UserELO: 0, timeCtrl: timectrl, DebugMode: false, setSide: side, currrchatMF: clientJoin.currentChatMainForm);
         }
     }
 
