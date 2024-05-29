@@ -640,9 +640,6 @@
     <Compile Update="ChatServerAndClient\ChatClientJoin.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="DashboardForm\PvpWaitingForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="DashboardForm\PveModeForm.cs">
       <SubType>Form</SubType>
     </Compile>

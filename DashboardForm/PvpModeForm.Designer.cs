@@ -37,6 +37,9 @@
             listview_userQueue = new ListView();
             label3 = new Label();
             label4 = new Label();
+            startSvr = new Button();
+            cntSvr = new Button();
+            srvIP = new TextBox();
             SuspendLayout();
             // 
             // btn_createRoom
@@ -106,7 +109,7 @@
             listBoxPlayerRooms.ItemHeight = 32;
             listBoxPlayerRooms.Location = new Point(22, 55);
             listBoxPlayerRooms.Name = "listBoxPlayerRooms";
-            listBoxPlayerRooms.Size = new Size(464, 324);
+            listBoxPlayerRooms.Size = new Size(464, 420);
             listBoxPlayerRooms.TabIndex = 8;
             // 
             // listview_userQueue
@@ -135,18 +138,61 @@
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 13F);
             label4.ForeColor = SystemColors.ActiveCaptionText;
-            label4.Location = new Point(142, 406);
+            label4.Location = new Point(142, 537);
             label4.Name = "label4";
             label4.Size = new Size(501, 25);
             label4.TabIndex = 10;
             label4.Text = "Game mode: Minutes per game| increment seconds per move\r\n";
+            // 
+            // startSvr
+            // 
+            startSvr.BackColor = Color.Wheat;
+            startSvr.Font = new Font("Showcard Gothic", 13.2000008F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            startSvr.Location = new Point(502, 359);
+            startSvr.Margin = new Padding(3, 2, 3, 2);
+            startSvr.Name = "startSvr";
+            startSvr.Size = new Size(253, 45);
+            startSvr.TabIndex = 11;
+            startSvr.Text = "Start server";
+            startSvr.UseVisualStyleBackColor = false;
+            startSvr.Click += startSvr_Click;
+            // 
+            // cntSvr
+            // 
+            cntSvr.BackColor = Color.PaleGreen;
+            cntSvr.Font = new Font("Showcard Gothic", 13.2000008F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            cntSvr.Location = new Point(502, 456);
+            cntSvr.Margin = new Padding(3, 2, 3, 2);
+            cntSvr.Name = "cntSvr";
+            cntSvr.Size = new Size(253, 45);
+            cntSvr.TabIndex = 12;
+            cntSvr.Text = "Connect server";
+            cntSvr.UseVisualStyleBackColor = false;
+            cntSvr.Click += cntSvr_Click;
+            // 
+            // srvIP
+            // 
+            srvIP.BackColor = Color.Azure;
+            srvIP.BorderStyle = BorderStyle.None;
+            srvIP.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            srvIP.ForeColor = SystemColors.InactiveCaption;
+            srvIP.Location = new Point(502, 418);
+            srvIP.Margin = new Padding(3, 2, 3, 2);
+            srvIP.Name = "srvIP";
+            srvIP.Size = new Size(253, 25);
+            srvIP.TabIndex = 13;
+            srvIP.Text = "Enter server IP";
+            srvIP.TextChanged += srvIP_TextChanged;
             // 
             // PvpModeForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PowderBlue;
-            ClientSize = new Size(767, 440);
+            ClientSize = new Size(772, 571);
+            Controls.Add(srvIP);
+            Controls.Add(cntSvr);
+            Controls.Add(startSvr);
             Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(listBoxPlayerRooms);
@@ -175,5 +221,8 @@
         private ListView listview_userQueue;
         private Label label3;
         private Label label4;
+        private Button startSvr;
+        private Button cntSvr;
+        private TextBox srvIP;
     }
 }

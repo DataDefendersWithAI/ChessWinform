@@ -13,6 +13,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using ChessAI;
 using System.Diagnostics;
 using ChessAI_Bck;
+using winforms_chat;
 
 namespace winform_chat.DashboardForm;
 
@@ -33,6 +34,8 @@ public partial class PvpModeForm : Form
     private List<PlayerRoom> playerRooms;
 
     MainScreen ParentForm;
+    ChatServerLog serverLog;
+    ChessAIClient clientFormOnline;
 
     // Predefined array of time control strings
     public static Dictionary<string, string> TimeControls = new Dictionary<string, string>()
@@ -61,6 +64,9 @@ public partial class PvpModeForm : Form
         autoPickTimer.Interval = 500; // Set interval to 1 second (1000 ms)
         autoPickTimer.Tick += btn_joinRandom_Click;
         InitializePlayerRooms();
+
+        srvIP.Text = serverIP;
+
         FillListBoxPlayerRooms();
         // Add items to the ComboBox
         foreach (var timeControl in TimeControls)
@@ -193,7 +199,7 @@ public partial class PvpModeForm : Form
 
     private void btn_joinRandom_Click(object sender, EventArgs e)
     {
-        new SoundFXHandler(null, "", "click");
+        
         // Pick 2 random users from listview
         if (listview_userQueue.Items.Count >= 2)
         {
@@ -236,6 +242,7 @@ public partial class PvpModeForm : Form
     // Auto pick 2 random users from listview
     private void btn_autoJoin_Click(object sender, EventArgs e)
     {
+        new SoundFXHandler(null, "", "click");
         // It like btn_joinRandom_Click but it will auto pick 2 users from listview
         if (comboBox1.SelectedIndex == -1)
         {
@@ -258,7 +265,7 @@ public partial class PvpModeForm : Form
             btn_autoJoin.Text = "Cancel matching";
             if (ParentForm != null)
             {
-                ParentForm.LoadForm(new PvpWaitingForm(ParentForm));
+                ParentForm.LoadForm(new ChatClientJoin(ParentForm));
             }
         }
 
@@ -273,7 +280,14 @@ public partial class PvpModeForm : Form
         }
         if (ParentForm != null)
         {
-            ParentForm.LoadForm(new PvpWaitingForm(ParentForm));
+            ParentForm.LoadForm(new ChatClientJoin(ParentForm));
+            if(clientFormOnline != null) // clear the old form
+            {
+                clientFormOnline.Close();
+                clientFormOnline.Dispose();
+            }
+            clientFormOnline = new ChessAIClient();
+            clientFormOnline.Show();
         }
 
     }
@@ -286,7 +300,73 @@ public partial class PvpModeForm : Form
     private void label2_Click(object sender, EventArgs e)
     {
 
-     }
+    }
+
+    private void startSvr_Click(object sender, EventArgs e)
+    {
+        if(serverLog == null) { 
+        // start server btn
+            serverLog = new ChatServerLog(false); // true = Hide the Code form after load
+            serverLog.Show();
+            serverLog.Hide(); // hide the server log form
+            startSvr.Text = "Stop Server";
+        }
+        else
+        {
+            serverLog.Close();
+            startSvr.Text = "Start Server";
+            serverLog.Dispose();
+            serverLog = null;
+        }
+    }
+
+    private void cntSvr_Click(object sender, EventArgs e)
+    {
+        var ip = srvIP.Text;
+
+        // Check if ip is empty
+        if (string.IsNullOrWhiteSpace(ip))
+        {
+            srvIP.BackColor = Color.Salmon;
+            return;
+        }
+
+        // Split IP into parts and check length
+        var parts = ip.Split('.');
+        if (parts.Length != 4)
+        {
+            srvIP.BackColor = Color.Salmon;
+            return;
+        }
+
+        // Validate each part of the IP address
+        foreach (var part in parts)
+        {
+            if (!int.TryParse(part, out int num) || num < 0 || num > 255)
+            {
+                srvIP.BackColor = Color.Salmon;
+                return;
+            }
+        }
+
+        // If IP is valid, update Constants and reset background color
+        Constants.SetServerIP(ip);
+        srvIP.BackColor = Color.Azure;
+
+        if (comm != null)
+        {
+            comm.ClientClose(); // close old connection
+        }
+
+        Thread t = new Thread(connectToServer); // reconnect to server
+        t.Start();
+    }
+
+
+    private void srvIP_TextChanged(object sender, EventArgs e)
+    {
+        srvIP.BackColor = Color.Azure;
+    }
 }
 
 

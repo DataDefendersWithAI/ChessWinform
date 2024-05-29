@@ -17,6 +17,8 @@ using ChessAI;
 
 // Import the Message class from MessageClass.cs
 using ChessAI.ChatServerAndClient;
+using ChessAI_Bck;
+using winform_chat;
 
 namespace winforms_chat
 {
@@ -35,19 +37,18 @@ namespace winforms_chat
         public event EventHandler Joined;
 
         ChessAIClient chessClient;
+        MainScreen ParentForm;
+        private string ourName;
 
-
-        public ChatClientJoin()
+        public ChatClientJoin(MainScreen pForm = null, string uName ="player1")
         {
             InitializeComponent();
             isJoined = false;
-
+            this.ourName = uName;
+            ParentForm = pForm;
         }
         private void ClientForm_Load(object sender, EventArgs e)
         {
-            // Show pnl_join and hide pnl_wait
-            pnl_join.Visible = true;
-            pnl_wait.Visible = false;
             comm = new Communication(serverIP, serverPort, LogMessage);
             comm.ClientLoad();
         }
@@ -75,10 +76,10 @@ namespace winforms_chat
                 ChessAI.ChatServerAndClient.Message msg = ChessAI.ChatServerAndClient.Message.FromJson(message);
                 if (msg != null)
                 {
-                    // Check if code is 000000, type is join, from "server", msg.to contains txt_userName.Text
+                    // Check if code is 000000, type is join, from "server", msg.to contains ourName
                     // If yes, then take message as room code, MessageBox it
                     // Then close this form and open ChatMainForm.cs
-                    if (msg.TableCode == "000000" && msg.type == "join" && msg.from == "server" && msg.to.Contains(txt_userName.Text) && msg.message!="close")
+                    if (msg.TableCode == "000000" && msg.type == "join" && msg.from == "server" && msg.to.Contains(ourName) && !msg.message.Contains(ChatCommand.ServerDisconnect.ToString()))
                     {
                         // Split msg.to by - and swap if needed to make sure that first part is user name and second part is opponent user name
                         string[] userNames = msg.to.Split('-');
@@ -90,8 +91,8 @@ namespace winforms_chat
                         string[] userSides = mess[1].Split('-');
                         string Side = userSides[0];
                         string OpponentSide = userSides[1];
-                        // If user name is not equal to txt_userName.Text, swap user name and opponent user name
-                        if (userName != txt_userName.Text)
+                        // If user name is not equal to ourName, swap user name and opponent user name
+                        if (userName != ourName)
                         {
                             userName = userNames[1];
                             opponentUserName = userNames[0];
@@ -136,7 +137,7 @@ namespace winforms_chat
             // Send last message to server
             // TableCode: 000000
             // type: join
-            // from: txt_userName.Text
+            // from: ourName
             // to: server
             // message: disconnected
             // date: DateTime.Now
@@ -145,7 +146,7 @@ namespace winforms_chat
                 return;
             }
             // When user closes the form, send message to server
-            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", txt_userName.Text, "server", "disconnect", DateTime.Now);
+            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server", ChatCommand.ClientDisconnect.ToString(), DateTime.Now);
             comm.SendMessage(message.ToJson());
             comm.ClientClose();
         }
@@ -153,20 +154,20 @@ namespace winforms_chat
         private void btn_join_Click(object sender, EventArgs e)
         {
             // Check if user name is empty
-            if (txt_userName.Text == "")
+            if (ourName == "")
             {
                 MessageBox.Show("Please enter your name.");
                 return;
             }
 
-            JoiningRoom(txt_userName.Text, null);
+            JoiningRoom(ourName, null);
         }
 
         public void JoiningRoom(string userName, ChessAIClient chClient)
         {
             chessClient = chClient;
             Debug.WriteLine("JoiningRoom called with user name: " + userName);
-            txt_userName.Text = userName;
+            ourName = userName;
             // Check if user name is "server"
             if (userName == "server")
             {
@@ -183,10 +184,6 @@ namespace winforms_chat
 
             if (comm == null) return;
 
-            // Shows pnl_wait and hides pnl_join
-            pnl_wait.Visible = true;
-            pnl_join.Visible = false;
-
             // Send message to server using JSON
             // TableCode: 000000
             // type: join
@@ -195,26 +192,29 @@ namespace winforms_chat
             // message: 
             // date: DateTime.Now
 
-
+            // this will be classified as normal usr
             ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", userName, "server", "", DateTime.Now);
             comm.SendMessage(message.ToJson());
         }
 
         private void btn_cancel_Click(object sender, EventArgs e)
         {
-
-            // Show pnl_join and hide pnl_wait
-            pnl_join.Visible = true;
-            pnl_wait.Visible = false;
+            new SoundFXHandler(null, "", "click");
             // Also send message to server
             // TableCode: 000000
             // type: join
-            // from: txt_userName.Text
+            // from: ourName
             // to: server
             // message: cancel
             // date: DateTime.Now
-            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", txt_userName.Text, "server", "cancel", DateTime.Now);
+            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server",ChatCommand.ClientLeaveRoom.ToString(), DateTime.Now);
             comm.SendMessage(message.ToJson());
+            this.Close();
+            this.Dispose();
+            if (ParentForm != null)
+            {
+                ParentForm.LoadForm(new winform_chat.DashboardForm.PvpModeForm(ParentForm));
+            } 
         }
     }
 }

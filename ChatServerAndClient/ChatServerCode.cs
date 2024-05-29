@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
@@ -21,6 +22,7 @@ namespace winforms_chat
         int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
         private System.Windows.Forms.Timer autoPickTimer;
         private bool isAutoPicking = false;
+   
         public ChatServerCode()
         {
             InitializeComponent();
@@ -28,6 +30,7 @@ namespace winforms_chat
             autoPickTimer = new System.Windows.Forms.Timer();
             autoPickTimer.Interval = 500; // Set interval to 1 second (1000 ms)
             autoPickTimer.Tick += btn_joinRandom_Click;
+            
         }
 
         private void ClientForm_Load(object sender, EventArgs e)
@@ -38,6 +41,8 @@ namespace winforms_chat
             listview_userQueue.View = View.Details;
             listview_userQueue.Columns.Add("Code", 50);
             listview_userQueue.Columns.Add("Player", 100);
+            listview_userQueue.Columns.Add("Mode", 100);
+            listview_userQueue.Columns.Add("Status", 50);
         }
 
         private void LogMessage(string message)
@@ -64,18 +69,40 @@ namespace winforms_chat
                 if (msg != null)
                 {
                     // Check if message is correct format: Join the chat: {"TableCode": "000000", "type": "join", "from": userName, "to": "server", "message": "", "date": DateTime.Now}
-                    if (msg.type == "join" && msg.TableCode == "000000")
+                    if (msg.type == "join" && msg.TableCode == "000000" && msg.to == "server" )
                     {
-                        // If message is empty, it means user want to join the chat queue
-                        // If message is "cancel", it means user want to cancel the chat queue
-                        if (msg.message == "")
+                        // If message is empty, it means user want to join the game online
+                        // If message is not empty, it means user want to join the game room queue
+                        // If message is "cancel", it means user want to cancel the game room queue
+                        if (msg.message == "" )
                         {
-                            // Add user to listview
+                            Debug.WriteLine("User " + msg.from + " want to join the Pvp");
+                            string userName = msg.from;
                             ListViewItem item = new ListViewItem(msg.TableCode);
-                            item.SubItems.Add(msg.from);
+                            item.SubItems.Add(userName);
+                            item.SubItems.Add("none");
+                            item.SubItems.Add("Idle");
                             listview_userQueue.Items.Add(item);
                         }
-                        else if (msg.message == "cancel" || msg.message == "disconnect")
+                        else if (msg.message.Contains(ChatCommand.ServerCreateRoom.ToString()))
+                        {
+                            Debug.WriteLine("[SVR] User " + msg.from + " want to join the game room queue");
+                            string userName = msg.from;
+                            string mode = msg.message.Replace(ChatCommand.ServerCreateRoom.ToString(), "");
+                            // check if mode is empty
+                            if (string.IsNullOrEmpty(mode))
+                            {
+                                Debug.WriteLine("[SVR] User " + msg.from + " want to join the game room queue but mode is empty, auto set to 10|0");
+                                return;
+                            }
+                            // Add user to listview
+                            ListViewItem item = new ListViewItem(msg.TableCode);
+                            item.SubItems.Add(userName);
+                            item.SubItems.Add(mode);
+                            item.SubItems.Add("Active");
+                            listview_userQueue.Items.Add(item);
+                        }
+                        else if (msg.message.Contains(ChatCommand.ClientDisconnect.ToString()) || msg.message.Contains(ChatCommand.ClientLeaveRoom.ToString()))
                         {
                             // Remove user from listview
                             foreach (ListViewItem item in listview_userQueue.Items)
@@ -87,7 +114,10 @@ namespace winforms_chat
                                 }
                             }
                         }
-                        else return;
+                        else {
+                            Debug.WriteLine("[SVR] User " + msg.from+": " + msg.message+" .... is not in expected, is it a err?");
+                            return; 
+                        }
                     }
                 }
 

@@ -224,7 +224,7 @@ namespace ChessAI
             return false;
         }
 
-        public ChessBoard onClicked(Position clickedPosition, ChessBoard chessBoard, bool isNormalized = false, PieceColor side = null)
+        public ChessBoard onClicked(Position clickedPosition, ChessBoard chessBoard, bool isNormalized = false, PieceColor side = null, ChessAIClient chessClientUI = null)
         {
             try
             {
@@ -302,7 +302,7 @@ namespace ChessAI
                 if (chessBoard[selectedPiece.toSAN()].Type == PieceType.Pawn && (pieceMoveTo.Y == 0 || pieceMoveTo.Y == 7))
                 {
                     Debug.WriteLineIf(debugMode, "Pawn promotion");
-                    selectedPromotion = new ChessAIClient().PromotePawnUIAsync(); 
+                    chessClientUI.PromotePawnUIAsync(); 
                 }
 
                 //add sound FX

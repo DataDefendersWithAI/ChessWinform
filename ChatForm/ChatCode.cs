@@ -8,6 +8,10 @@ namespace winforms_chat
         EndGame,
         Rematch,
         TimeSync,
+        ServerCreateRoom,
+        ClientLeaveRoom,
+        ClientDisconnect,
+        ServerDisconnect,
     }
     public static class ChatCommandExt
     {
@@ -16,7 +20,11 @@ namespace winforms_chat
             { ChatCommand.Move, "MV#*" },
             { ChatCommand.EndGame, "ED#*" },
             { ChatCommand.Rematch, "RSTR#*" },
-            { ChatCommand.TimeSync, "TSync#*" }
+            { ChatCommand.TimeSync, "TSync#*" },
+            { ChatCommand.ServerCreateRoom, "SCRR#*" },
+            { ChatCommand.ClientLeaveRoom, "CLRR#*" },
+            { ChatCommand.ClientDisconnect, "CDIS#*" },
+            { ChatCommand.ServerDisconnect, "SDIS#*" },
         };
 
         public static string ToString(this ChatCommand command)
