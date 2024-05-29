@@ -75,7 +75,7 @@ namespace winforms_chat
                         // If message is empty, it means user want to join the game online
                         // If message is not empty, it means user want to join the game room queue
                         // If message is "cancel", it means user want to cancel the game room queue
-                        if (msg.message == "" )
+                        if (msg.message == "")
                         {
                             Debug.WriteLine("User " + msg.from + " want to join the Pvp");
                             string userName = msg.from;
@@ -85,6 +85,17 @@ namespace winforms_chat
                             item.SubItems.Add("Idle");
                             item.SubItems.Add("Player");
                             listview_userQueue.Items.Add(item);
+                        }
+                        else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerBeginGame)))
+                        {
+                            msg.message = msg.message.Replace(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerBeginGame), "");
+                            string[] data = msg.message.Split('@');
+                            string timectrl = data[0];
+                            string[] players = data[1].Split('-');
+                            string player1 = players[0];
+                            string player2 = players[1];
+                            BeginGame(player1, player2);
+
                         }
                         else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerCreateRoom)))
                         {
@@ -150,7 +161,8 @@ namespace winforms_chat
                                 BeginGame(player1, player2);
                             }
 
-                        }else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList)))
+                        }
+                        else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList)))
                         {
                             UpdateUserList();
                         }
@@ -166,9 +178,10 @@ namespace winforms_chat
                                 }
                             }
                         }
-                        else {
-                            Debug.WriteLine("[SVR] User " + msg.from+": " + msg.message+" .... is not in expected, is it a err?");
-                            return; 
+                        else
+                        {
+                            Debug.WriteLine("[SVR] User " + msg.from + ": " + msg.message + " .... is not in expected, is it a err?");
+                            return;
                         }
                         // update list user for all clients
                         Debug.WriteLine("[SVR] Update list user for all clients");

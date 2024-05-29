@@ -17,6 +17,7 @@ namespace winforms_chat
             ServerDisconnect,
             GetUserList,
             AutoMatching,
+            ServerBeginGame,
         }
 
         private static readonly Dictionary<ChatCommand, string> commandMap = new Dictionary<ChatCommand, string>
@@ -31,6 +32,7 @@ namespace winforms_chat
             { ChatCommand.ServerDisconnect, "SDIS#*" },
             { ChatCommand.GetUserList, "USER_LIST#*" },
             { ChatCommand.AutoMatching, "AUTO_MATCH#*" },
+            { ChatCommand.ServerBeginGame, "SBG#*" },
         };
 
         public static string ToString(this ChatCommand command)

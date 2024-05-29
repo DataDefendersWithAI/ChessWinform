@@ -198,6 +198,42 @@ namespace winforms_chat
             comm.SendMessage(message.ToJson());
         }
 
+        public void BeginPVPGame(string userName, string opponentName, ChessAIClient chClient, string timeCtrl = "10|0")
+        {
+            chessClient = chClient;
+            ourName = userName;
+            Debug.WriteLine("Begin pvp : " + ourName +" vs "+ opponentName);
+
+            // Check if user name is "server"
+            if (ourName == "server" || opponentName =="server")
+            {
+                Debug.WriteLine("Invalid user name.");
+                return;
+            }
+
+            // Check if name contains special characters
+            if (ourName.Any(c => !char.IsLetterOrDigit(c)) || opponentName.Any(c => !char.IsLetterOrDigit(c)))
+            {
+                Debug.WriteLine("User name must not have special character");
+                return;
+            }
+
+            if (comm == null) return;
+
+            // Send message to server using JSON
+            // TableCode: 000000
+            // type: join
+            // from: ourName.Text
+            // to: 
+            // message: 
+            // date: DateTime.Now
+
+            // this will be classified as normal user if messafe is empty
+            string ms1 =  ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerBeginGame) + timeCtrl +"@"+ ourName + "-" + opponentName;
+            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server", ms1, DateTime.Now);
+            comm.SendMessage(message.ToJson());
+        }
+
         private void btn_cancel_Click(object sender, EventArgs e)
         {
             new SoundFXHandler(null, "", "click");
