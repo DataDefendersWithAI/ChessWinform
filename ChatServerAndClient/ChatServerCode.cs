@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
@@ -19,9 +20,17 @@ namespace winforms_chat
         private Communication comm;
         string serverIP = ChessAI.ChatServerAndClient.Constants.serverIP;
         int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
+        private System.Windows.Forms.Timer autoPickTimer;
+        private bool isAutoPicking = false;
+   
         public ChatServerCode()
         {
             InitializeComponent();
+            // Initialize timer
+            autoPickTimer = new System.Windows.Forms.Timer();
+            autoPickTimer.Interval = 500; // Set interval to 1 second (1000 ms)
+            autoPickTimer.Tick += btn_joinRandom_Click;
+            
         }
 
         private void ClientForm_Load(object sender, EventArgs e)
@@ -32,6 +41,8 @@ namespace winforms_chat
             listview_userQueue.View = View.Details;
             listview_userQueue.Columns.Add("Code", 50);
             listview_userQueue.Columns.Add("Player", 100);
+            listview_userQueue.Columns.Add("Mode", 100);
+            listview_userQueue.Columns.Add("Status", 50);
         }
 
         private void LogMessage(string message)
@@ -58,18 +69,40 @@ namespace winforms_chat
                 if (msg != null)
                 {
                     // Check if message is correct format: Join the chat: {"TableCode": "000000", "type": "join", "from": userName, "to": "server", "message": "", "date": DateTime.Now}
-                    if (msg.type == "join" && msg.TableCode == "000000")
+                    if (msg.type == "join" && msg.TableCode == "000000" && msg.to == "server" )
                     {
-                        // If message is empty, it means user want to join the chat queue
-                        // If message is "cancel", it means user want to cancel the chat queue
-                        if (msg.message == "")
+                        // If message is empty, it means user want to join the game online
+                        // If message is not empty, it means user want to join the game room queue
+                        // If message is "cancel", it means user want to cancel the game room queue
+                        if (msg.message == "" )
                         {
-                            // Add user to listview
+                            Debug.WriteLine("User " + msg.from + " want to join the Pvp");
+                            string userName = msg.from;
                             ListViewItem item = new ListViewItem(msg.TableCode);
-                            item.SubItems.Add(msg.from);
+                            item.SubItems.Add(userName);
+                            item.SubItems.Add("none");
+                            item.SubItems.Add("Idle");
                             listview_userQueue.Items.Add(item);
                         }
-                        else if (msg.message == "cancel" || msg.message == "disconnect")
+                        else if (msg.message.Contains(ChatCommand.ServerCreateRoom.ToString()))
+                        {
+                            Debug.WriteLine("[SVR] User " + msg.from + " want to join the game room queue");
+                            string userName = msg.from;
+                            string mode = msg.message.Replace(ChatCommand.ServerCreateRoom.ToString(), "");
+                            // check if mode is empty
+                            if (string.IsNullOrEmpty(mode))
+                            {
+                                Debug.WriteLine("[SVR] User " + msg.from + " want to join the game room queue but mode is empty, auto set to 10|0");
+                                return;
+                            }
+                            // Add user to listview
+                            ListViewItem item = new ListViewItem(msg.TableCode);
+                            item.SubItems.Add(userName);
+                            item.SubItems.Add(mode);
+                            item.SubItems.Add("Active");
+                            listview_userQueue.Items.Add(item);
+                        }
+                        else if (msg.message.Contains(ChatCommand.ClientDisconnect.ToString()) || msg.message.Contains(ChatCommand.ClientLeaveRoom.ToString()))
                         {
                             // Remove user from listview
                             foreach (ListViewItem item in listview_userQueue.Items)
@@ -81,14 +114,18 @@ namespace winforms_chat
                                 }
                             }
                         }
-                        else return;
+                        else {
+                            Debug.WriteLine("[SVR] User " + msg.from+": " + msg.message+" .... is not in expected, is it a err?");
+                            return; 
+                        }
                     }
                 }
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Warning");
+              //  MessageBox.Show(ex.Message, "Warning");
+                Console.WriteLine(ex.Message);
             }
 
         }
@@ -129,11 +166,41 @@ namespace winforms_chat
 
 
                 // Send message to 2 users
-                // Server send code to client: {"TableCode": "000000", "type": "join", "from": "server", "to": userName + "+" + opponentUserName, "message": newTableCode, "date": DateTime.Now}
+                // Server send code to clients: {"TableCode": "000000", "type": "join", "from": "server", "to": userName + "-" + opponentUserName, "message": newTableCode +"$"+ userSide + "-" + oppSide, "date": DateTime.Now}
                 // with newTableCode is a random string from 000001 to 999998
                 string newTableCode = random.Next(1, 999999).ToString("D6");
-                ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode, DateTime.Now);
+                // pick player side 
+                string userSide = Random.Shared.Next(2) == 0 ? "white" : "black";
+                string oppSide = userSide == "white" ? "black" : "white";
+
+
+                ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode +"$"+ userSide + "-" + oppSide, DateTime.Now);
                 comm.SendMessage(msg1.ToJson());
+
+            }
+        }
+
+        // Auto pick 2 random users from listview
+        private void btn_autoJoin_Click(object sender, EventArgs e)
+        {
+            // It like btn_joinRandom_Click but it will auto pick 2 users from listview
+            if (isAutoPicking)
+            {
+                // Stop auto pick
+                autoPickTimer.Stop();
+                isAutoPicking = false;
+                btn_autoJoin.Text = "Start Auto-Pick";
+                // Also make sure btn_joinRandom_Click is enabled
+                btn_joinRandom.Enabled = true;
+            }
+            else
+            {
+                // Start auto pick
+                autoPickTimer.Start();
+                isAutoPicking = true;
+                btn_autoJoin.Text = "Stop Auto-Pick";
+                // Also make sure btn_joinRandom_Click is disabled
+                btn_joinRandom.Enabled = false;
             }
         }
     }

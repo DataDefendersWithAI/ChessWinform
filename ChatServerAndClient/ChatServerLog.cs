@@ -22,15 +22,46 @@ namespace winforms_chat
         private ServerCommunication serverComm;
         string serverIP = ChessAI.ChatServerAndClient.Constants.serverIP;
         int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
-        public ChatServerLog()
+        bool isFormHideOnLoad;
+        ChatServerCode codeForm;
+        public ChatServerLog(bool hidOnLoad = false)
         {
             InitializeComponent();
+            this.FormClosing += new FormClosingEventHandler(this.ServerForm_Closing);
+            isFormHideOnLoad = hidOnLoad;
         }
 
         private void ServerForm_Load(object sender, EventArgs e)
         {
             serverComm = new ServerCommunication(serverIP, serverPort, LogMessage);
 
+            serverComm.StartServer(); // auto start server
+            // Open the code form
+            if(codeForm != null)
+            {
+                codeForm.Close(); // clear the code form
+            }
+            codeForm = new ChatServerCode();
+            codeForm.Show();
+
+            if (isFormHideOnLoad)
+            {
+                codeForm.Hide();
+            }
+
+        }
+
+        private void ServerForm_Closing(object sender, FormClosingEventArgs e)
+        {
+            if(codeForm != null)
+            {
+                codeForm.Close();
+                codeForm.Dispose();
+            }
+            if(serverComm != null)
+            {
+                // server close
+            }
         }
 
         private void btnListen_Click(object sender, EventArgs e)
@@ -51,7 +82,8 @@ namespace winforms_chat
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Warning");
+                //MessageBox.Show(ex.Message, "Warning");
+                Console.WriteLine(ex.Message);
             }
         }
 

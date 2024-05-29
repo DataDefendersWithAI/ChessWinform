@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessAI", "ChessAI.csproj", "{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessAI", "ChessAI.csproj", "{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BA8CC67E-58B9-4017-9BEE-F02242BFD6CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {983DB162-F11A-4767-9049-4C6CFB4E6A25}
+		SolutionGuid = {13524867-0788-4AB3-8FD4-0AFB37BC1BE6}
 	EndGlobalSection
 EndGlobal

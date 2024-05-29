@@ -199,6 +199,7 @@ namespace ChessAI.ChatServerAndClient
             {
                 LogMessage("Error: " + ex.Message);
             }
+            
         }
         /// <summary>
         /// Logs a message using the receive handler.
@@ -211,7 +212,8 @@ namespace ChessAI.ChatServerAndClient
                 // If message is error, MessageBox it
                 if (message.Contains("Error:"))
                 {
-                    MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                   // MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Console.WriteLine("Error: "+message);
                 }
                 // Invoke the receive handler to log the message
                 receiveHandler?.Invoke(message);

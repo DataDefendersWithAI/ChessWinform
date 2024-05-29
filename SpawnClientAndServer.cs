@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ChessAI;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -26,8 +27,9 @@ namespace winforms_chat
 
         private void btn_client_Click(object sender, EventArgs e)
         {
-            // Start the client form ChatClientJoin.cs
-            ChatClientJoin client = new ChatClientJoin();
+            // Start the client form PvpWaitingForm.cs
+            ChessAIClient client = new ChessAIClient();
+           // PvpWaitingForm client = new PvpWaitingForm();
             client.Show();
         }
     }
