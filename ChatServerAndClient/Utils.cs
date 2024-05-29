@@ -209,13 +209,14 @@ namespace ChessAI.ChatServerAndClient
         /// <param name="message">The message to log.</param>
         public void LogMessage(string message)
         {
+            Debug.WriteLine("[Comm] Logged: " + message);
             if (Communication.isMainThread)
             {
                 // If message is error, MessageBox it
                 if (message.Contains("Error:"))
                 {
                    // MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Console.WriteLine("Error: "+message);
+                    Debug.WriteLine("Error: "+message);
                 }
                 // Invoke the receive handler to log the message
                 receiveHandler?.Invoke(message);

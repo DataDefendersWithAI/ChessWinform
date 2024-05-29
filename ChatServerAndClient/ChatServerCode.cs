@@ -267,7 +267,10 @@ namespace winforms_chat
 
             Debug.WriteLine("[SVR] Begin game with code " + newTableCode + " between " + player1 + " and " + player2 + " with time control " + timectrl);
             ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode + "$" + userSide + "-" + oppSide+"$"+timectrl, DateTime.Now);
+            ChessAI.ChatServerAndClient.Message msg2 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player2 + "-" + player1, newTableCode + "$" + oppSide + "-" + userSide  + "$" + timectrl, DateTime.Now);
+
             comm.SendMessage(msg1.ToJson());
+            comm.SendMessage(msg2.ToJson());
         }
 
         // Auto pick 2 random users from listview
