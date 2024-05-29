@@ -10,15 +10,16 @@ using System.Windows.Forms;
 
 namespace winform_chat.DashboardForm
 {
-    
+
     public partial class HomeForm : Form
     {
         public event EventHandler ChildPvEButton_Click;
         public event EventHandler ChildPvPButton_Click;
+        public string current_username { get; set; }
         public HomeForm()
         {
             InitializeComponent();
-            
+
         }
 
         private void PvEButton_Click(object sender, EventArgs e)
@@ -30,5 +31,14 @@ namespace winform_chat.DashboardForm
         {
             ChildPvPButton_Click?.Invoke(this, e);
         }
+
+        private void HomeForm_Load(object sender, EventArgs e)
+        {
+            DisplayText.AutoSize = false;
+            DisplayText.Size = new Size(350,210);
+            DisplayText.Text = "Welcome " + current_username + ", " + "please choose your playmode";
+
+        }
+
     }
 }

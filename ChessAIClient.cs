@@ -17,6 +17,7 @@ using winforms_chat;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Security.Cryptography;
 using ChessAI_Bck;
+using winform_chat;
 
 namespace ChessAI
 {
@@ -243,6 +244,8 @@ namespace ChessAI
             {
                 var current_username = PlayerName;
                 if (current_username == null) return;
+                var load_user = await Client.GetAsync("Users/" + EncodeSha256(current_username));
+                User Getuser = load_user.ResultAs<User>();
                 var match_id = Guid.NewGuid().ToString();
                 var save_PGN = new PGNLog
                 {
@@ -258,7 +261,8 @@ namespace ChessAI
                     PGN = PGN
 
                 };
-                var save_match = await Client.SetAsync("Users/" + EncodeSha256(current_username) + "/UserMatchHistory/" + match_id, save_PGN);
+                Getuser.AddMatch(save_PGN);
+                var save_match = await Client.SetAsync("Users/" + EncodeSha256(current_username), Getuser);
             }
             else
             {

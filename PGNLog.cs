@@ -25,5 +25,7 @@ namespace ChessAI_Bck
         public string Termination { get; set; }
 
         public string PGN { get; set; }
+
+       
     }
 }
