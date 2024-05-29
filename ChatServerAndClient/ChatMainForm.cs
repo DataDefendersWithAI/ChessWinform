@@ -31,10 +31,11 @@ namespace winforms_chat
         int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
 
         ChessAIClient chessClient;
+        
         public PieceColor Side { get; private set; }
+        public string timeCtrl { get; private set; }
 
-
-        public ChatMainForm(string tableCode = "123456", string userName = "testUser" , ChessAIClient chClient = null, String side = "")
+        public ChatMainForm(string tableCode = "123456", string userName = "testUser" , ChessAIClient chClient = null, String side = "", string timectrl ="")
 		{
             if (ChatMainForm.isMainThread)
             {
@@ -47,7 +48,7 @@ namespace winforms_chat
 
                 chessClient = chClient;
                 Side = side.ToLower().Contains("white") ? PieceColor.White : PieceColor.Black;
-               
+                timeCtrl = string.IsNullOrEmpty(timectrl)?"10|0":timectrl;
                 InitializeComponent();
                 this.DoubleBuffered = true;
 

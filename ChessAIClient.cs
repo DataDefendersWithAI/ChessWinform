@@ -155,6 +155,28 @@ namespace ChessAI
             }
         }
 
+        public void SetupGame(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, bool DebugMode = false, PieceColor setSide = null, string NamePlayer = null, int UserELO = 0)
+        {
+
+            this.isDebug = DebugMode; // Set the debug mode 
+            this.isOffline = isOffl; // Set the offline mode
+            presetSide = setSide; // Set the preset side
+
+            //Set name player:
+            if (NamePlayer != null)
+            {
+                PlayerName = NamePlayer;
+            }
+
+            if (UserELO != 0)
+            {
+                PlayerNumber = UserELO;
+            }
+            // Set the time control
+            timeControl = timeCtrl;
+            InitGame(Side, timeControl);
+        }
+
         /// <summary>
         /// Begin the game when the message is received/ Connected to another player
         /// </summary>
@@ -601,18 +623,6 @@ namespace ChessAI
             //x.JoiningRoom(PlayerName, this);
             //x.Joined += Room_Joined;
         }
-
-        private void Room_Joined(object sender, EventArgs e)
-        {
-            currenChatMainForm = x.currentChatMainForm;
-            // Add any additional actions needed once the chat is joined
-            if (currenChatMainForm != null)
-            {
-                Console.WriteLine("Joined room with : " + currenChatMainForm.Side);
-                InitGame(currenChatMainForm.Side, "1|5");
-            }
-        }
-
 
         /// <summary>
         /// Log message for debugging

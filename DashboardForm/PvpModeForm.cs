@@ -36,7 +36,7 @@ public partial class PvpModeForm : Form
     MainScreen ParentForm;
     ChatServerLog serverLog;
     ChessAIClient clientFormOnline;
-
+    ChatClientJoin clientJoin;
     ///<summary>
     /// GAME SETTINGS
     /// </summary>
@@ -97,6 +97,23 @@ public partial class PvpModeForm : Form
         {
             PlayerRoom selectedPlayerRoom = (PlayerRoom)listBoxPlayerRooms.SelectedItem;
             Debug.WriteLine("Selected player room: " + selectedPlayerRoom);
+            if (selectedPlayerRoom != null)
+            {
+                if (ParentForm != null)
+                {
+                    ChatClientJoin clientJoin = new ChatClientJoin(ParentForm);
+                    ParentForm.LoadForm(clientJoin);
+                    if (clientFormOnline != null) // clear the old form
+                    {
+                        clientFormOnline.Close();
+                        clientFormOnline.Dispose();
+                    }
+                    clientFormOnline = new ChessAIClient();
+                    //clientFormOnline.Show();
+                    clientJoin.JoiningRoom(ourName, clientFormOnline, false, selectedPlayerRoom.GameMode);
+                    clientJoin.Joined += ClientJoin_Joined;
+                }
+            }
         }
     }
 
@@ -296,7 +313,7 @@ public partial class PvpModeForm : Form
         }
         if (ParentForm != null)
         {
-            ChatClientJoin clientJoin = new ChatClientJoin(ParentForm);
+            clientJoin = new ChatClientJoin(ParentForm);
             ParentForm.LoadForm(clientJoin);
             
             if(clientFormOnline != null) // clear the old form
@@ -304,7 +321,7 @@ public partial class PvpModeForm : Form
                 clientFormOnline.Close();
                 clientFormOnline.Dispose();
             }
-            clientFormOnline = new ChessAIClient();
+            
             //clientFormOnline.Show();
             clientJoin.JoiningRoom(ourName, clientFormOnline, true, selectedTimeCtrl);
             clientJoin.Joined += ClientJoin_Joined;
@@ -315,8 +332,11 @@ public partial class PvpModeForm : Form
 
     private void ClientJoin_Joined(object? sender, EventArgs e)
     {
-        if(clientFormOnline != null)
+        if(clientFormOnline != null && clientJoin != null)
         {
+            var side = clientJoin.currentChatMainForm.Side;
+            var timectrl = clientJoin.currentChatMainForm.timeCtrl;
+            clientFormOnline = new ChessAIClient(NamePlayer: ourName, UserELO:0 ,timeCtrl:timectrl,DebugMode:false,setSide:side);
             clientFormOnline.Show();
         }
     }
