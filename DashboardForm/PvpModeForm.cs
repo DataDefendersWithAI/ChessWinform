@@ -41,6 +41,7 @@ public partial class PvpModeForm : Form
     /// GAME SETTINGS
     /// </summary>
     private string selectedTimeCtrl = "10|0"; // Default game mode
+    private string ourName;
 
     // Predefined array of time control strings
     public static Dictionary<string, string> TimeControls = new Dictionary<string, string>()
@@ -66,10 +67,14 @@ public partial class PvpModeForm : Form
         InitializeComponent();
         // Initialize timer
         autoPickTimer = new System.Windows.Forms.Timer();
-        autoPickTimer.Interval = 500; // Set interval to 1 second (1000 ms)
-        autoPickTimer.Tick += Auto_Matching;
+        autoPickTimer.Interval = 1000; // Set interval to 1 second (1000 ms)
+        autoPickTimer.Tick += new EventHandler(Auto_Matching);
+
         InitializePlayerRooms();
 
+        //Random user name
+        Random rnd = new Random();
+        ourName = "NullFD" + rnd.Next(1, 1000).ToString();
         srvIP.Text = serverIP;
 
         FillListBoxPlayerRooms();
@@ -201,50 +206,15 @@ public partial class PvpModeForm : Form
     {
         // Send last message to server
         // Server code close connection: {"TableCode": "000000", "type": "join", "from": "server", "to": "server", "message": "close", "date": DateTime.Now}
-        ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message("000000", "join", "client", "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect), DateTime.Now);
+        ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message("000000", "join",ourName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect), DateTime.Now);
         comm.SendMessage(msg.ToJson());
         comm.ClientClose();
     }
 
     private void Auto_Matching(object sender, EventArgs e)
     {
-        
-        // Pick 2 random users from listview
-        if (listview_userQueue.Items.Count >= 2)
-        {
-            Random random = new Random();
-            int index1 = random.Next(0, listview_userQueue.Items.Count);
-            int index2 = random.Next(0, listview_userQueue.Items.Count);
-            while (index1 == index2)
-            {
-                index2 = random.Next(0, listview_userQueue.Items.Count);
-            }
-            string player1 = listview_userQueue.Items[index1].SubItems[1].Text;
-            string player2 = listview_userQueue.Items[index2].SubItems[1].Text;
-
-
-            // Remove 2 users from listview
-            listview_userQueue.Items.RemoveAt(index1);
-            if (index2 > index1)
-            {
-                index2--;
-            }
-            listview_userQueue.Items.RemoveAt(index2);
-
-
-            // Send message to 2 users
-            // Server send code to clients: {"TableCode": "000000", "type": "join", "from": "server", "to": userName + "-" + opponentUserName, "message": newTableCode +"$"+ userSide + "-" + oppSide, "date": DateTime.Now}
-            // with newTableCode is a random string from 000001 to 999998
-            string newTableCode = random.Next(1, 999999).ToString("D6");
-            // pick player side 
-            string userSide = Random.Shared.Next(2) == 0 ? "white" : "black";
-            string oppSide = userSide == "white" ? "black" : "white";
-
-
-            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode + "$" + userSide + "-" + oppSide, DateTime.Now);
-            comm.SendMessage(msg1.ToJson());
-
-        }
+        ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName,"server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.AutoMatching) + selectedTimeCtrl, DateTime.Now);
+        comm.SendMessage(msg1.ToJson());
     }
 
 
@@ -299,7 +269,7 @@ public partial class PvpModeForm : Form
             }
             clientFormOnline = new ChessAIClient();
             //clientFormOnline.Show();
-            clientJoin.JoiningRoom("NullFD", clientFormOnline, true, selectedTimeCtrl);
+            clientJoin.JoiningRoom(ourName, clientFormOnline, true, selectedTimeCtrl);
             clientJoin.Joined += ClientJoin_Joined;
         }
 

@@ -101,9 +101,55 @@ namespace winforms_chat
                             ListViewItem item = new ListViewItem(msg.TableCode);
                             item.SubItems.Add(userName);
                             item.SubItems.Add(timeCtrl);
-                            item.SubItems.Add("Active");
+                            item.SubItems.Add("Waiting");
                             item.SubItems.Add("Room");
                             listview_userQueue.Items.Add(item);
+                        }
+                        else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.AutoMatching)))
+                        {
+                            Debug.WriteLine("[SVR] User " + msg.from + " is auto matching");
+                            string timeCtrl = msg.message.Replace(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.AutoMatching), "");
+                            // check if timeCtrl is empty
+                            if (string.IsNullOrEmpty(timeCtrl))
+                            {
+                                Debug.WriteLine("[SVR] User " + msg.from + " is auto matching but timeCtrl is empty, auto set to 10|0");
+                                timeCtrl = "10|0";
+                            }
+                            // begin find a match , if found, remove user from listview
+                            if (listview_userQueue.Items.Count >= 2)
+                            {
+                                Random random = new Random();
+                                int index1;
+                                //find user index
+                                for (index1 = 0; index1 < listview_userQueue.Items.Count; index1++)
+                                {
+                                    if (listview_userQueue.Items[index1].SubItems[1].Text == msg.from)
+                                    {
+                                        break;
+                                    }
+                                }
+                                if (index1 == null) return;
+
+                                int index2 = random.Next(0, listview_userQueue.Items.Count);
+                                while (index1 == index2)
+                                {
+                                    index2 = random.Next(0, listview_userQueue.Items.Count);
+                                }
+                                string player1 = listview_userQueue.Items[index1].SubItems[1].Text;
+                                string player2 = listview_userQueue.Items[index2].SubItems[1].Text;
+
+                                Console.WriteLine("Pick 2 random players: " + player1 + " and " + player2 + " at index " + index1 + " and " + index2);
+
+                                // Remove 2 users from listview
+                                listview_userQueue.Items.RemoveAt(index1);
+                                if (index2 > index1)
+                                {
+                                    index2--;
+                                }
+                                listview_userQueue.Items.RemoveAt(index2);
+                                BeginGame(player1, player2);
+                            }
+
                         }
                         else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect)) || msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientLeaveRoom)))
                         {
@@ -189,16 +235,22 @@ namespace winforms_chat
                 // Send message to 2 users
                 // Server send code to clients: {"TableCode": "000000", "type": "join", "from": "server", "to": userName + "-" + opponentUserName, "message": newTableCode +"$"+ userSide + "-" + oppSide, "date": DateTime.Now}
                 // with newTableCode is a random string from 000001 to 999998
-                string newTableCode = random.Next(1, 999999).ToString("D6");
-                // pick player side 
-                string userSide = Random.Shared.Next(2) == 0 ? "white" : "black";
-                string oppSide = userSide == "white" ? "black" : "white";
-
-
-                ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode +"$"+ userSide + "-" + oppSide, DateTime.Now);
-                comm.SendMessage(msg1.ToJson());
+                BeginGame(player1, player2);
 
             }
+        }
+
+        private void BeginGame(string player1, string player2)
+        {
+            Random random = new Random();
+            string newTableCode = random.Next(1, 999999).ToString("D6");
+            // pick player side 
+            string userSide = Random.Shared.Next(2) == 0 ? "white" : "black";
+            string oppSide = userSide == "white" ? "black" : "white";
+
+
+            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode + "$" + userSide + "-" + oppSide, DateTime.Now);
+            comm.SendMessage(msg1.ToJson());
         }
 
         // Auto pick 2 random users from listview

@@ -173,8 +173,7 @@ namespace winforms_chat
             if (ourName == "server")
             {
                 Debug.WriteLine("Invalid user name.");
-                return;
-            }
+                return;            }
 
             // Check if name contains special characters
             if (ourName.Any(c => !char.IsLetterOrDigit(c)))

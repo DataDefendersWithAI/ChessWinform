@@ -520,15 +520,15 @@ namespace ChessAI
             Stockfish.SetFenPosition(chessBoard.ToFen());
 
             // Option 1: dumb AI
-            //var moves = chessBoard.Moves();
-            //chessBoard.Move(moves[Random.Shared.Next(moves.Length)]);
+            var moves = chessBoard.Moves();
+            chessBoard.Move(moves[Random.Shared.Next(moves.Length)]);
 
             // Option 2: smart AI (StockFish)
-            var bestMove = Stockfish.GetBestMove();
-            var move = new Move(bestMove.Substring(0, 2), bestMove.Substring(2, 2));
+            //var bestMove = Stockfish.GetBestMove();
+            //var move = new Move(bestMove.Substring(0, 2), bestMove.Substring(2, 2));
             //add sound FX
-            new SoundFXHandler(chessBoard, move.NewPosition.ToString(), side: Side.OppositeColor());
-            chessBoard.Move(move);
+            //new SoundFXHandler(chessBoard, move.NewPosition.ToString(), side: Side.OppositeColor());
+           //chessBoard.Move(move);
             //add sound FX
             new SoundFXHandler(chessBoard, "", side: Side.OppositeColor()); // castle?
 
