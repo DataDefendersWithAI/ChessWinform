@@ -110,7 +110,7 @@ public partial class PvpModeForm : Form
                     }
                     clientFormOnline = new ChessAIClient();
                     //clientFormOnline.Show();
-                    clientJoin.JoiningRoom(ourName, clientFormOnline, false, selectedPlayerRoom.GameMode);
+                    clientJoin.BeginPVPGame(ourName, selectedPlayerRoom.NameOfPlayer, clientFormOnline, selectedPlayerRoom.GameMode);
                     clientJoin.Joined += ClientJoin_Joined;
                 }
             }
