@@ -36,6 +36,9 @@ public partial class PvpModeForm : Form
     ChatServerLog serverLog;
     ChessAIClient chessAIClientFormOnline;
     ChatClientJoin clientJoin;
+    ChatMainForm currentChatMainForm;
+    User playerUser;
+    User opponentUser;
     ///<summary>
     /// GAME SETTINGS
     /// </summary>
@@ -84,7 +87,7 @@ public partial class PvpModeForm : Form
         }
     }
 
-    public PvpModeForm(MainScreen ParentF)
+    public PvpModeForm(MainScreen ParentF, User pUser = null)
     {
         InitializeComponent();
         // Initialize timer
@@ -94,10 +97,13 @@ public partial class PvpModeForm : Form
 
         InitializePlayerRooms();
 
-        ourName = "Thanh";
+        playerUser = pUser == null? new User(username: "Player" + new Random().Next(999, 9999), elo: 1200):pUser;
+        ourName = playerUser.Username;
+
         srvIP.Text = serverIP;
         cntSvr.BackColor = Color.LightGray;
         strSvr.BackColor = Color.LightGray;
+        label5.Text = ourName;
 
         FillListBoxPlayerRooms();
         // Add items to the ComboBox
@@ -124,14 +130,14 @@ public partial class PvpModeForm : Form
             {
                 if (ParentForm != null)
                 {
-                    clientJoin = new ChatClientJoin(ParentForm, ourName);
+                    clientJoin = new ChatClientJoin(ParentForm);
                     ParentForm.LoadForm(clientJoin);
                     if (chessAIClientFormOnline != null) // clear the old form
                     {
                         chessAIClientFormOnline.Close();
                         chessAIClientFormOnline.Dispose();
                     }
-                    chessAIClientFormOnline = new ChessAIClient();
+                    chessAIClientFormOnline = new ChessAIClient(setUpGame: false);
                     //chessAIClientFormOnline.Show();
                     clientJoin.BeginPVPGame(ourName, selectedPlayerRoom.NameOfPlayer, chessAIClientFormOnline, selectedPlayerRoom.GameMode);
                     clientJoin.Joined += ClientJoin_Joined;
@@ -144,7 +150,7 @@ public partial class PvpModeForm : Form
     {
         this.playerRooms = new List<PlayerRoom>
         {
-           new PlayerRoom("00","Kiên", "10|0","Full"),
+           
         };
     }
 
@@ -301,13 +307,13 @@ public partial class PvpModeForm : Form
             btn_autoJoin.Text = "Cancel matching";
             if (ParentForm != null)
             {
-                ParentForm.LoadForm(new ChatClientJoin(ParentForm, ourName));
+                ParentForm.LoadForm(new ChatClientJoin(ParentForm));
             }
         }
 
     }
 
-    private void btn_createRoom_Click(object sender, EventArgs e)
+    private void waitingForJoiningGame()
     {
         if (comboBox1.SelectedIndex == -1)
         {
@@ -318,7 +324,7 @@ public partial class PvpModeForm : Form
 
         if (ParentForm != null)
         {
-            clientJoin = new ChatClientJoin(ParentForm, ourName);
+            clientJoin = new ChatClientJoin(ParentForm);
             ParentForm.LoadForm(clientJoin);
 
             if (chessAIClientFormOnline != null) // clear the old form
@@ -327,13 +333,16 @@ public partial class PvpModeForm : Form
                 chessAIClientFormOnline.Dispose();
             }
 
-            chessAIClientFormOnline = new ChessAIClient();
-
+            chessAIClientFormOnline = new ChessAIClient(setUpGame: false);
             //chessAIClientFormOnline.Show();
-            clientJoin.JoiningRoom(ourName, chessAIClientFormOnline, true, selectedTimeCtrl);
+            clientJoin.JoinWaitingQueueRoom(ourName, chessAIClientFormOnline, true, selectedTimeCtrl);
             clientJoin.Joined += ClientJoin_Joined;
         }
+    }
 
+    private void btn_createRoom_Click(object sender, EventArgs e)
+    {
+        waitingForJoiningGame();
     }
 
     private void ClientJoin_Joined(object? sender, EventArgs e)
@@ -341,17 +350,46 @@ public partial class PvpModeForm : Form
         if (chessAIClientFormOnline != null && clientJoin != null)
         {
             Debug.WriteLine("Client joined!");
-            var side = clientJoin.currentChatMainForm.Side;
-            var timectrl = clientJoin.currentChatMainForm.timeCtrl;
+            currentChatMainForm = clientJoin.currentChatMainForm;
+            if (currentChatMainForm == null) return;
+
+            var side = currentChatMainForm.Side;
+            var timectrl = currentChatMainForm.timeCtrl;
             chessAIClientFormOnline.Show();
 
-            User playerUser = new User(username: ourName, elo: 1200);
-            User opponentUser = new User(username: "ooooo", elo: 1200);
+            User opponentUser = new User(username: currentChatMainForm.opponentUserName, elo: currentChatMainForm.opponentElo);
 
-            chessAIClientFormOnline.SetupGame(pUser: playerUser, oUser: opponentUser, timeCtrl: timectrl, setSide: side, chatMainForm: clientJoin.currentChatMainForm);
+            chessAIClientFormOnline.SetupGame(pUser: playerUser, oUser: opponentUser, timeCtrl: timectrl, side: side, chatMainForm: currentChatMainForm);
+            ParentForm.Hide();
+           // chessAIClientFormOnline.FormClosing += ChessAIClientFormOnline_FormClosing;
+            currentChatMainForm.FormClosing += currentChatMainForm_FormClosing;
         }
     }
 
+    private void ChessAIClientFormOnline_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        if (ParentForm != null)
+        {
+            ParentForm.Show();
+            if (currentChatMainForm != null)
+            {
+                currentChatMainForm.Close();
+                currentChatMainForm.Dispose();
+            }
+        }
+    }
+    private void currentChatMainForm_FormClosing(object sender , FormClosingEventArgs e)
+    {
+        if (ParentForm != null)
+        {
+            ParentForm.Show();
+            if (chessAIClientFormOnline != null)
+            {
+                chessAIClientFormOnline.Close();
+                chessAIClientFormOnline.Dispose();
+            }
+        }
+    }
     private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
     {
         label3.Visible = false;
@@ -492,6 +530,8 @@ public partial class PvpModeForm : Form
             label1.Text = "Select room";
         }
     }
+
+   
 }
 
 

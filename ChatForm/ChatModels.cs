@@ -25,6 +25,7 @@ namespace winforms_chat.ChatForm
         public string Type { get; } = "text";
 
         public string Body { get; set; }
+
     }
 
     public class ImageChatModel : IChatModel

@@ -53,9 +53,9 @@ namespace ChessAI
 
         private float initialDpi = 96f; // 100% =96  125% = 120, 150% = 144, 175% = 168, 200% = 192
         private float currentScale = 1.0f; // Current scale of the form
-        private string timeControl; // Default time control
+        private string timeControl; // time control
 
-        private bool gameStarted = false;
+        private bool gameStarted;
         private bool isDebug;
         private bool isOffline; // Playing offline with bots/ AI
 
@@ -90,7 +90,7 @@ namespace ChessAI
             }
         }
 
-        public ChessAIClient(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, bool DebugMode = false, PieceColor setSide = null, User pUser = null , User oUser = null, ChatMainForm chatMainForm = null )
+        public ChessAIClient(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, bool DebugMode = false, PieceColor setSide = null, User pUser = null , User oUser = null, ChatMainForm chatMainForm = null, bool setUpGame = true )
         {
             InitializeComponent();
 
@@ -98,15 +98,7 @@ namespace ChessAI
             | BindingFlags.Instance | BindingFlags.NonPublic, null,
             panel1, new object[] { true });   // Double buffer the panel prevent it from flickering
 
-            this.isDebug = DebugMode; // Set the debug mode 
-            this.isOffline = isOffl; // Set the offline mode
-            presetSide = setSide; // Set the preset side
-
-            chessBoard = new ChessBoard() { AutoEndgameRules = AutoEndgameRules.All }; // Init new board
-            chessBoard.OnPromotePawn += PromotePawn; // Add event when pawn is promoted
-            chessBoard.OnEndGame += GameEnded; // Add event when game is ended
-            
-            boardRenderer = new BoardRenderer(); // Init new renderer
+            isDebug = DebugMode; // Set the debug mode 
 
             currentScale = initialDpi / this.DeviceDpi; // Get the current scale of the form
         
@@ -116,21 +108,35 @@ namespace ChessAI
 
             this.MaximizeBox = false; // Prevent maximizing the window
             this.MinimizeBox = false; // Prevent minimizing the window
-
-            SetupGame(modeDepth, timeCtrl, isOffl, setSide, pUser, oUser , chatMainForm);
+            if (!setUpGame) return; // Prevent setting up the game when the form is loaded for the first time
+            SetupGame(modeDepth: modeDepth, timeCtrl:timeCtrl, isOffl:isOffl, setSide:setSide , pUser:pUser , oUser:oUser , chatMainForm:chatMainForm);
         }
 
-        public void SetupGame(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, PieceColor setSide = null, User pUser = null , User oUser = null , ChatMainForm chatMainForm=null)
+        public void SetupGame(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, PieceColor setSide = null, PieceColor side = null, User pUser = null , User oUser = null , ChatMainForm chatMainForm=null)
         {
             currenChatMainForm = chatMainForm;
-            // Add any additional actions needed once the chat is joined
+            
+            isOffline = isOffl; // Set the offline mode
+            gameStarted = false; // Set the game started 
+            Side = side; // Set the side
+            presetSide = setSide; // Set the preset side // Offline only
             isOffline = isOffl;
-
+            timeControl = timeCtrl; // Set the time control
+           
             if (currenChatMainForm == null)
             {
                 isOffline = true;
+                Debug.WriteLine("Offline mode enabled due to found no ChatMainForm");
             }
 
+            //Create new board tha exist through the game
+            chessBoard = new ChessBoard() { AutoEndgameRules = AutoEndgameRules.All }; // Init new board
+            chessBoard.OnPromotePawn += PromotePawn; // Add event when pawn is promoted
+            chessBoard.OnEndGame += GameEnded; // Add event when game is ended
+            // create a renderer
+            boardRenderer = new BoardRenderer(); // Init new renderer
+
+            // Hide some unessesary things
             WLouterPanel.Visible = false;
             AgainBtn.Visible = false;
             HomeBtn.Visible = false;
@@ -155,8 +161,6 @@ namespace ChessAI
             {
                 opponentUser = new User(username:"Opponent",elo:404);
             }
-                // Set the time control
-                timeControl = timeCtrl;
 
             if (isDebug == false)
             {
@@ -179,14 +183,14 @@ namespace ChessAI
 
             }
 
-            InitGame(Side, timeControl);
+            InitGame();
             
         }
         /// <summary>
         /// Begin the game when the message is received/ Connected to another player
         /// </summary>
         /// <param name="message"></param>
-        private void InitGame(PieceColor side, string timeCtrl = "10|0")
+        private void InitGame()
         {
 
             if (gameStarted) return; // If game already started, return
@@ -194,9 +198,6 @@ namespace ChessAI
             new SoundFXHandler(chessBoard, "", "start"); // start game sound
             resignBtn.Visible = true;
             drawBtn.Visible = true;
-            timeControl = timeCtrl;
-            // Set the side
-            Side = side;
             // Set the game started
             gameStarted = true;
             if (Side == PieceColor.Black && isOffline)
@@ -206,8 +207,8 @@ namespace ChessAI
 
             LogMessage("Game started! You are: " + Side);
             panel1.Invalidate(); // Redraw whole board
-            timeControlInitialize(timeCtrl);
-            InitUserInfo(playerUser, opponentUser);
+            timeControlInitialize();
+            InitUserInfo();
             Invalidate();
         }
 
@@ -222,7 +223,6 @@ namespace ChessAI
             drawBtn.Visible = false;
             //
             timer1.Stop();
-            var pgn = chessBoard.ToPgn();
             new SoundFXHandler(chessBoard,"" , "end"); // end game sound
             //
 
@@ -269,18 +269,18 @@ namespace ChessAI
                 uELO.Text = "ELO:";
                 uELO.Visible = false;
             }
-            Parallel.Invoke(() => ShowPanelWithDelay(), () => SaveToDatabase(Score01.Text , playerUser, opponentUser , reasonEndGame, pgn));     
+            Parallel.Invoke(() => ShowPanelWithDelay(), () => SaveToDatabase());     
         }
 
-        private async void SaveToDatabase(string FinalResult, User pUser, User oUser , string reasonEndGame, string PGN)
+        private async void SaveToDatabase()
         {
-            if (!pUser.IsAValidUser() || !oUser.IsAValidUser()) return; // if user is not valid, return
+            if (!playerUser.IsAValidUser()) return; // if user is not valid, return
             try
             {
                 Client = new FireSharp.FirebaseClient(config);
                 if (Client != null)
                 {
-                    var current_username = pUser.Username;
+                    var current_username = playerUser.Username;
                     if (current_username == null) return;
                     var load_user = await Client.GetAsync("Users/" + EncodeSha256(current_username));
                     User Getuser = load_user.ResultAs<User>();
@@ -290,17 +290,17 @@ namespace ChessAI
                         ID = match_id,
                         Date = DateTime.Now.ToString("yyyy-MM-dd"),
 
-                        White = (Side == PieceColor.White ? pUser.Username : oUser.Username),
-                        Black = (Side == PieceColor.Black ? pUser.Username : oUser.Username),
+                        White = (Side == PieceColor.White ? playerUser.Username : opponentUser.Username),
+                        Black = (Side == PieceColor.Black ? playerUser.Username : opponentUser.Username),
 
-                        Result = FinalResult,
+                        Result = Score01.Text,
 
-                        WhiteELO = (Side == PieceColor.White ? pUser.ELO : oUser.ELO),
-                        BlackELO = (Side == PieceColor.Black ? pUser.ELO : oUser.ELO),
+                        WhiteELO = (Side == PieceColor.White ? playerUser.ELO : opponentUser.ELO),
+                        BlackELO = (Side == PieceColor.Black ? playerUser.ELO : opponentUser.ELO),
 
                         TimeControl = timeControl,
                         Termination = reasonEndGame,
-                        PGN = PGN
+                        PGN = chessBoard.ToPgn(),
 
                     };
                     Getuser.AddMatch(save_PGN);
@@ -385,7 +385,7 @@ namespace ChessAI
         {
             new SoundFXHandler(chessBoard, "", "Offer");
             DrawAsk.Visible = true;
-            DrawText.Text = opponentName + " asking for a draw. Would you accept?";
+            DrawText.Text = opponentUser.Username + " asking for a draw. Would you accept?";
             drawBtn.Visible = false;
             resignBtn.Visible = false;
         }
@@ -407,7 +407,7 @@ namespace ChessAI
                 gameStarted = false;
                 // Set the side randomly or preset
                 Side = presetSide != null ? presetSide : Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
-                InitGame(Side);
+                InitGame();
             }
             else
             {
@@ -427,7 +427,7 @@ namespace ChessAI
             {
                 new SoundFXHandler(chessBoard, "", "Offer");
                 RestartAsk.Visible = true;
-                RestartText.Text = opponentName + " asking for a rematch. Would you accept?";
+                RestartText.Text = opponentUser.Username + " asking for a rematch. Would you accept?";
                 AgainBtn.Visible = false;
                 WLAgain.Visible = false;
             }
@@ -445,7 +445,7 @@ namespace ChessAI
                 chessBoard.Clear();
                 panel1.Invalidate();
                 gameStarted = false;
-                InitGame(Side);
+                InitGame();
             }
             if (message == "RestartDecline")
             {
@@ -459,7 +459,7 @@ namespace ChessAI
         /// <summary>
         /// Initialize the time control for the game
         /// </summary>
-        private void timeControlInitialize(string timeControl)
+        private void timeControlInitialize()
         {
             //if ((isOffline)) // No time limit for offline mode
             //{
@@ -672,7 +672,7 @@ namespace ChessAI
             opponentUser.Username = "AI";
             opponentUser.ELO = 1;
 
-            InitGame(Side);
+            InitGame();
         }
 
         public static string GetStockfishDir()
@@ -697,14 +697,14 @@ namespace ChessAI
             Console.WriteLine(fullPath);
             return fullPath;
         }
-        private void InitUserInfo(User pUser, User oUser)
+        private void InitUserInfo()
         {
             // init display
-            ourName.Text = pUser.Username + " ( " + pUser.ELO + " )";
-            opponentName.Text = oUser.Username + " ( " + oUser.ELO + " )";
+            ourName.Text = playerUser.Username + " ( " + playerUser.ELO + " )";
+            opponentName.Text = opponentUser.Username + " ( " + opponentUser.ELO + " )";
             // init end game
-            uName1.Text = pUser.Username;
-            uName2.Text = oUser.Username;
+            uName1.Text = playerUser.Username;
+            uName2.Text = opponentUser.Username;
 
         }
         private void beginTimer()
@@ -928,8 +928,6 @@ namespace ChessAI
                 if (currenChatMainForm != null)
                 {
                     currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame) + "Resign");
-                    currenChatMainForm.Close();
-                    currenChatMainForm.Dispose();
                     if (chessBoard.IsEndGame) return; // if game already ended, return; 
                     chessBoard.Resign(Side);
                 }
@@ -947,7 +945,7 @@ namespace ChessAI
 
             foreach (Control control in this.Controls)
             {
-                Debug.WriteLine(control.Name);
+              ///  Debug.WriteLine(control.Name);
                 if (control.Name == "panel1") continue;
                 ScaleControl(control, deltaWidth, true,scale);
             }

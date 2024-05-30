@@ -38,13 +38,11 @@ namespace winforms_chat
 
         ChessAIClient chessClient;
         MainScreen ParentForm;
-        private string ourName;
-
-        public ChatClientJoin(MainScreen pForm = null, string uName ="player1")
+        private string OurName;
+        public ChatClientJoin(MainScreen pForm = null)
         {
             InitializeComponent();
             isJoined = false;
-            this.ourName = uName;
             ParentForm = pForm;
         }
         private void ClientForm_Load(object sender, EventArgs e)
@@ -78,15 +76,14 @@ namespace winforms_chat
                 {
 
                     Debug.WriteLine("[CL] Received: " + msg.ToJson());
-                    Debug.WriteLine("[CL] player: " + ourName);
                     // Check if code is 000000, type is join, from "server", msg.to contains ourName
                     // If yes, then take message as room code, MessageBox it
                     // Then close this form and open ChatMainForm.cs
-                    if (msg.TableCode == "000000" && msg.type == "join" && msg.from == "server" && msg.to.Contains(ourName) && !msg.message.Contains(ChatCommandExt.ChatCommand.ServerDisconnect.ToString()))
+                    if (msg.TableCode == "000000" && msg.type == "join" && msg.from == "server" && msg.to.Contains(OurName) && !msg.message.Contains(ChatCommandExt.ChatCommand.ServerDisconnect.ToString()))
                     {
                         // Split msg.to by - and swap if needed to make sure that first part is user name and second part is opponent user name
                         string[] userNames = msg.to.Split('-');
-                        string userName = userNames[0];
+                        string ourName = userNames[0];
                         string opponentUserName = userNames[1];
                         // Split message for table code and side
                         string[] mess = msg.message.Split('$');
@@ -96,9 +93,9 @@ namespace winforms_chat
                         string OpponentSide = userSides[1];
                         string timectrl = mess[2];
                         // If user name is not equal to ourName, swap user name and opponent user name
-                        if (userName != ourName)
+                        if (ourName != OurName)
                         {
-                            userName = userNames[1];
+                            ourName = userNames[1];
                             opponentUserName = userNames[0];
                             // Swap side as well
                             string temp = Side;
@@ -106,9 +103,9 @@ namespace winforms_chat
                             OpponentSide = temp;
                         }
                         // Merge userName and opponentUserName with "-" and pass it to ChatMainForm
-                        msg.to = userName + "-" + opponentUserName;
-                        Debug.WriteLine("[CL] Begin pvp: "+ userName +" vs "+opponentUserName +" time limit "+ timectrl);
-                        Debug.WriteLine("[CL] Side: " + Side + " OpponentSide: " + OpponentSide);
+                        msg.to = ourName + "-" + opponentUserName;
+                        Debug.WriteLine("[CL] Begin pvp: "+ ourName +" vs "+ opponentUserName +" time limit "+ timectrl);
+                        Debug.WriteLine("[CL] "+ourName+" Side: " + Side +"- " +opponentUserName +" Side: " + OpponentSide);
                         //MessageBox.Show("Room code: " + msg.message);
                         // Open ChatMainForm with table code and username
                         Console.WriteLine(msg.to , msg.message);
@@ -154,17 +151,16 @@ namespace winforms_chat
                 return;
             }
             // When user closes the form, send message to server
-            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect), DateTime.Now);
+            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", OurName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect), DateTime.Now);
             comm.SendMessage(message.ToJson());
             comm.ClientClose();
         }
-
       
 
-        public void JoiningRoom(string userName, ChessAIClient chClient , bool isCreateRoom = false, string timeCtrl="10|0")
+        public void JoinWaitingQueueRoom(string ourName, ChessAIClient chClient , bool isCreateRoom = false, string timeCtrl="10|0")
         {
+            OurName = ourName;
             chessClient = chClient;
-            ourName = userName;
             Debug.WriteLine("JoiningRoom called with user name: " + ourName);
             
             // Check if user name is "server"
@@ -196,10 +192,10 @@ namespace winforms_chat
             comm.SendMessage(message.ToJson());
         }
 
-        public void BeginPVPGame(string userName, string opponentName, ChessAIClient chClient, string timeCtrl = "10|0")
+        public void BeginPVPGame(string ourName, string opponentName, ChessAIClient chClient, string timeCtrl = "10|0")
         {
+            OurName = ourName;
             chessClient = chClient;
-            ourName = userName;
             Debug.WriteLine("Begin pvp : " + ourName +" vs "+ opponentName);
 
             // Check if user name is "server"
@@ -242,7 +238,7 @@ namespace winforms_chat
             // to: server
             // message: cancel
             // date: DateTime.Now
-            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server",ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientLeaveRoom), DateTime.Now);
+            ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", OurName, "server",ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientLeaveRoom), DateTime.Now);
             comm.SendMessage(message.ToJson());
             this.Close();
             this.Dispose();

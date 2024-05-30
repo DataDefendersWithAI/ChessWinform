@@ -40,6 +40,7 @@
             srvIP = new TextBox();
             button1 = new Button();
             strSvr = new Button();
+            label5 = new Label();
             SuspendLayout();
             // 
             // btn_createRoom
@@ -121,7 +122,6 @@
             label3.Size = new Size(253, 25);
             label3.TabIndex = 9;
             label3.Text = "Please select your game mode";
-           // label3.Click += label3_Click;
             // 
             // label4
             // 
@@ -188,12 +188,25 @@
             strSvr.UseVisualStyleBackColor = false;
             strSvr.Click += strSvr_Click;
             // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Font = new Font("Malgun Gothic", 13.2000008F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label5.Location = new Point(167, 24);
+            label5.Name = "label5";
+            label5.RightToLeft = RightToLeft.Yes;
+            label5.Size = new Size(96, 25);
+            label5.TabIndex = 16;
+            label5.Text = "Player 999";
+            label5.TextAlign = ContentAlignment.MiddleRight;
+            // 
             // PvpModeForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PowderBlue;
             ClientSize = new Size(772, 571);
+            Controls.Add(label5);
             Controls.Add(strSvr);
             Controls.Add(button1);
             Controls.Add(srvIP);
@@ -228,5 +241,6 @@
         private TextBox srvIP;
         private Button button1;
         private Button strSvr;
+        private Label label5;
     }
 }

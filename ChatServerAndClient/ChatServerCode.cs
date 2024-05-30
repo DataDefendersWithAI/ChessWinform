@@ -252,7 +252,7 @@ namespace winforms_chat
                 // Send message to 2 users
                 // Server send code to clients: {"TableCode": "000000", "type": "join", "from": "server", "to": userName + "-" + opponentUserName, "message": newTableCode +"$"+ userSide + "-" + oppSide, "date": DateTime.Now}
                 // with newTableCode is a random string from 000001 to 999998
-                BeginGame(player1, player2, listview_userQueue.Items[index1].SubItems[2].Text);
+                BeginGame(player1, player2, "10|0");
 
             }
         }
