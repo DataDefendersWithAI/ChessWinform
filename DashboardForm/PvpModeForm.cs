@@ -30,18 +30,20 @@ public partial class PvpModeForm : Form
     int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
 
     private System.Windows.Forms.Timer autoPickTimer;
-    private bool isAutoPicking = false;
     private List<PlayerRoom> playerRooms;
 
     MainScreen ParentForm;
     ChatServerLog serverLog;
-    ChessAIClient clientFormOnline;
+    ChessAIClient chessAIClientFormOnline;
     ChatClientJoin clientJoin;
     ///<summary>
     /// GAME SETTINGS
     /// </summary>
     private string selectedTimeCtrl = "10|0"; // Default game mode
     private string ourName;
+    private bool isAutoMatching = false;
+    private bool isConnectedToServer = false;
+    private bool isServer = false;
 
     // Predefined array of time control strings
     public static Dictionary<string, string> TimeControls = new Dictionary<string, string>()
@@ -61,6 +63,26 @@ public partial class PvpModeForm : Form
         { "90|30", "Classical"},// 90 minutes, 30 seconds increment
         { "120|60", "Classical"},// 120 minutes, 60 seconds increment
     };
+    public class PlayerRoom
+    {
+        public string NameOfPlayer { get; set; }
+        public string GameMode { get; set; }
+        public string RoomCode { get; set; }
+        public string Status_ { get; set; }
+        public PlayerRoom(string roomCode, string nameOfPlayer, string gameMode, string status)
+        {
+            RoomCode = roomCode;
+            NameOfPlayer = nameOfPlayer;
+            GameMode = gameMode;
+            Status_ = status;
+
+        }
+
+        public override string ToString()
+        {
+            return $"{NameOfPlayer} - {GameMode}";
+        }
+    }
 
     public PvpModeForm(MainScreen ParentF)
     {
@@ -72,10 +94,10 @@ public partial class PvpModeForm : Form
 
         InitializePlayerRooms();
 
-        //Random user name
-        Random rnd = new Random();
-        ourName = "NullFD" + rnd.Next(1, 1000).ToString();
+        ourName = "Thanh";
         srvIP.Text = serverIP;
+        cntSvr.BackColor = Color.LightGray;
+        strSvr.BackColor = Color.LightGray;
 
         FillListBoxPlayerRooms();
         // Add items to the ComboBox
@@ -93,6 +115,7 @@ public partial class PvpModeForm : Form
 
     private void listBoxPlayerRooms_Click(object sender, EventArgs e)
     {
+        if (isServer) return;
         if (listBoxPlayerRooms.SelectedItem != null)
         {
             PlayerRoom selectedPlayerRoom = (PlayerRoom)listBoxPlayerRooms.SelectedItem;
@@ -103,14 +126,14 @@ public partial class PvpModeForm : Form
                 {
                     clientJoin = new ChatClientJoin(ParentForm, ourName);
                     ParentForm.LoadForm(clientJoin);
-                    if (clientFormOnline != null) // clear the old form
+                    if (chessAIClientFormOnline != null) // clear the old form
                     {
-                        clientFormOnline.Close();
-                        clientFormOnline.Dispose();
+                        chessAIClientFormOnline.Close();
+                        chessAIClientFormOnline.Dispose();
                     }
-                    clientFormOnline = new ChessAIClient();
-                    //clientFormOnline.Show();
-                    clientJoin.BeginPVPGame(ourName, selectedPlayerRoom.NameOfPlayer, clientFormOnline, selectedPlayerRoom.GameMode);
+                    chessAIClientFormOnline = new ChessAIClient();
+                    //chessAIClientFormOnline.Show();
+                    clientJoin.BeginPVPGame(ourName, selectedPlayerRoom.NameOfPlayer, chessAIClientFormOnline, selectedPlayerRoom.GameMode);
                     clientJoin.Joined += ClientJoin_Joined;
                 }
             }
@@ -177,38 +200,17 @@ public partial class PvpModeForm : Form
         }
     }
 
-    public class PlayerRoom
-    {
-        public string NameOfPlayer { get; set; }
-        public string GameMode { get; set; }
-        public string RoomCode { get; set; }
-        public string Status_ { get; set; }
-        public PlayerRoom(string roomCode, string nameOfPlayer, string gameMode, string status)
-        {
-            RoomCode = roomCode;
-            NameOfPlayer = nameOfPlayer;
-            GameMode = gameMode;
-            Status_ = status;
-
-        }
-
-        public override string ToString()
-        {
-            return $"{RoomCode} {NameOfPlayer} {GameMode}";
-        }
-    }
-
 
     private void ClientForm_Load(object sender, EventArgs e)
     {
-        Thread t = new Thread(connectToServer);
-        t.Start();
+        //Thread t = new Thread(connectToServer);
+        //t.Start();
     }
 
     private void connectToServer()
     {
         comm = new Communication(serverIP, serverPort, LogMessage);
-        comm.ClientLoad();
+        isConnectedToServer = comm.ClientLoad();
     }
     private void LogMessage(string message)
     {
@@ -279,14 +281,15 @@ public partial class PvpModeForm : Form
         // It like Auto_Matching but it will auto pick 2 users from listview
         if (comboBox1.SelectedIndex == -1)
         {
+            label3.Text = "Please select a game mode!";
             label3.Visible = true;
             return;
         }
-        if (isAutoPicking)
+        if (isAutoMatching)
         {
             // Stop auto pick
             autoPickTimer.Stop();
-            isAutoPicking = false;
+            isAutoMatching = false;
             btn_autoJoin.Text = "🔄 Auto matching";
 
         }
@@ -294,7 +297,7 @@ public partial class PvpModeForm : Form
         {
             // Start auto pick
             autoPickTimer.Start();
-            isAutoPicking = true;
+            isAutoMatching = true;
             btn_autoJoin.Text = "Cancel matching";
             if (ParentForm != null)
             {
@@ -308,22 +311,26 @@ public partial class PvpModeForm : Form
     {
         if (comboBox1.SelectedIndex == -1)
         {
+            label3.Text = "Please select a game mode!";
             label3.Visible = true;
             return;
         }
+
         if (ParentForm != null)
         {
             clientJoin = new ChatClientJoin(ParentForm, ourName);
             ParentForm.LoadForm(clientJoin);
 
-            if (clientFormOnline != null) // clear the old form
+            if (chessAIClientFormOnline != null) // clear the old form
             {
-                clientFormOnline.Close();
-                clientFormOnline.Dispose();
+                chessAIClientFormOnline.Close();
+                chessAIClientFormOnline.Dispose();
             }
-            clientFormOnline = new ChessAIClient();
-            //clientFormOnline.Show();
-            clientJoin.JoiningRoom(ourName, clientFormOnline, true, selectedTimeCtrl);
+
+            chessAIClientFormOnline = new ChessAIClient();
+
+            //chessAIClientFormOnline.Show();
+            clientJoin.JoiningRoom(ourName, chessAIClientFormOnline, true, selectedTimeCtrl);
             clientJoin.Joined += ClientJoin_Joined;
         }
 
@@ -331,13 +338,17 @@ public partial class PvpModeForm : Form
 
     private void ClientJoin_Joined(object? sender, EventArgs e)
     {
-        if (clientFormOnline != null && clientJoin != null)
+        if (chessAIClientFormOnline != null && clientJoin != null)
         {
             Debug.WriteLine("Client joined!");
             var side = clientJoin.currentChatMainForm.Side;
             var timectrl = clientJoin.currentChatMainForm.timeCtrl;
-            clientFormOnline.Show();
-            clientFormOnline.SetupGame(NamePlayer: ourName, UserELO: 0, timeCtrl: timectrl, DebugMode: false, setSide: side, currrchatMF: clientJoin.currentChatMainForm);
+            chessAIClientFormOnline.Show();
+
+            User playerUser = new User(username: ourName, elo: 1200);
+            User opponentUser = new User(username: "ooooo", elo: 1200);
+
+            chessAIClientFormOnline.SetupGame(pUser: playerUser, oUser: opponentUser, timeCtrl: timectrl, setSide: side, chatMainForm: clientJoin.currentChatMainForm);
         }
     }
 
@@ -347,31 +358,7 @@ public partial class PvpModeForm : Form
         selectedTimeCtrl = TimeControls.Keys.ToArray()[comboBox1.SelectedIndex];
     }
 
-    private void label2_Click(object sender, EventArgs e)
-    {
-
-    }
-
-    private void startSvr_Click(object sender, EventArgs e)
-    {
-        if (serverLog == null)
-        {
-            serverLog = new ChatServerLog(false); // true = Hide the Code form after load
-            serverLog.Show();
-            // serverLog.Hide();
-            startSvr.Text = "Stop Server";
-        }
-        else
-        {
-            serverLog.Close();
-            startSvr.Text = "Start Server";
-            serverLog.Dispose();
-            serverLog = null;
-        }
-
-    }
-
-    private void cntSvr_Click(object sender, EventArgs e)
+    private void VerifyAndSetIP()
     {
         var ip = srvIP.Text;
 
@@ -401,25 +388,40 @@ public partial class PvpModeForm : Form
         }
 
         // If IP is valid, update Constants and reset background color
+
         Constants.SetServerIP(ip);
         srvIP.BackColor = Color.Azure;
-        Debug.WriteLine("Server IP: " + Constants.serverIP);
+    }
+
+    private void cntSvr_Click(object sender, EventArgs e)
+    {
+
+        isServer = false;
+        uiClientRefresh();
+        VerifyAndSetIP();
         if (comm != null)
         {
             comm.ClientClose(); // close old connection
+            comm = null;
         }
 
         Thread t = new Thread(connectToServer); // reconnect to server
         t.Start();
-        if (comm != null)
+
+        Debug.WriteLine("is connected to server " + isConnectedToServer);
+        if (comm != null && isConnectedToServer)
         {
+            Debug.WriteLine("Server IP: " + Constants.serverIP);
             cntSvr.Text = "Connected";
-            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList), DateTime.Now);
+            cntSvr.BackColor = Color.PaleGreen;
+            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "update", ourName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList), DateTime.Now);
             comm.SendMessage(msg1.ToJson());
+
         }
         else
         {
-            cntSvr.Text = "Connect";
+            cntSvr.Text = "Connect server";
+            cntSvr.BackColor = Color.LightGray;
         }
     }
 
@@ -431,10 +433,63 @@ public partial class PvpModeForm : Form
 
     private void button1_Click(object sender, EventArgs e)
     {
+        //refresh
         if (comm != null)
         {
-            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList), DateTime.Now);
+            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "update", ourName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList), DateTime.Now);
             comm.SendMessage(msg1.ToJson());
+        }
+    }
+
+    private void strSvr_Click(object sender, EventArgs e)
+    {
+        isServer = true;
+        uiClientRefresh();
+        VerifyAndSetIP();
+
+        if (serverLog != null)
+        {
+            // clean the old one
+            serverLog.Close();
+            serverLog.Dispose();
+            serverLog = null;
+            strSvr.Text = "Start server";
+            strSvr.BackColor = Color.LightGray;
+        }
+        else
+        {
+            // create new server log
+            serverLog = new ChatServerLog(false); // true = Hide the Code form after load
+            serverLog.Show();
+            serverLog.Hide();
+            strSvr.Text = "Stop server";
+            strSvr.BackColor = Color.LightCoral;
+        }
+    }
+
+    private void uiClientRefresh()
+    {
+        if (isServer)
+        {
+            cntSvr.Visible = false;
+            btn_createRoom.Visible = false;
+            btn_autoJoin.Visible = false;
+            comboBox1.Visible = false;
+            label1.Text = "Room list";
+
+            label3.Text = "You are now a server!";
+            label3.Visible = true;
+        }
+        else
+        {
+            strSvr.Visible = false;
+            label3.Text = "You are now a client!";
+            label3.Visible = true;
+
+            btn_createRoom.Visible = true;
+            btn_autoJoin.Visible = true;
+            comboBox1.Visible = true;
+            label1.Text = "Select room";
         }
     }
 }

@@ -19,6 +19,10 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Security.Cryptography;
 using ChessAI_Bck;
 using winform_chat;
+using System.ComponentModel;
+using System.Numerics;
+using NAudio.Wave;
+using System.Xml;
 
 namespace ChessAI
 {
@@ -62,10 +66,8 @@ namespace ChessAI
         string chessLastMove; // prevent sending too much when clicking on the board
 
         // Random player name
-        private string PlayerName = "Player" + new Random().Next(1000, 24000);
-        private string OpponentName = "Opponent";
-        // Random player number in range 1-2000
-        private int PlayerNumber = new Random().Next(1, 2000);
+        private User playerUser;
+        private User opponentUser;
         // Stockfish module
         private IStockfish Stockfish { get; set; }
 
@@ -88,7 +90,7 @@ namespace ChessAI
             }
         }
 
-        public ChessAIClient(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, bool DebugMode = false, PieceColor setSide = null, string NamePlayer = null, int UserELO = 0)
+        public ChessAIClient(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, bool DebugMode = false, PieceColor setSide = null, User pUser = null , User oUser = null, ChatMainForm chatMainForm = null )
         {
             InitializeComponent();
 
@@ -114,6 +116,21 @@ namespace ChessAI
 
             this.MaximizeBox = false; // Prevent maximizing the window
             this.MinimizeBox = false; // Prevent minimizing the window
+
+            SetupGame(modeDepth, timeCtrl, isOffl, setSide, pUser, oUser , chatMainForm);
+        }
+
+        public void SetupGame(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, PieceColor setSide = null, User pUser = null , User oUser = null , ChatMainForm chatMainForm=null)
+        {
+            currenChatMainForm = chatMainForm;
+            // Add any additional actions needed once the chat is joined
+            isOffline = isOffl;
+
+            if (currenChatMainForm == null)
+            {
+                isOffline = true;
+            }
+
             WLouterPanel.Visible = false;
             AgainBtn.Visible = false;
             HomeBtn.Visible = false;
@@ -121,17 +138,25 @@ namespace ChessAI
             RestartAsk.Visible = false;
 
             //Set name player:
-            if (NamePlayer != null)
+            if (pUser != null)
             {
-                PlayerName = NamePlayer;
+                playerUser = pUser;
+            }
+            else
+            {
+                playerUser = new User(username: "You", elo: 404);
             }
 
-            if (UserELO != 0)
+            if (oUser != null)
             {
-                PlayerNumber = UserELO;
+                opponentUser = oUser;
             }
-            // Set the time control
-            timeControl = timeCtrl;
+            else
+            {
+                opponentUser = new User(username:"Opponent",elo:404);
+            }
+                // Set the time control
+                timeControl = timeCtrl;
 
             if (isDebug == false)
             {
@@ -146,46 +171,16 @@ namespace ChessAI
                 //Generate stockfish default
                 var pathStockFish = GetStockfishDir();
                 Stockfish = new Stockfish.NET.Stockfish(pathStockFish, modeDepth);
-
+                Stockfish.SkillLevel = 0;
                 // Set the side randomly or preset
                 Side = presetSide != null ? presetSide : Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
-                OpponentName = "AI";
-                InitGame(Side, timeControl);
+
+                opponentUser = new User(username:"AI",elo:1);
+
             }
-        }
 
-        public void SetupGame( string timeCtrl = "10|0", bool isOffl = false, bool DebugMode = false, PieceColor setSide = null, string NamePlayer = null, int UserELO = 0, ChatMainForm currrchatMF=null)
-        {
-            currenChatMainForm = currrchatMF;
-            // Add any additional actions needed once the chat is joined
-            if (currenChatMainForm != null)
-            {
-
-                Debug.WriteLine("SetupGame");
-                Debug.WriteLine("Side: " + setSide +" tctl "+ timeCtrl +" "+NamePlayer);
-                this.isDebug = DebugMode; // Set the debug mode 
-                this.isOffline = isOffl; // Set the offline mode
-                Side = setSide; // Set the preset side
-
-                //Set name player:
-                if (NamePlayer != null)
-                {
-                    PlayerName = NamePlayer;
-                }
-
-                if (UserELO != 0)
-                {
-                    PlayerNumber = UserELO;
-                }
-                // Set the time control
-                timeControl = timeCtrl;
-
-                chessBoard.Clear();
-                panel1.Invalidate();
-                gameStarted = false;
-
-                InitGame(Side, timeControl);
-            }
+            InitGame(Side, timeControl);
+            
         }
         /// <summary>
         /// Begin the game when the message is received/ Connected to another player
@@ -208,10 +203,11 @@ namespace ChessAI
             {
                 OpponentAIMove(); // first move for AI white
             }
+
             LogMessage("Game started! You are: " + Side);
             panel1.Invalidate(); // Redraw whole board
             timeControlInitialize(timeCtrl);
-            InitUserInfo(OpponentName);
+            InitUserInfo(playerUser, opponentUser);
             Invalidate();
         }
 
@@ -273,47 +269,51 @@ namespace ChessAI
                 uELO.Text = "ELO:";
                 uELO.Visible = false;
             }
-            if (Side == PieceColor.Black)
-            {
-                Parallel.Invoke(() => ShowPanelWithDelay(), () => SaveToDatabase(Score01.Text, 400, PlayerNumber, reasonEndGame, pgn));
-            }
-            else if (Side == PieceColor.White)
-            {
-                Parallel.Invoke(() => ShowPanelWithDelay(), () => SaveToDatabase(Score01.Text, PlayerNumber, 400, reasonEndGame, pgn));
-            }
-            
+            Parallel.Invoke(() => ShowPanelWithDelay(), () => SaveToDatabase(Score01.Text , playerUser, opponentUser , reasonEndGame, pgn));     
         }
 
-        private async void SaveToDatabase(string FinalResult, int WhiteELO, int BlackELO, string reasonEndGame, string PGN)
+        private async void SaveToDatabase(string FinalResult, User pUser, User oUser , string reasonEndGame, string PGN)
         {
-            Client = new FireSharp.FirebaseClient(config);
-            if (Client != null)
+            if (!pUser.IsAValidUser() || !oUser.IsAValidUser()) return; // if user is not valid, return
+            try
             {
-                var current_username = PlayerName;
-                if (current_username == null) return;
-                var load_user = await Client.GetAsync("Users/" + EncodeSha256(current_username));
-                User Getuser = load_user.ResultAs<User>();
-                var match_id = Guid.NewGuid().ToString();
-                var save_PGN = new PGNLog
+                Client = new FireSharp.FirebaseClient(config);
+                if (Client != null)
                 {
-                    ID = match_id,
-                    Date = DateTime.Now.ToString("yyyy-MM-dd"),
-                    White = PlayerName,
-                    Black = OpponentName,
-                    Result = FinalResult,
-                    WhiteELO = WhiteELO,
-                    BlackELO = BlackELO,
-                    TimeControl = timeControl,
-                    Termination = reasonEndGame,
-                    PGN = PGN
+                    var current_username = pUser.Username;
+                    if (current_username == null) return;
+                    var load_user = await Client.GetAsync("Users/" + EncodeSha256(current_username));
+                    User Getuser = load_user.ResultAs<User>();
+                    var match_id = Guid.NewGuid().ToString();
+                    var save_PGN = new PGNLog
+                    {
+                        ID = match_id,
+                        Date = DateTime.Now.ToString("yyyy-MM-dd"),
 
-                };
-                Getuser.AddMatch(save_PGN);
-                var save_match = await Client.SetAsync("Users/" + EncodeSha256(current_username), Getuser);
+                        White = (Side == PieceColor.White ? pUser.Username : oUser.Username),
+                        Black = (Side == PieceColor.Black ? pUser.Username : oUser.Username),
+
+                        Result = FinalResult,
+
+                        WhiteELO = (Side == PieceColor.White ? pUser.ELO : oUser.ELO),
+                        BlackELO = (Side == PieceColor.Black ? pUser.ELO : oUser.ELO),
+
+                        TimeControl = timeControl,
+                        Termination = reasonEndGame,
+                        PGN = PGN
+
+                    };
+                    Getuser.AddMatch(save_PGN);
+                    var save_match = await Client.SetAsync("Users/" + EncodeSha256(current_username), Getuser);
+                }
+                else
+                {
+                    return;
+                }
             }
-            else
+            catch (Exception e)
             {
-                return;
+                Debug.WriteLine("Error in SaveToDatabase: " + e.Message);
             }
         }
         private string EncodeSha256(string input)
@@ -385,7 +385,7 @@ namespace ChessAI
         {
             new SoundFXHandler(chessBoard, "", "Offer");
             DrawAsk.Visible = true;
-            DrawText.Text = OpponentName + " asking for a draw. Would you accept?";
+            DrawText.Text = opponentName + " asking for a draw. Would you accept?";
             drawBtn.Visible = false;
             resignBtn.Visible = false;
         }
@@ -401,7 +401,7 @@ namespace ChessAI
             if (isOffline)
             {
                 Debug.WriteLine("Restarting game...");
-                Debug.WriteLineIf(isDebug, "presetSide: " + presetSide);
+                Debug.WriteLine("presetSide: " + presetSide);
                 chessBoard.Clear();
                 panel1.Invalidate();
                 gameStarted = false;
@@ -427,7 +427,7 @@ namespace ChessAI
             {
                 new SoundFXHandler(chessBoard, "", "Offer");
                 RestartAsk.Visible = true;
-                RestartText.Text = OpponentName + " asking for a rematch. Would you accept?";
+                RestartText.Text = opponentName + " asking for a rematch. Would you accept?";
                 AgainBtn.Visible = false;
                 WLAgain.Visible = false;
             }
@@ -556,7 +556,7 @@ namespace ChessAI
             OpponentAIMove();
         }
 
-        public void OpponentAIMove()
+        public void OpponentAIMove(bool isDum = false)
         {
             //var moves = chessBoard.Moves();
             if (chessBoard.IsEndGame)
@@ -566,18 +566,26 @@ namespace ChessAI
             }
             Stockfish.SetFenPosition(chessBoard.ToFen());
 
-            // Option 1: dumb AI
-            var moves = chessBoard.Moves();
-            chessBoard.Move(moves[Random.Shared.Next(moves.Length)]);
+            Move move;
+            
+            if (isDum)
+            {
+                // Option 1: dumb AI
+                var moves = chessBoard.Moves();
+                move = moves[Random.Shared.Next(moves.Length)];
+            }
+            else
+            {
+                // Option 2: smart AI (StockFish)
+                var bestMove = Stockfish.GetBestMove();
+                move = new Move(bestMove.Substring(0, 2), bestMove.Substring(2, 2));
+            }
 
-            // Option 2: smart AI (StockFish)
-            //var bestMove = Stockfish.GetBestMove();
-            //var move = new Move(bestMove.Substring(0, 2), bestMove.Substring(2, 2));
             //add sound FX
-            //new SoundFXHandler(chessBoard, move.NewPosition.ToString(), side: Side.OppositeColor());
-           //chessBoard.Move(move);
+            new SoundFXHandler(chessBoard, move.NewPosition.ToString(), side: Side.OppositeColor(), isOfflGame: true);
+            chessBoard.Move(move);
             //add sound FX
-            new SoundFXHandler(chessBoard, "", side: Side.OppositeColor()); // castle?
+            new SoundFXHandler(chessBoard, "", side: Side.OppositeColor(), isOfflGame: true); // castle?
 
             timeOpponent = timeOpponent.Add(TimeSpan.FromSeconds(timeIncrement));
             opponentTimer.Text = timeOpponent.ToString(@"mm\:ss");
@@ -632,7 +640,7 @@ namespace ChessAI
             // Do something when form is loaded
             //x = new ChatClientJoin();
             //x.Show();
-            //x.JoiningRoom(PlayerName, this);
+            //x.JoiningRoom(playerName, this);
             //x.Joined += Room_Joined;
         }
 
@@ -659,7 +667,11 @@ namespace ChessAI
             // Set the side randomly
             Side = Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
             isOffline = true;
-            OpponentName = "AI";
+
+            opponentUser = new User();
+            opponentUser.Username = "AI";
+            opponentUser.ELO = 1;
+
             InitGame(Side);
         }
 
@@ -685,15 +697,14 @@ namespace ChessAI
             Console.WriteLine(fullPath);
             return fullPath;
         }
-        private void InitUserInfo(string oppName = "Opponent")
+        private void InitUserInfo(User pUser, User oUser)
         {
             // init display
-            ourName.Text = PlayerName + " ( " + PlayerNumber + " )";
-            opponentName.Text = oppName;
+            ourName.Text = pUser.Username + " ( " + pUser.ELO + " )";
+            opponentName.Text = oUser.Username + " ( " + oUser.ELO + " )";
             // init end game
-            uName1.Text = PlayerName;
-            uName2.Text = oppName;
-
+            uName1.Text = pUser.Username;
+            uName2.Text = oUser.Username;
 
         }
         private void beginTimer()
@@ -749,7 +760,7 @@ namespace ChessAI
                     if (timeOur.TotalSeconds <= 0)
                     {
                         timer1.Stop();
-                        LogMessage(PlayerName + "'s time is up!");
+                        LogMessage("Your's time is up!");
                         isTimeoutEndGame = true;
                         chessBoard.Resign(Side);
                         
@@ -803,6 +814,7 @@ namespace ChessAI
         {
             new SoundFXHandler(null, "", "click");
             this.Close();
+            this.Dispose();
         }
 
         private void Again_Click(object sender, EventArgs e)
@@ -815,6 +827,7 @@ namespace ChessAI
         {
             new SoundFXHandler(null, "", "click");
             this.Close();
+            this.Dispose();
         }
 
         private void drawBtn_Click(object sender, EventArgs e)
@@ -908,6 +921,7 @@ namespace ChessAI
             if (isOffline)
             {
                 // Close the stockfish process?
+               
             }
             else
             {
@@ -915,6 +929,7 @@ namespace ChessAI
                 {
                     currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame) + "Resign");
                     currenChatMainForm.Close();
+                    currenChatMainForm.Dispose();
                     if (chessBoard.IsEndGame) return; // if game already ended, return; 
                     chessBoard.Resign(Side);
                 }

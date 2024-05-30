@@ -163,10 +163,6 @@ namespace winforms_chat
                             }
 
                         }
-                        else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList)))
-                        {
-                            UpdateUserList();
-                        }
                         else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect)) || msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientLeaveRoom)))
                         {
                             // Remove user from listview
@@ -187,6 +183,10 @@ namespace winforms_chat
                         // update list user for all clients
                         Debug.WriteLine("[SVR] Update list user for all clients");
                         //UpdateUserList();
+                    }
+                    else if (msg.type == "update" && msg.TableCode == "000000" && msg.to == "server" && msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList)))
+                    {
+                        UpdateUserList();
                     }
                 }
 
@@ -259,6 +259,15 @@ namespace winforms_chat
 
         private void BeginGame(string player1, string player2, string timectrl)
         {
+            // remove the user from listview
+            foreach (ListViewItem item in listview_userQueue.Items)
+            {
+                if (item.SubItems[1].Text == player1 || item.SubItems[1].Text == player2)
+                {
+                    listview_userQueue.Items.Remove(item);
+                }
+            }
+
             Random random = new Random();
             string newTableCode = random.Next(1, 999999).ToString("D6");
             // pick player side 
@@ -270,7 +279,9 @@ namespace winforms_chat
          //   ChessAI.ChatServerAndClient.Message msg2 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player2 + "-" + player1, newTableCode + "$" + oppSide + "-" + userSide  + "$" + timectrl, DateTime.Now);
 
             comm.SendMessage(msg1.ToJson());
-           // comm.SendMessage(msg2.ToJson());
+            // comm.SendMessage(msg2.ToJson());
+            
+
         }
 
         // Auto pick 2 random users from listview

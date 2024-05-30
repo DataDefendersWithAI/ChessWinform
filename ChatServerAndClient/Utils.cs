@@ -119,7 +119,7 @@ namespace ChessAI.ChatServerAndClient
         /// <summary>
         /// Loads the client and starts the connection and message receiving process.
         /// </summary>
-        public void ClientLoad()
+        public bool ClientLoad()
         {
             try
             {
@@ -127,10 +127,12 @@ namespace ChessAI.ChatServerAndClient
                 receiveThread = new Thread(new ThreadStart(ReceiveMessages));
                 receiveThread.IsBackground = true;
                 receiveThread.Start();
+                return true;
             }
             catch (Exception ex)
             {
                 LogMessage("Error: " + ex.Message);
+                return false;
             }
         }
         /// <summary>

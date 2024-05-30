@@ -81,8 +81,6 @@ namespace winform_chat
         {
             new SoundFXHandler(null, "", "click");
             var temp = new DashboardForm.PveModeForm();
-            temp.current_username = username;
-            temp.ELO = ELO;
             LoadForm(temp);
         }
 

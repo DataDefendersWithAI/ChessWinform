@@ -36,10 +36,10 @@
             listBoxPlayerRooms = new ListBox();
             label3 = new Label();
             label4 = new Label();
-            startSvr = new Button();
             cntSvr = new Button();
             srvIP = new TextBox();
             button1 = new Button();
+            strSvr = new Button();
             SuspendLayout();
             // 
             // btn_createRoom
@@ -87,7 +87,6 @@
             label2.Size = new Size(113, 23);
             label2.TabIndex = 5;
             label2.Text = "Game mode";
-            label2.Click += label2_Click;
             // 
             // comboBox1
             // 
@@ -122,6 +121,7 @@
             label3.Size = new Size(253, 25);
             label3.TabIndex = 9;
             label3.Text = "Please select your game mode";
+           // label3.Click += label3_Click;
             // 
             // label4
             // 
@@ -134,19 +134,6 @@
             label4.Size = new Size(501, 25);
             label4.TabIndex = 10;
             label4.Text = "Game mode: Minutes per game| increment seconds per move\r\n";
-            // 
-            // startSvr
-            // 
-            startSvr.BackColor = Color.Wheat;
-            startSvr.Font = new Font("Showcard Gothic", 13.2000008F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            startSvr.Location = new Point(502, 238);
-            startSvr.Margin = new Padding(3, 2, 3, 2);
-            startSvr.Name = "startSvr";
-            startSvr.Size = new Size(253, 45);
-            startSvr.TabIndex = 11;
-            startSvr.Text = "Start server";
-            startSvr.UseVisualStyleBackColor = false;
-            startSvr.Click += startSvr_Click;
             // 
             // cntSvr
             // 
@@ -179,7 +166,7 @@
             // 
             button1.BackColor = Color.Wheat;
             button1.Font = new Font("Showcard Gothic", 13.2000008F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            button1.Location = new Point(502, 287);
+            button1.Location = new Point(502, 238);
             button1.Margin = new Padding(3, 2, 3, 2);
             button1.Name = "button1";
             button1.Size = new Size(253, 45);
@@ -188,16 +175,29 @@
             button1.UseVisualStyleBackColor = false;
             button1.Click += button1_Click;
             // 
+            // strSvr
+            // 
+            strSvr.BackColor = Color.Yellow;
+            strSvr.Font = new Font("Showcard Gothic", 13.2000008F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            strSvr.Location = new Point(502, 436);
+            strSvr.Margin = new Padding(3, 2, 3, 2);
+            strSvr.Name = "strSvr";
+            strSvr.Size = new Size(253, 45);
+            strSvr.TabIndex = 15;
+            strSvr.Text = "Start server";
+            strSvr.UseVisualStyleBackColor = false;
+            strSvr.Click += strSvr_Click;
+            // 
             // PvpModeForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PowderBlue;
             ClientSize = new Size(772, 571);
+            Controls.Add(strSvr);
             Controls.Add(button1);
             Controls.Add(srvIP);
             Controls.Add(cntSvr);
-            Controls.Add(startSvr);
             Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(listBoxPlayerRooms);
@@ -224,9 +224,9 @@
         private ListBox listBoxPlayerRooms;
         private Label label3;
         private Label label4;
-        private Button startSvr;
         private Button cntSvr;
         private TextBox srvIP;
         private Button button1;
+        private Button strSvr;
     }
 }
