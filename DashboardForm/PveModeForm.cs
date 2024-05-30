@@ -20,7 +20,7 @@ namespace winform_chat.DashboardForm
             new SoundFXHandler(null, "", "click");
             modeDepth = 1;
             this.Hide();
-            var newboard = new ChessAIClient(modeDepth, isOffl : true, NamePlayer: current_username, UserELO: ELO);
+            var newboard = new ChessAIClient(modeDepth, isOffl : true, NamePlayer: current_username, UserELO: ELO, OpponentELO: 800);
             newboard.Show();
             this.Show();
         }
@@ -30,7 +30,7 @@ namespace winform_chat.DashboardForm
             new SoundFXHandler(null, "", "click");
             modeDepth = 2;
             this.Hide();
-            var newboard = new ChessAIClient(modeDepth, isOffl: true, NamePlayer: current_username, UserELO: ELO);
+            var newboard = new ChessAIClient(modeDepth, isOffl: true, NamePlayer: current_username, UserELO: ELO, OpponentELO: 1100);
             newboard.Show();
             this.Show();
         }
@@ -40,7 +40,7 @@ namespace winform_chat.DashboardForm
             new SoundFXHandler(null, "", "click");
             modeDepth = 4;
             this.Hide();
-            var newboard = new ChessAIClient(modeDepth, isOffl: true, NamePlayer: current_username, UserELO: ELO);
+            var newboard = new ChessAIClient(modeDepth, isOffl: true, NamePlayer: current_username, UserELO: ELO, OpponentELO: 1700);
             newboard.Show();
             this.Show();
         }
@@ -50,7 +50,7 @@ namespace winform_chat.DashboardForm
             new SoundFXHandler(null, "", "click");
             modeDepth = 6;
             this.Hide();
-            var newboard = new ChessAIClient(modeDepth, isOffl: true, NamePlayer: current_username, UserELO: ELO);
+            var newboard = new ChessAIClient(modeDepth, isOffl: true, NamePlayer: current_username, UserELO: ELO, OpponentELO: 2300);
             newboard.Show();
             this.Show();
         }
@@ -60,7 +60,7 @@ namespace winform_chat.DashboardForm
             new SoundFXHandler(null, "", "click");
             modeDepth = 8;
             this.Hide();
-            var newboard = new ChessAIClient(modeDepth, isOffl: true, NamePlayer: "Player " + current_username, UserELO: ELO);
+            var newboard = new ChessAIClient(modeDepth, isOffl: true, NamePlayer: "Player " + current_username, UserELO: ELO, OpponentELO: 3000);
             newboard.Show();
             this.Show();
         }

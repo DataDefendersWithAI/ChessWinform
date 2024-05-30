@@ -14,6 +14,7 @@ namespace winform_chat
 
         private void MainScreen_Load(object sender, EventArgs e)
         {
+            username = "SeaWind";
             var temp = new DashboardForm.HomeForm();
             temp.current_username = username;
             LoadForm(temp);
@@ -95,7 +96,7 @@ namespace winform_chat
         private void PvPButton_Click(object sender, EventArgs e)
         {
             new SoundFXHandler(null, "", "click");
-            var temp = new DashboardForm.PvpModeForm(this);
+            var temp = new DashboardForm.PvpModeForm(this, userName: username);
             LoadForm(temp);
         }
 

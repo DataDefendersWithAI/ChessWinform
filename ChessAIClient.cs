@@ -64,6 +64,7 @@ namespace ChessAI
         // Random player name
         private string PlayerName = "Player" + new Random().Next(1000, 24000);
         private string OpponentName = "Opponent";
+        private int OpponentNumber = new Random().Next(1, 2000);
         // Random player number in range 1-2000
         private int PlayerNumber = new Random().Next(1, 2000);
         // Stockfish module
@@ -88,7 +89,7 @@ namespace ChessAI
             }
         }
 
-        public ChessAIClient(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, bool DebugMode = false, PieceColor setSide = null, string NamePlayer = null, int UserELO = 0)
+        public ChessAIClient(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, bool DebugMode = false, PieceColor setSide = null, string NamePlayer = null, int UserELO = 0, int OpponentELO = 0)
         {
             InitializeComponent();
 
@@ -130,6 +131,10 @@ namespace ChessAI
             {
                 PlayerNumber = UserELO;
             }
+            if (OpponentELO != 0)
+            {
+                OpponentNumber = OpponentELO;
+            }
             // Set the time control
             timeControl = timeCtrl;
 
@@ -149,7 +154,7 @@ namespace ChessAI
 
                 // Set the side randomly or preset
                 Side = presetSide != null ? presetSide : Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
-                OpponentName = "AI";
+                OpponentName = "AI" + " ( " + OpponentNumber + " )";
                 InitGame(Side, timeControl);
             }
         }
@@ -308,8 +313,8 @@ namespace ChessAI
                     PGN = PGN
 
                 };
-                Getuser.AddMatch(save_PGN);
-                var save_match = await Client.SetAsync("Users/" + EncodeSha256(current_username), Getuser);
+                //Getuser.AddMatch(save_PGN);
+                //var save_match = await Client.SetAsync("Users/" + EncodeSha256(current_username), Getuser);
             }
             else
             {

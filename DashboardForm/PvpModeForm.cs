@@ -33,6 +33,8 @@ public partial class PvpModeForm : Form
     private bool isAutoPicking = false;
     private List<PlayerRoom> playerRooms;
 
+    //Threads;
+    private Thread t;
     MainScreen ParentForm;
     ChatServerLog serverLog;
     ChessAIClient clientFormOnline;
@@ -62,7 +64,7 @@ public partial class PvpModeForm : Form
         { "120|60", "Classical"},// 120 minutes, 60 seconds increment
     };
 
-    public PvpModeForm(MainScreen ParentF)
+    public PvpModeForm(MainScreen ParentF, string userName = "")
     {
         InitializeComponent();
         // Initialize timer
@@ -74,7 +76,11 @@ public partial class PvpModeForm : Form
 
         //Random user name
         Random rnd = new Random();
-        ourName = "NullFD" + rnd.Next(1, 1000).ToString();
+        if (userName == "")
+        {
+            ourName = "NullFD" + rnd.Next(1, 1000).ToString();
+        }
+        else ourName = userName;
         srvIP.Text = serverIP;
 
         FillListBoxPlayerRooms();
@@ -201,8 +207,9 @@ public partial class PvpModeForm : Form
 
     private void ClientForm_Load(object sender, EventArgs e)
     {
-        Thread t = new Thread(connectToServer);
-        t.Start();
+        //t = new Thread(connectToServer);
+        //t.IsBackground = true;
+        //t.Start();
     }
 
     private void connectToServer()
@@ -402,15 +409,20 @@ public partial class PvpModeForm : Form
 
         // If IP is valid, update Constants and reset background color
         Constants.SetServerIP(ip);
+        serverIP = ip;
         srvIP.BackColor = Color.Azure;
         Debug.WriteLine("Server IP: " + Constants.serverIP);
         if (comm != null)
         {
+            t.Interrupt(); // interrupt old thread
             comm.ClientClose(); // close old connection
+
         }
 
-        Thread t = new Thread(connectToServer); // reconnect to server
+        t = new Thread(connectToServer); // reconnect to server
+        t.IsBackground = true;
         t.Start();
+        Thread.Sleep(1000);
         if (comm != null)
         {
             cntSvr.Text = "Connected";
