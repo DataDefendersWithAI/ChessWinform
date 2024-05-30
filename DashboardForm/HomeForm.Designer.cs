@@ -57,7 +57,7 @@
             PvPButton.FlatStyle = FlatStyle.Flat;
             PvPButton.Font = new Font("Showcard Gothic", 22.2F, FontStyle.Bold);
             PvPButton.ForeColor = Color.Sienna;
-            PvPButton.Location = new Point(461, 357);
+            PvPButton.Location = new Point(494, 357);
             PvPButton.Margin = new Padding(3, 2, 3, 2);
             PvPButton.Name = "PvPButton";
             PvPButton.Size = new Size(222, 58);
@@ -74,7 +74,7 @@
             PvEButton.FlatAppearance.BorderSize = 0;
             PvEButton.FlatStyle = FlatStyle.Flat;
             PvEButton.Font = new Font("Showcard Gothic", 22.2F, FontStyle.Bold);
-            PvEButton.Location = new Point(461, 255);
+            PvEButton.Location = new Point(494, 258);
             PvEButton.Margin = new Padding(3, 2, 3, 2);
             PvEButton.Name = "PvEButton";
             PvEButton.Size = new Size(222, 58);
