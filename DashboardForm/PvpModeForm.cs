@@ -31,7 +31,7 @@ public partial class PvpModeForm : Form
 
     private System.Windows.Forms.Timer autoPickTimer;
     private List<PlayerRoom> playerRooms;
-
+    private Thread t;
     MainScreen ParentForm;
     ChatServerLog serverLog;
     ChessAIClient chessAIClientFormOnline;
@@ -443,11 +443,13 @@ public partial class PvpModeForm : Form
             comm = null;
         }
 
-        Thread t = new Thread(connectToServer); // reconnect to server
+        t = new Thread(connectToServer); // reconnect to server 
+        t.IsBackground = true;
         t.Start();
+        Thread.Sleep(2000);
 
-        Debug.WriteLine("is connected to server " + isConnectedToServer);
-        if (comm != null && isConnectedToServer)
+        //Debug.WriteLine("is connected to server " + isConnectedToServer);
+        if (comm != null)
         {
             Debug.WriteLine("Server IP: " + Constants.serverIP);
             cntSvr.Text = "Connected";
