@@ -43,6 +43,8 @@
             panel2 = new Panel();
             PvPButton = new Button();
             panel7 = new Panel();
+            historyBtn = new Button();
+            panel3 = new Panel();
             LogoutButton = new Button();
             SideBarTimer = new System.Windows.Forms.Timer(components);
             MainPanel = new Panel();
@@ -54,6 +56,7 @@
             panel1.SuspendLayout();
             panel2.SuspendLayout();
             panel7.SuspendLayout();
+            panel3.SuspendLayout();
             SuspendLayout();
             // 
             // SideBar
@@ -66,6 +69,7 @@
             SideBar.Controls.Add(panel1);
             SideBar.Controls.Add(panel2);
             SideBar.Controls.Add(panel7);
+            SideBar.Controls.Add(panel3);
             SideBar.Dock = DockStyle.Left;
             SideBar.Location = new Point(0, 0);
             SideBar.Margin = new Padding(3, 2, 3, 2);
@@ -210,26 +214,47 @@
             // 
             // panel7
             // 
-            panel7.Controls.Add(LogoutButton);
+            panel7.Controls.Add(historyBtn);
             panel7.Location = new Point(3, 331);
             panel7.Margin = new Padding(3, 2, 3, 2);
             panel7.Name = "panel7";
             panel7.Size = new Size(185, 46);
             panel7.TabIndex = 7;
             // 
+            // historyBtn
+            // 
+            historyBtn.FlatStyle = FlatStyle.Flat;
+            historyBtn.Font = new Font("Showcard Gothic", 18F, FontStyle.Bold);
+            historyBtn.ImageAlign = ContentAlignment.MiddleLeft;
+            historyBtn.Location = new Point(-36, -11);
+            historyBtn.Margin = new Padding(3, 2, 3, 2);
+            historyBtn.Name = "historyBtn";
+            historyBtn.Size = new Size(242, 73);
+            historyBtn.TabIndex = 1;
+            historyBtn.Text = "📜History";
+            historyBtn.UseVisualStyleBackColor = true;
+            historyBtn.Click += historyBtn_Click;
+            // 
+            // panel3
+            // 
+            panel3.Controls.Add(LogoutButton);
+            panel3.Location = new Point(3, 381);
+            panel3.Margin = new Padding(3, 2, 3, 2);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(185, 46);
+            panel3.TabIndex = 8;
+            // 
             // LogoutButton
             // 
             LogoutButton.FlatStyle = FlatStyle.Flat;
             LogoutButton.Font = new Font("Showcard Gothic", 18F, FontStyle.Bold);
-            LogoutButton.Image = (Image)resources.GetObject("LogoutButton.Image");
             LogoutButton.ImageAlign = ContentAlignment.MiddleLeft;
-            LogoutButton.Location = new Point(-16, -12);
+            LogoutButton.Location = new Point(-29, -13);
             LogoutButton.Margin = new Padding(3, 2, 3, 2);
             LogoutButton.Name = "LogoutButton";
-            LogoutButton.Padding = new Padding(26, 0, 0, 0);
-            LogoutButton.Size = new Size(222, 73);
-            LogoutButton.TabIndex = 0;
-            LogoutButton.Text = "Logout";
+            LogoutButton.Size = new Size(235, 73);
+            LogoutButton.TabIndex = 2;
+            LogoutButton.Text = "⬅️ Log out";
             LogoutButton.UseVisualStyleBackColor = true;
             LogoutButton.Click += LogoutButton_Click;
             // 
@@ -267,6 +292,7 @@
             panel1.ResumeLayout(false);
             panel2.ResumeLayout(false);
             panel7.ResumeLayout(false);
+            panel3.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -284,8 +310,10 @@
         private Panel panel6;
         private Button ProfileButton;
         private Panel panel7;
-        private Button LogoutButton;
         private PictureBox pictureBox2;
         private Panel MainPanel;
+        private Button historyBtn;
+        private Button LogoutButton;
+        private Panel panel3;
     }
 }

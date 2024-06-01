@@ -41,6 +41,7 @@
             button1 = new Button();
             strSvr = new Button();
             label5 = new Label();
+            log1 = new Label();
             SuspendLayout();
             // 
             // btn_createRoom
@@ -200,12 +201,24 @@
             label5.Text = "Player 999";
             label5.TextAlign = ContentAlignment.MiddleRight;
             // 
+            // log1
+            // 
+            log1.AutoSize = true;
+            log1.Font = new Font("Segoe UI", 13F);
+            log1.ForeColor = Color.Red;
+            log1.Location = new Point(502, 312);
+            log1.Name = "log1";
+            log1.Size = new Size(253, 25);
+            log1.TabIndex = 17;
+            log1.Text = "Please select your game mode";
+            // 
             // PvpModeForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PowderBlue;
             ClientSize = new Size(772, 571);
+            Controls.Add(log1);
             Controls.Add(label5);
             Controls.Add(strSvr);
             Controls.Add(button1);
@@ -242,5 +255,6 @@
         private Button button1;
         private Button strSvr;
         private Label label5;
+        private Label log1;
     }
 }

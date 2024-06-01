@@ -26,7 +26,9 @@ namespace winforms_chat
 
         private string ourName { get; set; }
         public int opponentElo{ get; private set; }
+
         ChatForm.Chatbox chat_panel;
+
 		// Also communication object
 		private ClientCommunication comm;
         string serverIP = ChessAI.ChatServerAndClient.Constants.serverIP;
@@ -43,7 +45,7 @@ namespace winforms_chat
             {
                 tableCode = tableCode;
                 // Split userName by - and get the first part as userName, second part as opponentUserName
-                Console.WriteLine("[CMF] userName: " + userName);
+                Debug.WriteLine("[CMF] userName: " + userName);
                 string[] userNames = userName.Split('-');
                 ourName = userNames[0];
                 opponentUserName = userNames[1];
@@ -110,7 +112,7 @@ namespace winforms_chat
                     return;
                 }
                 // ------------ All received logic here -------------
-                Console.WriteLine("Received: " + message);
+                Debug.WriteLine("Received: " + message);
                 // If message is not valid JSON, return
                 if (!message.Contains("TableCode") || !message.Contains("type") || !message.Contains("from") || !message.Contains("to") || !message.Contains("message") || !message.Contains("date"))
                 {
@@ -245,7 +247,7 @@ namespace winforms_chat
             catch (Exception ex)
             {
                 //MessageBox.Show(ex.Message, "Warning");
-                Console.WriteLine(ex.Message);
+                Debug.WriteLine(ex.Message);
             }
         }
 

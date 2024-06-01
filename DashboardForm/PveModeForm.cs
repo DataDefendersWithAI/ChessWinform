@@ -7,10 +7,18 @@ namespace winform_chat.DashboardForm
     {
         public event EventHandler ChildPvEButton_Click;
         public int modeDepth;
-        public PveModeForm()
+        private User playerUser;
+        public PveModeForm(User pUser)
         {
             InitializeComponent();
-
+            if (pUser != null)
+            {
+                playerUser = pUser;
+            }
+            else
+            {
+                playerUser = new User(username: "NotFound" + new Random().Next(999, 9999), elo: 404);
+            }
         }
 
         private void BabyButton_Click(object sender, EventArgs e)
@@ -27,7 +35,6 @@ namespace winform_chat.DashboardForm
         {
             new SoundFXHandler(null, "", "click");
             modeDepth = 2;
-            this.Hide();
             var newboard = new ChessAIClient(modeDepth, isOffl: true);
             newboard.Show();
             this.Show();

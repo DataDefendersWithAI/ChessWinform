@@ -16,10 +16,18 @@ namespace winform_chat.DashboardForm
     {
         public event EventHandler ChildPvEButton_Click;
         public event EventHandler ChildPvPButton_Click;
-        public string current_username { get; set; }
-        public HomeForm()
+        private User playerUser;
+        public HomeForm(User pUser)
         {
             InitializeComponent();
+            if (pUser != null)
+            {
+                playerUser = pUser;
+            }
+            else
+            {
+                playerUser = new User(username:"NotFound"+new Random().Next(999,9999), elo: 404);
+            }
 
         }
 
@@ -39,7 +47,7 @@ namespace winform_chat.DashboardForm
         {
             DisplayText.AutoSize = false;
             DisplayText.Size = new Size(350,210);
-            DisplayText.Text = "Welcome " + current_username + ", " + "please choose your playmode";
+            DisplayText.Text = "Welcome " + playerUser.Username + ", " + "please choose your playmode!";
 
         }
     }

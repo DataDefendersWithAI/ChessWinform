@@ -32,18 +32,20 @@ public partial class PvpModeForm : Form
     private System.Windows.Forms.Timer autoPickTimer;
     private List<PlayerRoom> playerRooms;
     private Thread t;
+
     MainScreen ParentForm;
     ChatServerLog serverLog;
     ChessAIClient chessAIClientFormOnline;
     ChatClientJoin clientJoin;
-    ChatMainForm currentChatMainForm;
+    ChatMainForm currentChatMainForm; 
+
     User playerUser;
     User opponentUser;
     ///<summary>
     /// GAME SETTINGS
     /// </summary>
     private string selectedTimeCtrl = "10|0"; // Default game mode
-    private string ourName;
+    private string OurName;
     private bool isAutoMatching = false;
     private bool isConnectedToServer = false;
     private bool isServer = false;
@@ -95,15 +97,25 @@ public partial class PvpModeForm : Form
         autoPickTimer.Interval = 1000; // Set interval to 1 second (1000 ms)
         autoPickTimer.Tick += new EventHandler(Auto_Matching);
 
-        InitializePlayerRooms();
+        log1.Visible = false;
+        label3.Visible = false;
 
-        playerUser = pUser == null? new User(username: "Player" + new Random().Next(999, 9999), elo: 1200):pUser;
-        ourName = playerUser.Username;
+        InitializePlayerRooms();
+        if (pUser != null)
+        {
+            playerUser = pUser;
+        }
+        else
+        {
+            playerUser = new User(username: "NotFound" + new Random().Next(999, 9999), elo: 404);
+        }
+
+        OurName = playerUser.Username;
 
         srvIP.Text = serverIP;
         cntSvr.BackColor = Color.LightGray;
         strSvr.BackColor = Color.LightGray;
-        label5.Text = ourName;
+        label5.Text = OurName;
 
         FillListBoxPlayerRooms();
         // Add items to the ComboBox
@@ -130,8 +142,8 @@ public partial class PvpModeForm : Form
             {
                 if (ParentForm != null)
                 {
-                    clientJoin = new ChatClientJoin(ParentForm);
-                    ParentForm.LoadForm(clientJoin);
+                    openJoiningForm();
+
                     if (chessAIClientFormOnline != null) // clear the old form
                     {
                         chessAIClientFormOnline.Close();
@@ -139,8 +151,13 @@ public partial class PvpModeForm : Form
                     }
                     chessAIClientFormOnline = new ChessAIClient(setUpGame: false);
                     //chessAIClientFormOnline.Show();
-                    clientJoin.BeginPVPGame(ourName, selectedPlayerRoom.NameOfPlayer, chessAIClientFormOnline, selectedPlayerRoom.GameMode);
-                    clientJoin.Joined += ClientJoin_Joined;
+                    if(clientJoin == null)
+                    {
+                        Debug.WriteLine("ClientJoin is null");
+                        return;
+                    }
+                    opponentUser = new User(username: selectedPlayerRoom.NameOfPlayer, elo: 404);
+                    BeginPVPGame();
                 }
             }
         }
@@ -211,13 +228,37 @@ public partial class PvpModeForm : Form
     {
         //Thread t = new Thread(connectToServer);
         //t.Start();
+        //cntSvr_Click(sender, e);
     }
 
     private void connectToServer()
     {
-        comm = new Communication(serverIP, serverPort, LogMessage);
-        isConnectedToServer = comm.ClientLoad();
-    }
+        try
+        {
+            comm = new Communication(serverIP, serverPort, LogMessage);
+            comm.ClientLoad();
+
+            if (comm != null)
+            {
+                ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", OurName, "server", "Hello server from " + OurName, DateTime.Now);
+                isConnectedToServer = comm.SendMessage(message.ToJson());
+            }
+            if (!isConnectedToServer)
+            {
+                Debug.WriteLine("[CL] Server is not available");
+            }
+            else
+            {
+                Debug.WriteLine("[CL] ok");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine("[CL] Err in attempt to connect");
+            Debug.WriteLine(ex.Message);
+        }
+}
+
     private void LogMessage(string message)
     {
         // No log message
@@ -244,39 +285,89 @@ public partial class PvpModeForm : Form
                 // Check if message is correct format: Join the chat: {"TableCode": "000000", "type": "update", "from": "server", "to": "all", "message": "", "date": DateTime.Now}
                 if (msg.type == "update" && msg.TableCode == "000000")
                 {
-                    Debug.WriteLine("Received: " + msg.message);
                     // If message contains "USER_LIST", update listview_userQueue
                     if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList)))
                     {
                         msg.message = msg.message.Replace(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList), "");
-                        Debug.WriteLine("Received: " + msg.message);
                         ParseStringToPlayerRooms(msg.message);
                     }
                 }
-            }
+                else if (msg.type == "join" && msg.TableCode == "000000" && msg.from == "server")
+                {
+                    if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerDisconnect)))
+                    {
+                        // Server code close connection: {"TableCode": "000000", "type": "join", "from": "server", "to": "server", "message": "close", "date": DateTime.Now}
+                        Debug.WriteLine("[CL]: Server disconnected!");
+                        isConnectedToServer = false;
+                        Thread.Sleep(1000);
+                        cntSvr_Click(null, null);
+                    }
+                    else if (msg.to.Contains(OurName) && !msg.message.Contains(ChatCommandExt.ChatCommand.ServerDisconnect.ToString()))
+                    {
+                        Debug.WriteLine("[CL] Game begin with " + msg.to);
+                        // Split msg.to by - and swap if needed to make sure that first part is user name and second part is opponent user name
+                        string[] userNames = msg.to.Split('-');
+                        string ourName = userNames[0];
+                        string opponentUserName = userNames[1];
+                        // Split message for table code and side
+                        string[] mess = msg.message.Split('$');
+                        string newTableCode = mess[0];
+                        string[] userSides = mess[1].Split('-');
+                        string Side = userSides[0];
+                        string OpponentSide = userSides[1];
+                        string timectrl = mess[2];
+                        // If user name is not equal to ourName, swap user name and opponent user name
+                        if (ourName != OurName)
+                        {
+                            ourName = userNames[1];
+                            opponentUserName = userNames[0];
+                            // Swap side as well
+                            string temp = Side;
+                            Side = OpponentSide;
+                            OpponentSide = temp;
+                        }
+                        // Merge userName and opponentUserName with "-" and pass it to ChatMainForm
+                        msg.to = ourName + "-" + opponentUserName;
+                        Debug.WriteLine("[CL] Begin pvp: " + ourName + " vs " + opponentUserName + " time limit " + timectrl);
+                        Debug.WriteLine("[CL] " + ourName + " Side: " + Side + "- " + opponentUserName + " Side: " + OpponentSide);
+                        //MessageBox.Show("Room code: " + msg.message);
+                        // Open ChatMainForm with table code and username
+                        ChatMainForm chatMainForm = new ChatMainForm(newTableCode, msg.to, chessAIClientFormOnline, Side, timectrl);
+                        chatMainForm.Show();
 
+                        currentChatMainForm = chatMainForm;
+                        ClientJoin_Joined();
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine("[CL] Message not proccessed: "+ msg.from +" - "+ msg.to+" - "+ msg.message);
+                }
+            }
         }
         catch (Exception ex)
         {
             //MessageBox.Show(ex.Message, "Warning");
-            Console.WriteLine(ex.Message);
+            Debug.WriteLine(ex.Message);
         }
 
     }
 
     private void ClientForm_FormClosed(object sender, FormClosedEventArgs e)
     {
+        if (comm == null) return;
         // Send last message to server
         // Server code close connection: {"TableCode": "000000", "type": "join", "from": "server", "to": "server", "message": "close", "date": DateTime.Now}
-        ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect), DateTime.Now);
-        comm.SendMessage(msg.ToJson());
+        ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message("000000", "join", OurName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect), DateTime.Now);
+        isConnectedToServer = comm.SendMessage(msg.ToJson());
         comm.ClientClose();
     }
 
     private void Auto_Matching(object sender, EventArgs e)
     {
-        ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", ourName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.AutoMatching) + selectedTimeCtrl, DateTime.Now);
-        comm.SendMessage(msg1.ToJson());
+        if (comm == null) return;
+        ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", OurName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.AutoMatching) + selectedTimeCtrl, DateTime.Now);
+        isConnectedToServer = comm.SendMessage(msg1.ToJson());
     }
 
 
@@ -307,7 +398,7 @@ public partial class PvpModeForm : Form
             btn_autoJoin.Text = "Cancel matching";
             if (ParentForm != null)
             {
-                ParentForm.LoadForm(new ChatClientJoin(ParentForm));
+                openJoiningForm();
             }
         }
 
@@ -324,8 +415,7 @@ public partial class PvpModeForm : Form
 
         if (ParentForm != null)
         {
-            clientJoin = new ChatClientJoin(ParentForm);
-            ParentForm.LoadForm(clientJoin);
+            openJoiningForm();
 
             if (chessAIClientFormOnline != null) // clear the old form
             {
@@ -335,9 +425,91 @@ public partial class PvpModeForm : Form
 
             chessAIClientFormOnline = new ChessAIClient(setUpGame: false);
             //chessAIClientFormOnline.Show();
-            clientJoin.JoinWaitingQueueRoom(ourName, chessAIClientFormOnline, true, selectedTimeCtrl);
-            clientJoin.Joined += ClientJoin_Joined;
+           if (clientJoin == null)
+            {
+                Debug.WriteLine("ClientJoin is null");
+                return;
+            }
+            JoinWaitingQueueRoom();
         }
+    }
+
+    public void JoinWaitingQueueRoom(bool isCreateRoom = true)
+    {
+        if (chessAIClientFormOnline == null)
+        {
+            Debug.WriteLine("Chess client is null");
+            return;
+        }
+        Debug.WriteLine("JoiningRoom called by : " + OurName);
+
+        // Check if user name is "server"
+        if (OurName == "server")
+        {
+            Debug.WriteLine("Invalid user name.");
+            return;
+        }
+
+        // Check if name contains special characters
+        if (OurName.Any(c => !char.IsLetterOrDigit(c)))
+        {
+            Debug.WriteLine("User name must not have special character");
+            return;
+        }
+
+        if (comm == null) return;
+
+        // Send message to server using JSON
+        // TableCode: 000000
+        // type: join
+        // from: ourName.Text
+        // to: 
+        // message: 
+        // date: DateTime.Now
+
+        // this will be classified as normal user if messafe is empty
+        string ms1 = isCreateRoom ? ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerCreateRoom) + selectedTimeCtrl : "";
+        ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", OurName, "server", ms1, DateTime.Now);
+        isConnectedToServer = comm.SendMessage(message.ToJson());
+    }
+    public void BeginPVPGame()
+    {
+        if(opponentUser == null)
+        {
+            Debug.WriteLine("Opponent user is null");
+            return;
+        }
+
+        Debug.WriteLine("Begin pvp : " + OurName + " vs " + opponentUser.Username);
+
+        // Check if user name is "server"
+        if (OurName == "server" || opponentUser.Username == "server")
+        {
+            Debug.WriteLine("Invalid user name.");
+            return;
+        }
+
+        // Check if name contains special characters
+        if (OurName.Any(c => !char.IsLetterOrDigit(c)) || opponentUser.Username.Any(c => !char.IsLetterOrDigit(c)))
+        {
+            Debug.WriteLine("User name must not have special character");
+            return;
+        }
+
+        if (comm == null) return;
+
+        // Send message to server using JSON
+        // TableCode: 000000
+        // type: join
+        // from: ourName.Text
+        // to: 
+        // message: 
+        // date: DateTime.Now
+
+        // this will be classified as normal user if messafe is empty
+        string ms1 = ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerBeginGame) + selectedTimeCtrl + "@" + OurName + "-" + opponentUser.Username;
+        ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", OurName, "server", ms1, DateTime.Now);
+        isConnectedToServer = comm.SendMessage(message.ToJson());
     }
 
     private void btn_createRoom_Click(object sender, EventArgs e)
@@ -345,24 +517,27 @@ public partial class PvpModeForm : Form
         waitingForJoiningGame();
     }
 
-    private void ClientJoin_Joined(object? sender, EventArgs e)
+    private void ClientJoin_Joined()
     {
         if (chessAIClientFormOnline != null && clientJoin != null)
         {
             Debug.WriteLine("Client joined!");
-            currentChatMainForm = clientJoin.currentChatMainForm;
+
             if (currentChatMainForm == null) return;
 
             var side = currentChatMainForm.Side;
             var timectrl = currentChatMainForm.timeCtrl;
             chessAIClientFormOnline.Show();
 
-            User opponentUser = new User(username: currentChatMainForm.opponentUserName, elo: currentChatMainForm.opponentElo);
+            opponentUser = opponentUser == null ? new User(username: currentChatMainForm.opponentUserName, elo: currentChatMainForm.opponentElo): opponentUser;
 
             chessAIClientFormOnline.SetupGame(pUser: playerUser, oUser: opponentUser, timeCtrl: timectrl, side: side, chatMainForm: currentChatMainForm);
             ParentForm.Hide();
            // chessAIClientFormOnline.FormClosing += ChessAIClientFormOnline_FormClosing;
             currentChatMainForm.FormClosing += currentChatMainForm_FormClosing;
+
+            clientJoin.Close();
+            clientJoin.Dispose();
         }
     }
 
@@ -426,44 +601,85 @@ public partial class PvpModeForm : Form
         }
 
         // If IP is valid, update Constants and reset background color
-
-        Constants.SetServerIP(ip);
+        serverIP = ip;
         srvIP.BackColor = Color.Azure;
     }
 
-    private void cntSvr_Click(object sender, EventArgs e)
+    private async void cntSvr_Click(object sender, EventArgs e)
     {
-
+        cntSvr.Enabled = false;
+        log1.Visible = false;
         isServer = false;
         uiClientRefresh();
         VerifyAndSetIP();
+
         if (comm != null)
         {
             comm.ClientClose(); // close old connection
             comm = null;
         }
 
-        t = new Thread(connectToServer); // reconnect to server 
-        t.IsBackground = true;
-        t.Start();
-        Thread.Sleep(2000);
+        cntSvr.Text = "Connecting...";
+        cntSvr.BackColor = Color.PaleGoldenrod;
 
-        //Debug.WriteLine("is connected to server " + isConnectedToServer);
-        if (comm != null)
+        var cts = new CancellationTokenSource();
+        var token = cts.Token;
+
+        try
         {
-            Debug.WriteLine("Server IP: " + Constants.serverIP);
-            cntSvr.Text = "Connected";
-            cntSvr.BackColor = Color.PaleGreen;
-            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "update", ourName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList), DateTime.Now);
-            comm.SendMessage(msg1.ToJson());
+            var connectionTask = Task.Run(() =>
+            {
+                t = new Thread(connectToServer);
+                t.IsBackground = true;
+                t.Start();
 
+                // Poll for connection status
+                while (!isConnectedToServer && !token.IsCancellationRequested)
+                {
+                    Thread.Sleep(500);
+                }
+
+            }, token);
+
+            if (await Task.WhenAny(connectionTask, Task.Delay(5000, token)) == connectionTask)
+            {
+                if (isConnectedToServer)
+                {
+                    Debug.WriteLine("Server IP: " + serverIP);
+                    cntSvr.Text = "Connected";
+                    cntSvr.BackColor = Color.PaleGreen;
+
+                    var msg1 = new ChessAI.ChatServerAndClient.Message("000000", "update", OurName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList),DateTime.Now );
+                    isConnectedToServer = comm.SendMessage(msg1.ToJson());
+                    cntSvr.Enabled = true;
+                }
+                else
+                {
+                    cntSvr.Text = "Connect server";
+                    cntSvr.BackColor = Color.LightGray;
+                    log1.Text = "Cannot connect to server!";
+                    log1.Visible = true;
+                    cntSvr.Enabled = true;
+                }
+            }
+            else
+            {
+                cts.Cancel(); // Cancel the connection attempt if timeout occurs
+                cntSvr.Text = "Connect server";
+                cntSvr.BackColor = Color.LightGray;
+                log1.Text = "Connection timeout!";
+                log1.Visible = true;
+                cntSvr.Enabled = true;
+            }
         }
-        else
+        catch (Exception ex)
         {
-            cntSvr.Text = "Connect server";
-            cntSvr.BackColor = Color.LightGray;
+            log1.Text = "Cannot connect to server!";
+            log1.Visible = true;
+            Debug.WriteLine("Error: " + ex.Message);
         }
     }
+
 
 
     private void srvIP_TextChanged(object sender, EventArgs e)
@@ -476,8 +692,8 @@ public partial class PvpModeForm : Form
         //refresh
         if (comm != null)
         {
-            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "update", ourName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList), DateTime.Now);
-            comm.SendMessage(msg1.ToJson());
+            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "update", OurName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList), DateTime.Now);
+            isConnectedToServer = comm.SendMessage(msg1.ToJson());
         }
     }
 
@@ -533,7 +749,43 @@ public partial class PvpModeForm : Form
         }
     }
 
+    private void openJoiningForm()
+    {
+        if (clientJoin != null) // Dispose the old form
+        {
+            clientJoin.Close();
+            clientJoin.Dispose();
+            clientJoin = null;
+        }
+
+        clientJoin = new ChatClientJoin(isConnectedToServer);
+        ParentForm.LoadForm(clientJoin, isLogged: false);
+        clientJoin.FormClosing += ClientJoin_FormClosing;
+    }
+    private void ClientJoin_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        // Send last message to server
+        // TableCode: 000000
+        // type: join
+        // from: ourName
+        // to: server
+        // message: disconnected
+        // date: DateTime.Now
+        if (ParentForm != null)
+        {
+            var temp = new winform_chat.DashboardForm.PvpModeForm(ParentForm);
+            ParentForm.LoadForm(temp);
+        }
+
+        if (comm == null) return;
+        // When user closes the form, send message to server
+        ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", OurName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect), DateTime.Now);
+        isConnectedToServer = comm.SendMessage(message.ToJson());
+        comm.ClientClose();
+    }
+
    
+
 }
 
 

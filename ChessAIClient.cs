@@ -1,28 +1,15 @@
-using Ardalis.SmartEnum.Core;
 using Chess;
-using ChessAI;
 using ChessAI_Bck;
 using FireSharp.Config;
 using FireSharp.Interfaces;
 using Stockfish.NET;
-using System;
 using System.Diagnostics;
-using System.Net.Sockets;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading;
-using System.Windows.Forms;
 using winforms_chat;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using System.Security.Cryptography;
-using ChessAI_Bck;
 using winform_chat;
-using System.ComponentModel;
-using System.Numerics;
-using NAudio.Wave;
-using System.Xml;
+
 
 namespace ChessAI
 {
@@ -62,7 +49,9 @@ namespace ChessAI
         private string reasonEndGame = "Checkmate";
 
         public PromotionType selectedPromotion;
+
         ChatMainForm currenChatMainForm;
+
         string chessLastMove; // prevent sending too much when clicking on the board
 
         // Random player name
@@ -694,7 +683,7 @@ namespace ChessAI
             }
 
             // Print the determined path
-            Console.WriteLine(fullPath);
+            Debug.WriteLine(fullPath);
             return fullPath;
         }
         private void InitUserInfo()

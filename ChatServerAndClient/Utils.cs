@@ -184,7 +184,7 @@ namespace ChessAI.ChatServerAndClient
         /// Sends a message to the server.
         /// </summary>
         /// <param name="message">The message to send.</param>
-        public void SendMessage(string message)
+        public bool SendMessage(string message)
         {
             try
             {
@@ -193,15 +193,18 @@ namespace ChessAI.ChatServerAndClient
                     byte[] data = Encoding.ASCII.GetBytes(message);
                     stream.Write(data, 0, data.Length);
                     LogMessage(message);
+                    return true;
                 }
                 else
                 {
                     LogMessage("Not connected to server.");
+                    return false;
                 }
             }
             catch (Exception ex)
             {
                 LogMessage("Error: " + ex.Message);
+                return false;
             }
             
         }
@@ -218,7 +221,7 @@ namespace ChessAI.ChatServerAndClient
                 if (message.Contains("Error:"))
                 {
                    // MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Debug.WriteLine("Error: "+message);
+                    Debug.WriteLine(message);
                 }
                 // Invoke the receive handler to log the message
                 receiveHandler?.Invoke(message);
