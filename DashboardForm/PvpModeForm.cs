@@ -74,18 +74,20 @@ public partial class PvpModeForm : Form
         public string GameMode { get; set; }
         public string RoomCode { get; set; }
         public string Status_ { get; set; }
-        public PlayerRoom(string roomCode, string nameOfPlayer, string gameMode, string status)
+
+        public string ELO { get; set; }
+        public PlayerRoom(string roomCode, string nameOfPlayer, string gameMode, string status, string elo)
         {
             RoomCode = roomCode;
             NameOfPlayer = nameOfPlayer;
             GameMode = gameMode;
             Status_ = status;
-
+            ELO = elo;
         }
 
         public override string ToString()
         {
-            return $"{NameOfPlayer} - {GameMode}";
+            return $"{NameOfPlayer} [{ELO}] - {GameMode}";
         }
     }
 
@@ -193,9 +195,11 @@ public partial class PvpModeForm : Form
                 string tableCode = playerRoom[0];
                 string nameOfPlayer = playerRoom[1];
                 string timeCtrl = playerRoom[2];
-                string status = playerRoom[3];
-                string type = playerRoom[4];
-                playerRooms.Add(new PlayerRoom(tableCode, nameOfPlayer, timeCtrl, status));
+                string ELO = playerRoom[3];
+                string status = playerRoom[4];
+                string type = playerRoom[5];
+
+                playerRooms.Add(new PlayerRoom(tableCode, nameOfPlayer, timeCtrl, status, ELO ));
                 Debug.WriteLine("[CL] PlayerRoom: " + tableCode + " " + nameOfPlayer + " " + timeCtrl + " " + status);
             }
             else
@@ -467,7 +471,7 @@ public partial class PvpModeForm : Form
         // date: DateTime.Now
 
         // this will be classified as normal user if messafe is empty
-        string ms1 = isCreateRoom ? ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerCreateRoom) + selectedTimeCtrl : "";
+        string ms1 = isCreateRoom ? ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerCreateRoom) + selectedTimeCtrl +"@"+playerUser.ELO: "" + "@" + playerUser.ELO;
         ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", OurName, "server", ms1, DateTime.Now);
         isConnectedToServer = comm.SendMessage(message.ToJson());
     }

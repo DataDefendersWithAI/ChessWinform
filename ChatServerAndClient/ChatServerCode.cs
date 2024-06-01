@@ -42,6 +42,7 @@ namespace winforms_chat
             listview_userQueue.Columns.Add("Code", 150);
             listview_userQueue.Columns.Add("Player", 200);
             listview_userQueue.Columns.Add("Time ctrl", 200);
+            listview_userQueue.Columns.Add("Elo", 200);
             listview_userQueue.Columns.Add("Status", 100);
             listview_userQueue.Columns.Add("Type", 200);
         }
@@ -102,7 +103,10 @@ namespace winforms_chat
                         {
                             Debug.WriteLine("[SVR] User " + msg.from + " want to join the game room queue");
                             string userName = msg.from;
-                            string timeCtrl = msg.message.Replace(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerCreateRoom), "");
+                            msg.message = msg.message.Replace(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerCreateRoom), "");
+                            string[] info = msg.message.Split('@');
+                            string ELO = info[1];
+                            string timeCtrl = info[0];
                             // check if timeCtrl is empty
                             if (string.IsNullOrEmpty(timeCtrl))
                             {
@@ -113,6 +117,7 @@ namespace winforms_chat
                             ListViewItem item = new ListViewItem(msg.TableCode);
                             item.SubItems.Add(userName);
                             item.SubItems.Add(timeCtrl);
+                            item.SubItems.Add(ELO);
                             item.SubItems.Add("Waiting");
                             item.SubItems.Add("Room");
                             listview_userQueue.Items.Add(item);
@@ -206,9 +211,9 @@ namespace winforms_chat
             string result = "";
             foreach (ListViewItem item in listview_userQueue.Items)
             {
-                if (item.SubItems[4].Text == "Room")
+                if (item.SubItems[5].Text == "Room")
                 {
-                    result += item.SubItems[0].Text +"#"+ item.SubItems[1].Text + "#" + item.SubItems[2].Text + "#" + item.SubItems[3].Text + "#" + item.SubItems[4].Text + "~";
+                    result += item.SubItems[0].Text +"#"+ item.SubItems[1].Text + "#" + item.SubItems[2].Text + "#" + item.SubItems[3].Text + "#" + item.SubItems[4].Text +"#"+ item.SubItems[5].Text + "~";
                 }
             }
             ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "update", "server", "all", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList) + result, DateTime.Now);

@@ -105,7 +105,11 @@ namespace winform_chat
                     User playerUser = new LoadUserData().GetUserData(AccountBox.Text);
                     if (playerUser == null)
                     {
-                        playerUser = new User(username: "ELPlay" + new Random().Next(999, 9999), elo: 404);
+                        playerUser = new User(username: "ELPlay" + new Random().Next(999, 9999), elo: 400);
+                    }
+                    if(playerUser.ELO <= 0)
+                    {
+                        playerUser.ELO = 400;
                     }
                     MainScreen newMain = new MainScreen(playerUser);
                     newMain.ShowDialog();

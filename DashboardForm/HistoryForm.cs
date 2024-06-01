@@ -1,6 +1,7 @@
 ﻿using ChessAI_Bck;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -13,8 +14,20 @@ namespace winform_chat.DashboardForm
         public HistoryForm(User pUser)
         {
             InitializeComponent();
-            playerUser = pUser == null ? new User(username: "NotFound" + new Random().Next(999, 9999), elo: 404): pUser;
+            playerUser = pUser == null ? new User(username: "NotFound" + new Random().Next(999, 9999), elo: 404) : pUser;
             pgnLogs = playerUser.MatchHistory;
+
+
+            WhiteSide.Text = "";
+            BlackSide.Text = "";
+            gameResult.Text = "";
+            gameDate.Text = "";
+            gameTermination.Text = "";
+            richTextBoxPGN.Text = "";
+            wside.BackColor = Color.Transparent;
+            bside.BackColor = Color.Transparent;
+
+
             Load += HistoryForm_Load;
             listBoxHistory.SelectedIndexChanged += listBoxHistory_SelectedIndexChanged;
         }
@@ -28,33 +41,8 @@ namespace winform_chat.DashboardForm
 
 
             listBoxHistory.Items.AddRange(pgnLogs.ToArray());
-            // Example data for testing
-            listBoxHistory.Items.Add(new PGNLog
-            {
-                ID = "1",
-                Date = "2024-06-01",
-                White = "Null",
-                Black = "Player B",
-                Result = "1-0",
-                WhiteELO = 2500,
-                BlackELO = 2450,
-                TimeControl = "90+30",
-                Termination = "Normal",
-                PGN = "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 ..."
-            });
-            listBoxHistory.Items.Add(new PGNLog
-            {
-                ID = "1",
-                Date = "2024-06-01",
-                White = "Player A",
-                Black = "Null",
-                Result = "1-0",
-                WhiteELO = 2500,
-                BlackELO = 2450,
-                TimeControl = "90+30",
-                Termination = "Normal",
-                PGN = "1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 ..."
-            });
+            if (listBoxHistory.Items.Count > 0)
+                listBoxHistory.SelectedIndex = 0;
         }
 
         private void ListBoxHistory_DrawItem(object sender, DrawItemEventArgs e)
@@ -68,11 +56,11 @@ namespace winform_chat.DashboardForm
             // Override background color based on game result
             if (item.Black == playerUser.Username)
             {
-                if (item.Result == "1-0") // if Black (user) wins
+                if (item.Result == "0 : 1") // if Black (user) wins
                 {
                     backColor = Color.PaleGreen;
                 }
-                else if (item.Result == "0-1") // if Black (user) loses
+                else if (item.Result == "0 : 1") // if Black (user) loses
                 {
                     backColor = Color.PaleVioletRed;
                 }
@@ -80,11 +68,11 @@ namespace winform_chat.DashboardForm
 
             if (item.White == playerUser.Username)
             {
-                if (item.Result == "1-0") // if White (user) wins
+                if (item.Result == "1 : 0") // if White (user) wins
                 {
                     backColor = Color.PaleGreen;
                 }
-                else if (item.Result == "0-1") // if White (user) loses
+                else if (item.Result == "0 : 1") // if White (user) loses
                 {
                     backColor = Color.PaleVioletRed;
                 }
@@ -123,7 +111,7 @@ namespace winform_chat.DashboardForm
             graphics.FillRectangle(blackSquareColor, bounds.Left + 10, bounds.Top + 25, 13, 13);
             graphics.DrawString(blackName, blackNameFont, blackNameBrush, bounds.Left + 25, bounds.Top + 25);
 
-            var res = item.Result.Split('-');
+            var res = item.Result.Replace(" ", "").Split(':');
             // Draw the result for White
             var resultWhite = res[0];
             var resultWhiteFont = new Font("Arial", 10, FontStyle.Bold);
@@ -191,10 +179,52 @@ namespace winform_chat.DashboardForm
             WhiteSide.Text = whiteText;
             BlackSide.Text = blackText;
             gameResult.Text = result;
-            gameDate.Text ="Date: "+ dateText;
+            gameDate.Text = "Date: " + dateText;
             gameTermination.Text = termination;
+            bside.BackColor = Color.Transparent;
+            wside.BackColor = Color.Transparent;
 
+            if (result == "1 : 0")
+            {
+                wside.BackColor = Color.PaleGreen;
+            }
+            else if (result == "0 : 1")
+            {
+                bside.BackColor = Color.PaleGreen;
+            }
+            panel1.BackColor = Color.LightGray;
+            if ( white == playerUser.Username && result == "1 : 0" )
+            {
+                panel1.BackColor = Color.PaleGreen;
+            }
+            else
+            {
+                panel1.BackColor = Color.PaleVioletRed;
+            }
+            
+            if (black == playerUser.Username && result == "1 : 0")
+            {
+                panel1.BackColor = Color.PaleGreen;
+            }
+            else
+            {
+                panel1.BackColor = Color.PaleVioletRed;
+            }
+            
             richTextBoxPGN.Text = pgn;
+        }
+
+        private void cpyBtn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // copy the PGN to clipboard
+                Clipboard.SetText(richTextBoxPGN.Text + " ");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
     }
 }

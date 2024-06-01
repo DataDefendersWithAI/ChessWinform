@@ -38,9 +38,9 @@
             label8 = new Label();
             gameTermination = new Label();
             gameResult = new Label();
-            button4 = new Button();
+            bside = new Button();
             imageList1 = new ImageList(components);
-            button3 = new Button();
+            wside = new Button();
             richTextBoxPGN = new RichTextBox();
             button2 = new Button();
             button1 = new Button();
@@ -73,8 +73,8 @@
             panel1.Controls.Add(label8);
             panel1.Controls.Add(gameTermination);
             panel1.Controls.Add(gameResult);
-            panel1.Controls.Add(button4);
-            panel1.Controls.Add(button3);
+            panel1.Controls.Add(bside);
+            panel1.Controls.Add(wside);
             panel1.Controls.Add(richTextBoxPGN);
             panel1.Controls.Add(button2);
             panel1.Controls.Add(button1);
@@ -107,6 +107,7 @@
             cpyBtn.TabIndex = 21;
             cpyBtn.Text = "Copy";
             cpyBtn.UseVisualStyleBackColor = false;
+            cpyBtn.Click += cpyBtn_Click;
             // 
             // gameDate
             // 
@@ -157,16 +158,16 @@
             gameResult.Text = "1/2 : 1/2";
             gameResult.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // button4
+            // bside
             // 
-            button4.BackColor = Color.Transparent;
-            button4.ImageKey = "b_king_png_shadow_1024px.png";
-            button4.ImageList = imageList1;
-            button4.Location = new Point(226, 109);
-            button4.Name = "button4";
-            button4.Size = new Size(42, 42);
-            button4.TabIndex = 16;
-            button4.UseVisualStyleBackColor = false;
+            bside.BackColor = Color.Transparent;
+            bside.ImageKey = "b_king_png_shadow_1024px.png";
+            bside.ImageList = imageList1;
+            bside.Location = new Point(226, 109);
+            bside.Name = "bside";
+            bside.Size = new Size(42, 42);
+            bside.TabIndex = 16;
+            bside.UseVisualStyleBackColor = false;
             // 
             // imageList1
             // 
@@ -176,16 +177,16 @@
             imageList1.Images.SetKeyName(0, "b_king_png_shadow_1024px.png");
             imageList1.Images.SetKeyName(1, "w_king_png_shadow_1024px.png");
             // 
-            // button3
+            // wside
             // 
-            button3.BackColor = Color.FromArgb(0, 192, 0);
-            button3.ImageKey = "w_king_png_shadow_1024px.png";
-            button3.ImageList = imageList1;
-            button3.Location = new Point(37, 109);
-            button3.Name = "button3";
-            button3.Size = new Size(42, 42);
-            button3.TabIndex = 15;
-            button3.UseVisualStyleBackColor = false;
+            wside.BackColor = Color.FromArgb(0, 192, 0);
+            wside.ImageKey = "w_king_png_shadow_1024px.png";
+            wside.ImageList = imageList1;
+            wside.Location = new Point(37, 109);
+            wside.Name = "wside";
+            wside.Size = new Size(42, 42);
+            wside.TabIndex = 15;
+            wside.UseVisualStyleBackColor = false;
             // 
             // richTextBoxPGN
             // 
@@ -290,8 +291,8 @@
         private Button button1;
         private Label BlackSide;
         private Label gameResult;
-        private Button button4;
-        private Button button3;
+        private Button bside;
+        private Button wside;
         private RichTextBox richTextBoxPGN;
         private Label label8;
         private Label gameTermination;
