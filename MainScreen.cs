@@ -18,7 +18,7 @@ namespace winform_chat
 
         private User playerUser;
 
-        public MainScreen()
+        public MainScreen(User pUser = null)
         {
             InitializeComponent();
             DoubleBuffered = true;
@@ -26,7 +26,7 @@ namespace winform_chat
            | BindingFlags.Instance | BindingFlags.NonPublic, null,
            MainPanel, new object[] { true });   // Double buffer the panel prevent it from flickering
 
-            playerUser = new User(username: "Player" + new Random().Next(999, 9999), elo: 404);
+            playerUser = pUser == null? new User(username: "Player" + new Random().Next(999, 9999), elo: 404):pUser;
         }
 
         private void MainScreen_Load(object sender, EventArgs e)

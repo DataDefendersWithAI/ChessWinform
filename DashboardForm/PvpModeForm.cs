@@ -48,7 +48,7 @@ public partial class PvpModeForm : Form
     private string OurName;
     private bool isAutoMatching = false;
     private bool isConnectedToServer = false;
-    private bool isServer = false;
+    private bool isServer;
 
     // Predefined array of time control strings
     public static Dictionary<string, string> TimeControls = new Dictionary<string, string>()
@@ -101,6 +101,7 @@ public partial class PvpModeForm : Form
         label3.Visible = false;
 
         InitializePlayerRooms();
+        DoubleBuffered = true;
         if (pUser != null)
         {
             playerUser = pUser;
@@ -137,7 +138,7 @@ public partial class PvpModeForm : Form
         if (listBoxPlayerRooms.SelectedItem != null)
         {
             PlayerRoom selectedPlayerRoom = (PlayerRoom)listBoxPlayerRooms.SelectedItem;
-            Debug.WriteLine("Selected player room: " + selectedPlayerRoom);
+            Debug.WriteLine("[CL] Selected player room: " + selectedPlayerRoom);
             if (selectedPlayerRoom != null)
             {
                 if (ParentForm != null)
@@ -195,11 +196,11 @@ public partial class PvpModeForm : Form
                 string status = playerRoom[3];
                 string type = playerRoom[4];
                 playerRooms.Add(new PlayerRoom(tableCode, nameOfPlayer, timeCtrl, status));
-                Debug.WriteLine("PlayerRoom: " + tableCode + " " + nameOfPlayer + " " + timeCtrl + " " + status);
+                Debug.WriteLine("[CL] PlayerRoom: " + tableCode + " " + nameOfPlayer + " " + timeCtrl + " " + status);
             }
             else
             {
-                Debug.WriteLine("Invalid player room string: " + playerRoomString);
+                Debug.WriteLine("[CL] Invalid player room string: " + playerRoomString);
             }
         }
 
@@ -226,9 +227,7 @@ public partial class PvpModeForm : Form
 
     private void ClientForm_Load(object sender, EventArgs e)
     {
-        //Thread t = new Thread(connectToServer);
-        //t.Start();
-        //cntSvr_Click(sender, e);
+        Debug.WriteLine("[CL] ClientForm Loaded");
     }
 
     private void connectToServer()
@@ -678,6 +677,14 @@ public partial class PvpModeForm : Form
             log1.Visible = true;
             Debug.WriteLine("Error: " + ex.Message);
         }
+
+        if (clientJoin != null) // clear client join form before (re)connecting
+        {
+            clientJoin.Close();
+            clientJoin.Dispose();
+            clientJoin = null;
+        }
+
     }
 
 

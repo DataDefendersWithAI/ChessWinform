@@ -14,6 +14,7 @@ using System.Security.Cryptography;
 using System.Net.Mail;
 using System.Net;
 using Newtonsoft.Json;
+using ChessAI_Bck;
 namespace winform_chat
 {
     public partial class LoginForm : Form
@@ -28,6 +29,10 @@ namespace winform_chat
         public LoginForm()
         {
             InitializeComponent();
+            AccountBox.Text = "Null";
+            PasswordBox.Text = "p1c0CTFp4s$%2255";
+            PasswordBox.PasswordChar = '*';
+            PasswordBox.UseSystemPasswordChar = true;
         }
 
         private void AccountBox_Enter(object sender, EventArgs e)
@@ -97,9 +102,12 @@ namespace winform_chat
                 {
                     StatusText.Text = "Current Status: Login successful";
                     this.Hide();
-                    MainScreen newMain = new MainScreen();
-                    newMain.username = AccountBox.Text;
-                    newMain.ELO = find_user.ELO;
+                    User playerUser = new LoadUserData().GetUserData(AccountBox.Text);
+                    if (playerUser == null)
+                    {
+                        playerUser = new User(username: "ELPlay" + new Random().Next(999, 9999), elo: 404);
+                    }
+                    MainScreen newMain = new MainScreen(playerUser);
                     newMain.ShowDialog();
                     this.Show();
                 }
