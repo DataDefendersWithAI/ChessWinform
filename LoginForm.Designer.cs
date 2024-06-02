@@ -57,8 +57,9 @@
             // 
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
             pictureBox1.Location = new Point(-1, -1);
+            pictureBox1.Margin = new Padding(3, 2, 3, 2);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(467, 688);
+            pictureBox1.Size = new Size(409, 516);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
@@ -67,7 +68,8 @@
             // 
             pictureBox2.BackColor = Color.Transparent;
             pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(662, 82);
+            pictureBox2.Location = new Point(579, 62);
+            pictureBox2.Margin = new Padding(3, 2, 3, 2);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(230, 75);
             pictureBox2.SizeMode = PictureBoxSizeMode.AutoSize;
@@ -78,9 +80,9 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 25.8000011F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
-            label1.Location = new Point(515, 19);
+            label1.Location = new Point(451, 14);
             label1.Name = "label1";
-            label1.Size = new Size(268, 60);
+            label1.Size = new Size(213, 47);
             label1.TabIndex = 2;
             label1.Text = "Welcome to";
             // 
@@ -88,9 +90,9 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 25.8000011F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
-            label2.Location = new Point(535, 182);
+            label2.Location = new Point(468, 136);
             label2.Name = "label2";
-            label2.Size = new Size(470, 60);
+            label2.Size = new Size(376, 47);
             label2.TabIndex = 3;
             label2.Text = "Login to your account";
             // 
@@ -99,9 +101,10 @@
             panel2.BackColor = Color.Azure;
             panel2.Controls.Add(PasswordBox);
             panel2.Controls.Add(pictureBox4);
-            panel2.Location = new Point(465, 338);
+            panel2.Location = new Point(407, 254);
+            panel2.Margin = new Padding(3, 2, 3, 2);
             panel2.Name = "panel2";
-            panel2.Size = new Size(629, 62);
+            panel2.Size = new Size(550, 46);
             panel2.TabIndex = 5;
             // 
             // PasswordBox
@@ -110,9 +113,10 @@
             PasswordBox.BorderStyle = BorderStyle.None;
             PasswordBox.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             PasswordBox.ForeColor = SystemColors.ActiveCaption;
-            PasswordBox.Location = new Point(131, 17);
+            PasswordBox.Location = new Point(115, 13);
+            PasswordBox.Margin = new Padding(3, 2, 3, 2);
             PasswordBox.Name = "PasswordBox";
-            PasswordBox.Size = new Size(451, 31);
+            PasswordBox.Size = new Size(395, 25);
             PasswordBox.TabIndex = 7;
             PasswordBox.Text = "Password";
             PasswordBox.Enter += PasswordBox_Enter;
@@ -122,8 +126,9 @@
             // 
             pictureBox4.Image = (Image)resources.GetObject("pictureBox4.Image");
             pictureBox4.Location = new Point(0, 0);
+            pictureBox4.Margin = new Padding(3, 2, 3, 2);
             pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(125, 62);
+            pictureBox4.Size = new Size(109, 46);
             pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox4.TabIndex = 6;
             pictureBox4.TabStop = false;
@@ -132,9 +137,9 @@
             // 
             ForgetPasswordLink.AutoSize = true;
             ForgetPasswordLink.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            ForgetPasswordLink.Location = new Point(879, 403);
+            ForgetPasswordLink.Location = new Point(769, 302);
             ForgetPasswordLink.Name = "ForgetPasswordLink";
-            ForgetPasswordLink.Size = new Size(212, 29);
+            ForgetPasswordLink.Size = new Size(167, 24);
             ForgetPasswordLink.TabIndex = 7;
             ForgetPasswordLink.TabStop = true;
             ForgetPasswordLink.Text = "Forget Password";
@@ -144,9 +149,9 @@
             // 
             SignUpLink.AutoSize = true;
             SignUpLink.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            SignUpLink.Location = new Point(580, 625);
+            SignUpLink.Location = new Point(508, 469);
             SignUpLink.Name = "SignUpLink";
-            SignUpLink.Size = new Size(99, 29);
+            SignUpLink.Size = new Size(78, 24);
             SignUpLink.TabIndex = 8;
             SignUpLink.TabStop = true;
             SignUpLink.Text = "SignUp";
@@ -156,9 +161,9 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.Location = new Point(500, 625);
+            label3.Location = new Point(438, 469);
             label3.Name = "label3";
-            label3.Size = new Size(79, 29);
+            label3.Size = new Size(63, 24);
             label3.TabIndex = 9;
             label3.Text = "New?";
             // 
@@ -166,9 +171,9 @@
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label4.Location = new Point(674, 625);
+            label4.Location = new Point(590, 469);
             label4.Name = "label4";
-            label4.Size = new Size(357, 29);
+            label4.Size = new Size(287, 24);
             label4.TabIndex = 10;
             label4.Text = "- and start playing chess now!";
             // 
@@ -177,9 +182,9 @@
             StatusText.AutoSize = true;
             StatusText.Font = new Font("Microsoft Sans Serif", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             StatusText.ForeColor = Color.Red;
-            StatusText.Location = new Point(472, 551);
+            StatusText.Location = new Point(413, 413);
             StatusText.Name = "StatusText";
-            StatusText.Size = new Size(408, 32);
+            StatusText.Size = new Size(321, 26);
             StatusText.TabIndex = 11;
             StatusText.Text = "Current Status: Not logged in";
             // 
@@ -190,9 +195,10 @@
             LoginButton.FlatAppearance.BorderSize = 0;
             LoginButton.FlatStyle = FlatStyle.Flat;
             LoginButton.Font = new Font("Microsoft Sans Serif", 22.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            LoginButton.Location = new Point(638, 447);
+            LoginButton.Location = new Point(558, 335);
+            LoginButton.Margin = new Padding(3, 2, 3, 2);
             LoginButton.Name = "LoginButton";
-            LoginButton.Size = new Size(254, 78);
+            LoginButton.Size = new Size(222, 58);
             LoginButton.TabIndex = 12;
             LoginButton.Text = "Login";
             LoginButton.UseVisualStyleBackColor = true;
@@ -202,8 +208,9 @@
             // 
             pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
             pictureBox3.Location = new Point(0, 0);
+            pictureBox3.Margin = new Padding(3, 2, 3, 2);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(125, 62);
+            pictureBox3.Size = new Size(109, 46);
             pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox3.TabIndex = 0;
             pictureBox3.TabStop = false;
@@ -214,9 +221,10 @@
             AccountBox.BorderStyle = BorderStyle.None;
             AccountBox.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             AccountBox.ForeColor = SystemColors.ActiveCaption;
-            AccountBox.Location = new Point(131, 15);
+            AccountBox.Location = new Point(115, 11);
+            AccountBox.Margin = new Padding(3, 2, 3, 2);
             AccountBox.Name = "AccountBox";
-            AccountBox.Size = new Size(451, 31);
+            AccountBox.Size = new Size(395, 25);
             AccountBox.TabIndex = 1;
             AccountBox.Text = "Username";
             AccountBox.Enter += AccountBox_Enter;
@@ -227,17 +235,18 @@
             panel1.BackColor = Color.Azure;
             panel1.Controls.Add(AccountBox);
             panel1.Controls.Add(pictureBox3);
-            panel1.Location = new Point(465, 247);
+            panel1.Location = new Point(407, 185);
+            panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(629, 62);
+            panel1.Size = new Size(550, 46);
             panel1.TabIndex = 4;
             // 
-            // winform_chat
+            // LoginForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Aquamarine;
-            ClientSize = new Size(1097, 685);
+            ClientSize = new Size(960, 514);
             Controls.Add(LoginButton);
             Controls.Add(StatusText);
             Controls.Add(label4);
@@ -250,8 +259,10 @@
             Controls.Add(label1);
             Controls.Add(pictureBox2);
             Controls.Add(pictureBox1);
-            Name = "winform_chat";
+            Margin = new Padding(3, 2, 3, 2);
+            Name = "LoginForm";
             Text = "ChessAI";
+            FormClosed += LoginForm_FormClosed;
             Load += LoginForm_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();

@@ -535,7 +535,9 @@ public partial class PvpModeForm : Form
             opponentUser = opponentUser == null ? new User(username: currentChatMainForm.opponentUserName, elo: currentChatMainForm.opponentElo): opponentUser;
 
             chessAIClientFormOnline.SetupGame(pUser: playerUser, oUser: opponentUser, timeCtrl: timectrl, side: side, chatMainForm: currentChatMainForm);
+            ParentForm.isInPvPMode = true;
             ParentForm.Hide();
+            
            // chessAIClientFormOnline.FormClosing += ChessAIClientFormOnline_FormClosing;
             currentChatMainForm.FormClosing += currentChatMainForm_FormClosing;
 
@@ -544,11 +546,18 @@ public partial class PvpModeForm : Form
         }
     }
 
+    private void ParentForm_VisibleChanged(object? sender, EventArgs e)
+    {
+        ParentForm.Show();
+        
+    }
+
     private void ChessAIClientFormOnline_FormClosing(object sender, FormClosingEventArgs e)
     {
         if (ParentForm != null)
         {
             ParentForm.Show();
+
             if (currentChatMainForm != null)
             {
                 currentChatMainForm.Close();
@@ -560,7 +569,9 @@ public partial class PvpModeForm : Form
     {
         if (ParentForm != null)
         {
+
             ParentForm.Show();
+
             if (chessAIClientFormOnline != null)
             {
                 chessAIClientFormOnline.Close();
