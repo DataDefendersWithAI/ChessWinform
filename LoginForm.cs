@@ -114,7 +114,10 @@ namespace winform_chat
                     }
                     MainScreen newMain = new MainScreen(playerUser);
                     newMain.ShowDialog();
-                    this.Show();
+                    if (newMain.isLoggedOut == true)
+                    {
+                        this.Show();
+                    }   
                 }
                 else
                 {

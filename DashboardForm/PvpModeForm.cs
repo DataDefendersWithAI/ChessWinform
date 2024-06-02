@@ -656,6 +656,7 @@ public partial class PvpModeForm : Form
         }
 
         // If IP is valid, update Constants and reset background color
+        Constants.SetServerIP(ip);
         serverIP = ip;
         srvIP.BackColor = Color.Azure;
     }

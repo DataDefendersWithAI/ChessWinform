@@ -18,6 +18,7 @@ namespace winform_chat
 
         private User playerUser;
 
+        public bool isLoggedOut { get; set;} = false;
         public MainScreen(User pUser = null)
         {
             InitializeComponent();
@@ -131,6 +132,7 @@ namespace winform_chat
 
         private void LogoutButton_Click(object sender, EventArgs e)
         {
+            isLoggedOut = true;
             this.Close();
         }
 
