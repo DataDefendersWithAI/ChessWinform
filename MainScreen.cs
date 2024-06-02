@@ -158,6 +158,7 @@ namespace winform_chat
 
         private void MainScreen_FormClosed(object sender, FormClosedEventArgs e)
         {
+            isLoggedOut = true;
             this.Dispose();
             this.Close();
             if (isInPvPMode == true)

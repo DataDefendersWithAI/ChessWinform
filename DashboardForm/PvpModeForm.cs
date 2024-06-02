@@ -31,7 +31,6 @@ public partial class PvpModeForm : Form
 
     private System.Windows.Forms.Timer autoPickTimer;
     private List<PlayerRoom> playerRooms;
-    private Thread t;
 
     //Threads;
     private Thread t;
