@@ -82,14 +82,13 @@
             btn_autoJoin.TabIndex = 4;
             btn_autoJoin.Text = "🔄 Auto matching";
             btn_autoJoin.UseVisualStyleBackColor = false;
-            btn_autoJoin.Visible = false;
             btn_autoJoin.Click += btn_autoJoin_Click;
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Showcard Gothic", 13F);
-            label2.Location = new Point(515, 27);
+            label2.Location = new Point(505, 24);
             label2.Name = "label2";
             label2.Size = new Size(138, 23);
             label2.TabIndex = 5;
@@ -117,6 +116,7 @@
             listBoxPlayerRooms.Name = "listBoxPlayerRooms";
             listBoxPlayerRooms.Size = new Size(464, 420);
             listBoxPlayerRooms.TabIndex = 8;
+            //listBoxPlayerRooms.SelectedIndexChanged += listBoxPlayerRooms_SelectedIndexChanged;
             // 
             // label3
             // 

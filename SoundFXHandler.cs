@@ -38,7 +38,7 @@ namespace ChessAI_Bck
             { "click", "click.mp3" },
         };
 
-        public SoundFXHandler(ChessBoard chessBoard, string moveSAN, string ovrdSoundCode = "", bool isDebug = true, PieceColor side = null, bool isOfflGame = false)
+        public SoundFXHandler(ChessBoard chessBoard, string moveSAN, string ovrdSoundCode = "", bool isDebug = false, PieceColor side = null, bool isOfflGame = false)
         {
             soundDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.Parent?.FullName ?? "", "SoundFX");
 

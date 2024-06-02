@@ -214,7 +214,7 @@ namespace ChessAI
             {
                 OpponentAIMove(); // first move for AI white
             }
-
+            
             LogMessage("Game started! You are: " + Side);
             panel1.Invalidate(); // Redraw whole board
             timeControlInitialize();
@@ -1072,14 +1072,7 @@ namespace ChessAI
 
         private void playRev_Click(object sender, EventArgs e)
         {
-            // Auto continue the game as the pgn
-            for (int i = currentMoveIndex; i < chessBoard.MovesToSan.Count; i++)
-            {
-                //chessBoard.Next();
-                //panel1.Invalidate();
-                nextRev_Click(sender, e);
-                Thread.Sleep(1000);
-            }
+         
         }
     }
 }

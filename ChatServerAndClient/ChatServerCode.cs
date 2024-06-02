@@ -1,4 +1,5 @@
 ﻿using ChessAI.ChatServerAndClient;
+using NAudio.Wave;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -121,12 +122,17 @@ namespace winforms_chat
                             item.SubItems.Add("Waiting");
                             item.SubItems.Add("Room");
                             listview_userQueue.Items.Add(item);
+
+                            //UpdateUserList();
                         }
                         else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.AutoMatching)))
                         {
                             Debug.WriteLine("[SVR] User " + msg.from + " is auto matching");
                             string timeCtrl = msg.message.Replace(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.AutoMatching), "");
-
+                            if (listview_userQueue.Items.Count <= 1) {
+                                Debug.WriteLine("[SVR] User " + msg.from + " is auto matching but no room available!");
+                                return; 
+                            }
                             // Check if timeCtrl is empty
                             if (string.IsNullOrEmpty(timeCtrl))
                             {
@@ -135,48 +141,20 @@ namespace winforms_chat
                             }
 
                             // Begin finding a match; if found, remove users from listview
-                            if (listview_userQueue.Items.Count >= 2)
+                            string player1 = msg.from;
+                            Random random = new Random();
+
+                            int index2 = random.Next(0, listview_userQueue.Items.Count);
+                            while (listview_userQueue.Items[index2].SubItems[1].Text == player1)
                             {
-                                Random random = new Random();
-                                int index1 = -1;
-
-                                // Find user index
-                                for (int i = 0; i < listview_userQueue.Items.Count; i++)
-                                {
-                                    if (listview_userQueue.Items[i].SubItems[1].Text == msg.from)
-                                    {
-                                        index1 = i;
-                                        break;
-                                    }
-                                }
-
-                                if (index1 == -1)
-                                {
-                                    Debug.WriteLine("[SVR] User " + msg.from + " not found in queue.");
-                                    return;
-                                }
-
-                                int index2 = random.Next(0, listview_userQueue.Items.Count);
-                                while (index1 == index2)
-                                {
-                                    index2 = random.Next(0, listview_userQueue.Items.Count);
-                                }
-
-                                string player1 = listview_userQueue.Items[index1].SubItems[1].Text;
-                                string player2 = listview_userQueue.Items[index2].SubItems[1].Text;
-
-                                Debug.WriteLine("Pick 2 random players: " + player1 + " and " + player2 + " at index " + index1 + " and " + index2);
-
-                                // Remove 2 users from listview
-                                listview_userQueue.Items.RemoveAt(index1);
-                                if (index2 > index1)
-                                {
-                                    index2--;
-                                }
-                                listview_userQueue.Items.RemoveAt(index2);
-
-                                BeginGame(player1, player2, timeCtrl);
+                                index2 = random.Next(0, listview_userQueue.Items.Count);
                             }
+                            
+                            string player2 = listview_userQueue.Items[index2].SubItems[1].Text;
+
+                            Debug.WriteLine("Pick auto match players: " + player1 + " and " + player2 );
+                            BeginGame(player1, player2, timeCtrl);
+                            
                         }
                         else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect)) || msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientLeaveRoom)))
                         {
@@ -197,7 +175,7 @@ namespace winforms_chat
                         }
                         // update list user for all clients
                         Debug.WriteLine("[SVR] Update list user for all clients");
-                        //UpdateUserList();
+                        UpdateUserList();
                     }
                     else if (msg.type == "update" && msg.TableCode == "000000" && msg.to == "server" && msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList)))
                     {
@@ -256,15 +234,6 @@ namespace winforms_chat
 
                 Debug.WriteLine("Pick 2 random players: " + player1 + " and " + player2 + " at index " + index1 + " and " + index2);
 
-                // Remove 2 users from listview
-                listview_userQueue.Items.RemoveAt(index1);
-                if (index2 > index1)
-                {
-                    index2--;
-                }
-                listview_userQueue.Items.RemoveAt(index2);
-
-
                 // Send message to 2 users
                 // Server send code to clients: {"TableCode": "000000", "type": "join", "from": "server", "to": userName + "-" + opponentUserName, "message": newTableCode +"$"+ userSide + "-" + oppSide, "date": DateTime.Now}
                 // with newTableCode is a random string from 000001 to 999998
@@ -275,29 +244,38 @@ namespace winforms_chat
 
         private void BeginGame(string player1, string player2, string timectrl)
         {
-            // remove the user from listview
-            foreach (ListViewItem item in listview_userQueue.Items)
+            try
             {
-                if (item.SubItems[1].Text == player1 || item.SubItems[1].Text == player2)
+                // remove the user from listview
+                foreach (ListViewItem item in listview_userQueue.Items)
                 {
-                    listview_userQueue.Items.Remove(item);
+                    if (item.SubItems[1].Text == player1 || item.SubItems[1].Text == player2)
+                    {
+                        listview_userQueue.Items.Remove(item);
+                    }
                 }
+
+
+                Random random = new Random();
+                string newTableCode = random.Next(1, 999999).ToString("D6");
+                // pick player side 
+                string userSide = Random.Shared.Next(2) == 0 ? "white" : "black";
+                string oppSide = userSide == "white" ? "black" : "white";
+
+
+                Debug.WriteLine("[SVR] Begin game with code " + newTableCode + " between " + player1 + " and " + player2 + " with time control " + timectrl);
+                ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode + "$" + userSide + "-" + oppSide + "$" + timectrl, DateTime.Now);
+                //   ChessAI.ChatServerAndClient.Message msg2 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player2 + "-" + player1, newTableCode + "$" + oppSide + "-" + userSide  + "$" + timectrl, DateTime.Now);
+
+                comm.SendMessage(msg1.ToJson());
+                // comm.SendMessage(msg2.ToJson());
+
+                UpdateUserList();
             }
-
-            Random random = new Random();
-            string newTableCode = random.Next(1, 999999).ToString("D6");
-            // pick player side 
-            string userSide = Random.Shared.Next(2) == 0 ? "white" : "black";
-            string oppSide = userSide == "white" ? "black" : "white";
-            
-
-            Debug.WriteLine("[SVR] Begin game with code " + newTableCode + " between " + player1 + " and " + player2 + " with time control " + timectrl);
-            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode + "$" + userSide + "-" + oppSide+"$"+timectrl, DateTime.Now);
-         //   ChessAI.ChatServerAndClient.Message msg2 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player2 + "-" + player1, newTableCode + "$" + oppSide + "-" + userSide  + "$" + timectrl, DateTime.Now);
-
-            comm.SendMessage(msg1.ToJson());
-            // comm.SendMessage(msg2.ToJson());
-            
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
 
         }
 
