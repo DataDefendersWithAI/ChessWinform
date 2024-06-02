@@ -15,9 +15,18 @@ namespace winform_chat.DashboardForm
             BasePath = "https://chess-database-a25f7-default-rtdb.asia-southeast1.firebasedatabase.app/"
         };
         IFirebaseClient Client;
-        public ProfileForm()
+        private User playerUser;
+        public ProfileForm(User pUser)
         {
             InitializeComponent();
+            if (pUser != null)
+            {
+                playerUser = pUser;
+            }
+            else
+            {
+                playerUser = new User(username: "NotFound" + new Random().Next(999, 9999), elo: 404);
+            }
         }
 
         private void ProfileForm_Load(object sender, EventArgs e)

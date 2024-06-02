@@ -27,6 +27,7 @@ namespace ChessAI_Bck
             string result = BitConverter.ToString(inputHashByte).Replace("-", string.Empty).ToLower();
             return result;
         }
+
         public User GetUserData(string username)
         {
             Client = new FireSharp.FirebaseClient(config);

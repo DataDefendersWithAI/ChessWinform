@@ -97,7 +97,7 @@ namespace winforms_chat
             catch (Exception ex)
             {
                 //MessageBox.Show(ex.Message, "Warning");
-                Console.WriteLine(ex.Message);
+                Debug.WriteLine(ex.Message);
             }
         }
 

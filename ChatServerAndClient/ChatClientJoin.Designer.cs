@@ -94,7 +94,6 @@
             Margin = new Padding(3, 2, 3, 2);
             Name = "ChatClientJoin";
             Text = "PvpWaitingForm";
-            FormClosing += ClientForm_FormClosing;
             Load += ClientForm_Load;
             pnl_wait.ResumeLayout(false);
             pnl_wait.PerformLayout();

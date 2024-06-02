@@ -15,7 +15,7 @@ namespace ChessAI
     internal class BoardRenderer
     {
         //========= SETTINGS ========//
-        private bool showTileCoord = true; // show the tile coordinates
+        private bool showTileCoord = false; // show the tile coordinates
         private bool[,] validMovesGrid; // Store the validity of all possible moves // precalc in order to reduce invalidate/ refresh time 
         private bool showOpponentValidMoves = false; // show the valid moves of the opponent
 

@@ -38,7 +38,7 @@ namespace ChessAI_Bck
             { "click", "click.mp3" },
         };
 
-        public SoundFXHandler(ChessBoard chessBoard, string moveSAN, string ovrdSoundCode = "", bool isDebug = true, PieceColor side = null )
+        public SoundFXHandler(ChessBoard chessBoard, string moveSAN, string ovrdSoundCode = "", bool isDebug = true, PieceColor side = null, bool isOfflGame = false)
         {
             soundDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())?.Parent?.Parent?.FullName ?? "", "SoundFX");
 
@@ -46,6 +46,13 @@ namespace ChessAI_Bck
             if (string.IsNullOrEmpty(fileName))
             {
                 return;
+            }
+            if (isOfflGame)
+            {
+                if(fileName == soundFX["win"] || fileName == soundFX["lose"])
+                {
+                    return; // prevent playing both of the sond due to same device
+                }
             }
             filePath = Path.Combine(soundDirectory, fileName);
 

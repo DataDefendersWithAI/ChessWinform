@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace ChessAI.ChatServerAndClient
 {
@@ -37,7 +38,7 @@ namespace ChessAI.ChatServerAndClient
             try
             {
                 // ------------ All received logic here -------------
-                Console.WriteLine("Server code received: " + message);
+                Debug.WriteLine("Server code received: " + message);
                 // If message is not valid JSON, return
                 if (!message.Contains("TableCode") || !message.Contains("type") || !message.Contains("from") || !message.Contains("to") || !message.Contains("message") || !message.Contains("date"))
                 {
@@ -60,7 +61,7 @@ namespace ChessAI.ChatServerAndClient
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error in LogMessage: " + e.Message);
+                Debug.WriteLine("Error in LogMessage: " + e.Message);
             }
         }
 

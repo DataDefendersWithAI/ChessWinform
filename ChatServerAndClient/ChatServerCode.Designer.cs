@@ -71,7 +71,7 @@
             Controls.Add(btn_joinRandom);
             Name = "ChatServerCode";
             Text = "ChatServer";
-            FormClosed += ClientForm_FormClosed;
+            FormClosed += ServerForm_FormClosed;
             Load += ClientForm_Load;
             ResumeLayout(false);
         }

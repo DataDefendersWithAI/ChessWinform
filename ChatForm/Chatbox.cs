@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace winforms_chat.ChatForm
 {
@@ -193,7 +194,7 @@ namespace winforms_chat.ChatForm
                     if (file.Length > 1450000)
                     {
                         //MessageBox.Show("The attachment provided " + fileDialog.SafeFileName + " is too big to be sent by SMS. Please select another.", "Attachment not added.");
-                        Console.WriteLine("The attachment provided " + fileDialog.SafeFileName + " is too big to be sent by SMS. Please select another.");
+                        Debug.WriteLine("The attachment provided " + fileDialog.SafeFileName + " is too big to be sent by SMS. Please select another.");
                         return;
                     }
                     else
@@ -204,7 +205,7 @@ namespace winforms_chat.ChatForm
                 catch (Exception)
                 {
                     //MessageBox.Show("There was an issue with retrieving the file.", "File Operation Error");
-                    Console.WriteLine("There was an issue with retrieving the file.");
+                    Debug.WriteLine("There was an issue with retrieving the file.");
                 }
             }
             else

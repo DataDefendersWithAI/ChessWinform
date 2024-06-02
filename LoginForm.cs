@@ -14,11 +14,12 @@ using System.Security.Cryptography;
 using System.Net.Mail;
 using System.Net;
 using Newtonsoft.Json;
+using ChessAI_Bck;
 namespace winform_chat
 {
     public partial class LoginForm : Form
     {
-       
+
         IFirebaseConfig config = new FirebaseConfig
         {
             AuthSecret = "RZxEKkX6ffq8XZgw9p0jbPYhqLYXQOeH1FIcmGIa",
@@ -28,6 +29,10 @@ namespace winform_chat
         public LoginForm()
         {
             InitializeComponent();
+            AccountBox.Text = "Null";
+            PasswordBox.Text = "p1c0CTFp4s$%2255";
+            PasswordBox.PasswordChar = '*';
+            PasswordBox.UseSystemPasswordChar = true;
         }
 
         private void AccountBox_Enter(object sender, EventArgs e)
@@ -96,12 +101,23 @@ namespace winform_chat
                 if (find_user.Username == AccountBox.Text && find_user.Password == EncodeSha256(PasswordBox.Text))
                 {
                     StatusText.Text = "Current Status: Login successful";
+
+                    User playerUser = new LoadUserData().GetUserData(AccountBox.Text);
+                    if (playerUser == null)
+                    {
+                        playerUser = new User(username: "ELPlay" + new Random().Next(999, 9999), elo: 400);
+                    }
+                    if (playerUser.ELO <= 0)
+                    {
+                        playerUser.ELO = 400;
+                    }
                     this.Hide();
-                    MainScreen newMain = new MainScreen();
-                    newMain.username = AccountBox.Text;
-                    newMain.ELO = find_user.ELO;
+                    MainScreen newMain = new MainScreen(playerUser);
                     newMain.ShowDialog();
-                    this.Show();
+                    if (newMain.isLoggedOut == true && newMain.IsDisposed == true)
+                    {
+                        this.Show();
+                    }
                 }
                 else
                 {
@@ -109,7 +125,6 @@ namespace winform_chat
                 }
             }
         }
-
 
         private string EncodeSha256(string input)
         {
@@ -130,6 +145,7 @@ namespace winform_chat
             {
                 StatusText.Text = "Current Status: Not Connected to Database";
             }
+            this.Show();
         }
 
         private void ForgetPasswordLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -139,6 +155,11 @@ namespace winform_chat
             newForget.ShowDialog();
             newForget = null;
             this.Show();
+        }
+
+        private void LoginForm_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 }

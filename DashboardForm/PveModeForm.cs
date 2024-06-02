@@ -7,12 +7,18 @@ namespace winform_chat.DashboardForm
     {
         public event EventHandler ChildPvEButton_Click;
         public int modeDepth;
-        public string current_username { get; set; }
-        public int ELO { get; set; }
-        public PveModeForm()
+        private User playerUser;
+        public PveModeForm(User pUser)
         {
             InitializeComponent();
-
+            if (pUser != null)
+            {
+                playerUser = pUser;
+            }
+            else
+            {
+                playerUser = new User(username: "NotFound" + new Random().Next(999, 9999), elo: 404);
+            }
         }
 
         private void BabyButton_Click(object sender, EventArgs e)
@@ -20,7 +26,7 @@ namespace winform_chat.DashboardForm
             new SoundFXHandler(null, "", "click");
             modeDepth = 1;
             this.Hide();
-            var newboard = new ChessAIClient(modeDepth, isOffl : true, NamePlayer: current_username, UserELO: ELO, OpponentELO: 800);
+            var newboard = new ChessAIClient(modeDepth, isOffl : true );
             newboard.Show();
             this.Show();
         }
@@ -29,8 +35,7 @@ namespace winform_chat.DashboardForm
         {
             new SoundFXHandler(null, "", "click");
             modeDepth = 2;
-            this.Hide();
-            var newboard = new ChessAIClient(modeDepth, isOffl: true, NamePlayer: current_username, UserELO: ELO, OpponentELO: 1100);
+            var newboard = new ChessAIClient(modeDepth, isOffl: true);
             newboard.Show();
             this.Show();
         }
@@ -40,7 +45,7 @@ namespace winform_chat.DashboardForm
             new SoundFXHandler(null, "", "click");
             modeDepth = 4;
             this.Hide();
-            var newboard = new ChessAIClient(modeDepth, isOffl: true, NamePlayer: current_username, UserELO: ELO, OpponentELO: 1700);
+            var newboard = new ChessAIClient(modeDepth, isOffl: true);
             newboard.Show();
             this.Show();
         }
@@ -50,7 +55,7 @@ namespace winform_chat.DashboardForm
             new SoundFXHandler(null, "", "click");
             modeDepth = 6;
             this.Hide();
-            var newboard = new ChessAIClient(modeDepth, isOffl: true, NamePlayer: current_username, UserELO: ELO, OpponentELO: 2300);
+            var newboard = new ChessAIClient(modeDepth, isOffl: true);
             newboard.Show();
             this.Show();
         }
@@ -60,7 +65,7 @@ namespace winform_chat.DashboardForm
             new SoundFXHandler(null, "", "click");
             modeDepth = 8;
             this.Hide();
-            var newboard = new ChessAIClient(modeDepth, isOffl: true, NamePlayer: "Player " + current_username, UserELO: ELO, OpponentELO: 3000);
+            var newboard = new ChessAIClient(modeDepth, isOffl: true);
             newboard.Show();
             this.Show();
         }

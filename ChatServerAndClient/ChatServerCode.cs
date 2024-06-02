@@ -42,6 +42,7 @@ namespace winforms_chat
             listview_userQueue.Columns.Add("Code", 150);
             listview_userQueue.Columns.Add("Player", 200);
             listview_userQueue.Columns.Add("Time ctrl", 200);
+            listview_userQueue.Columns.Add("Elo", 200);
             listview_userQueue.Columns.Add("Status", 100);
             listview_userQueue.Columns.Add("Type", 200);
         }
@@ -58,7 +59,7 @@ namespace winforms_chat
                     return;
                 }
                 // ------------ All received logic here -------------
-                Console.WriteLine("Server code received: " + message);
+                Debug.WriteLine("Server code received: " + message);
                 // If message is not valid JSON, return
                 if (!message.Contains("TableCode") || !message.Contains("type") || !message.Contains("from") || !message.Contains("to") || !message.Contains("message") || !message.Contains("date"))
                 {
@@ -102,7 +103,10 @@ namespace winforms_chat
                         {
                             Debug.WriteLine("[SVR] User " + msg.from + " want to join the game room queue");
                             string userName = msg.from;
-                            string timeCtrl = msg.message.Replace(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerCreateRoom), "");
+                            msg.message = msg.message.Replace(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerCreateRoom), "");
+                            string[] info = msg.message.Split('@');
+                            string ELO = info[1];
+                            string timeCtrl = info[0];
                             // check if timeCtrl is empty
                             if (string.IsNullOrEmpty(timeCtrl))
                             {
@@ -113,6 +117,7 @@ namespace winforms_chat
                             ListViewItem item = new ListViewItem(msg.TableCode);
                             item.SubItems.Add(userName);
                             item.SubItems.Add(timeCtrl);
+                            item.SubItems.Add(ELO);
                             item.SubItems.Add("Waiting");
                             item.SubItems.Add("Room");
                             listview_userQueue.Items.Add(item);
@@ -150,7 +155,7 @@ namespace winforms_chat
                                 string player1 = listview_userQueue.Items[index1].SubItems[1].Text;
                                 string player2 = listview_userQueue.Items[index2].SubItems[1].Text;
 
-                                Console.WriteLine("Pick 2 random players: " + player1 + " and " + player2 + " at index " + index1 + " and " + index2);
+                                Debug.WriteLine("Pick 2 random players: " + player1 + " and " + player2 + " at index " + index1 + " and " + index2);
 
                                 // Remove 2 users from listview
                                 listview_userQueue.Items.RemoveAt(index1);
@@ -162,10 +167,6 @@ namespace winforms_chat
                                 BeginGame(player1, player2, listview_userQueue.Items[index1].SubItems[2].Text);
                             }
 
-                        }
-                        else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList)))
-                        {
-                            UpdateUserList();
                         }
                         else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect)) || msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientLeaveRoom)))
                         {
@@ -188,13 +189,18 @@ namespace winforms_chat
                         Debug.WriteLine("[SVR] Update list user for all clients");
                         //UpdateUserList();
                     }
+                    else if (msg.type == "update" && msg.TableCode == "000000" && msg.to == "server" && msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList)))
+                    {
+                        Debug.WriteLine("[SVR] Cmd Update list user for all clients");
+                        UpdateUserList();
+                    }
                 }
 
             }
             catch (Exception ex)
             {
               //  MessageBox.Show(ex.Message, "Warning");
-                Console.WriteLine(ex.Message);
+                Debug.WriteLine(ex.Message);
             }
 
         }
@@ -205,20 +211,20 @@ namespace winforms_chat
             string result = "";
             foreach (ListViewItem item in listview_userQueue.Items)
             {
-                if (item.SubItems[4].Text == "Room")
+                if (item.SubItems[5].Text == "Room")
                 {
-                    result += item.SubItems[0].Text +"#"+ item.SubItems[1].Text + "#" + item.SubItems[2].Text + "#" + item.SubItems[3].Text + "#" + item.SubItems[4].Text + "~";
+                    result += item.SubItems[0].Text +"#"+ item.SubItems[1].Text + "#" + item.SubItems[2].Text + "#" + item.SubItems[3].Text + "#" + item.SubItems[4].Text +"#"+ item.SubItems[5].Text + "~";
                 }
             }
             ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "update", "server", "all", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList) + result, DateTime.Now);
             comm.SendMessage(msg1.ToJson());
         }
 
-        private void ClientForm_FormClosed(object sender, FormClosedEventArgs e)
+        private void ServerForm_FormClosed(object sender, FormClosedEventArgs e)
         {
             // Send last message to server
             // Server code close connection: {"TableCode": "000000", "type": "join", "from": "server", "to": "server", "message": "close", "date": DateTime.Now}
-            ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerDisconnect), DateTime.Now);
+            ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", "all", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerDisconnect), DateTime.Now);
             comm.SendMessage(msg.ToJson());
             comm.ClientClose();
         }
@@ -238,7 +244,7 @@ namespace winforms_chat
                 string player1 = listview_userQueue.Items[index1].SubItems[1].Text;
                 string player2 = listview_userQueue.Items[index2].SubItems[1].Text;
 
-                Console.WriteLine("Pick 2 random players: " + player1 + " and " + player2 + " at index " + index1 + " and " + index2);
+                Debug.WriteLine("Pick 2 random players: " + player1 + " and " + player2 + " at index " + index1 + " and " + index2);
 
                 // Remove 2 users from listview
                 listview_userQueue.Items.RemoveAt(index1);
@@ -252,13 +258,22 @@ namespace winforms_chat
                 // Send message to 2 users
                 // Server send code to clients: {"TableCode": "000000", "type": "join", "from": "server", "to": userName + "-" + opponentUserName, "message": newTableCode +"$"+ userSide + "-" + oppSide, "date": DateTime.Now}
                 // with newTableCode is a random string from 000001 to 999998
-                BeginGame(player1, player2, listview_userQueue.Items[index1].SubItems[2].Text);
+                BeginGame(player1, player2, "10|0");
 
             }
         }
 
         private void BeginGame(string player1, string player2, string timectrl)
         {
+            // remove the user from listview
+            foreach (ListViewItem item in listview_userQueue.Items)
+            {
+                if (item.SubItems[1].Text == player1 || item.SubItems[1].Text == player2)
+                {
+                    listview_userQueue.Items.Remove(item);
+                }
+            }
+
             Random random = new Random();
             string newTableCode = random.Next(1, 999999).ToString("D6");
             // pick player side 
@@ -270,7 +285,9 @@ namespace winforms_chat
          //   ChessAI.ChatServerAndClient.Message msg2 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player2 + "-" + player1, newTableCode + "$" + oppSide + "-" + userSide  + "$" + timectrl, DateTime.Now);
 
             comm.SendMessage(msg1.ToJson());
-           // comm.SendMessage(msg2.ToJson());
+            // comm.SendMessage(msg2.ToJson());
+            
+
         }
 
         // Auto pick 2 random users from listview

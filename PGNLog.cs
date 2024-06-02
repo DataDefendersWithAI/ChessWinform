@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ChessAI_Bck
 {
-    internal class PGNLog
+    public class PGNLog
     {
         public string ID { get; set; }
         public string Date { get; set; }
