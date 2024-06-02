@@ -330,7 +330,7 @@ namespace ChessAI
                         WhiteELO = (Side == PieceColor.White ? playerUser.ELO : opponentUser.ELO),
                         BlackELO = (Side == PieceColor.Black ? playerUser.ELO : opponentUser.ELO),
 
-                        TimeControl = timeControl,
+                        TimeControl = timeControl == "none"?"No limit":timeControl,
                         Termination = reasonEndGame,
                         PGN = pgn,
                     };
@@ -770,6 +770,7 @@ namespace ChessAI
         }
         private void InitUserInfo()
         {
+          //  opponentUser = opponentUser == null ? new User(username: "NotFound", elo: 1000) : new LoadUserData().GetUserData(opponentUser.Username); // init opponent
             // init display
             ourName.Text = playerUser.Username + " ( " + playerUser.ELO + " )";
             opponentName.Text = opponentUser.Username + " ( " + opponentUser.ELO + " )";

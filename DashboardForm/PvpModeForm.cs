@@ -139,6 +139,10 @@ public partial class PvpModeForm : Form
         playerUser = new LoadUserData().GetUserData(playerUser.Username); // update new data
         label5.Text = playerUser.Username + " - Elo: " + playerUser.ELO;
         Invalidate();
+        if (!isServer)
+        {
+            cntSvr_Click(null, null);
+        }
     }
 
     private void listBoxPlayerRooms_Click(object sender, EventArgs e)
@@ -362,9 +366,8 @@ public partial class PvpModeForm : Form
                         string Side = userSides[0];
                         string OpponentSide = userSides[1];
                         string timectrl = mess[2];
-                        string[] elos = mess[3].Split('-');
-                        int playerElo = int.Parse(elos[0]);
-                        int opponentElo = int.Parse(elos[1]);
+
+
 
                         // If user name is not equal to ourName, swap user name and opponent user name
                         if (ourName != OurName)
@@ -375,10 +378,6 @@ public partial class PvpModeForm : Form
                             string temp = Side;
                             Side = OpponentSide;
                             OpponentSide = temp;
-                            // Swap ELO as well
-                            int tempElo = playerElo;
-                            playerElo = opponentElo;
-                            opponentElo = tempElo;
                         }
                         // Merge userName and opponentUserName with "-" and pass it to ChatMainForm
                         msg.to = ourName + "-" + opponentUserName;
@@ -386,7 +385,7 @@ public partial class PvpModeForm : Form
                         Debug.WriteLine("[CL] " + ourName + " Side: " + Side + "- " + opponentUserName + " Side: " + OpponentSide);
                         //MessageBox.Show("Room code: " + msg.message);
                         // Open ChatMainForm with table code and username
-                        ChatMainForm chatMainForm = new ChatMainForm(newTableCode, msg.to, chessAIClientFormOnline, Side, timectrl,opponentElo);
+                        ChatMainForm chatMainForm = new ChatMainForm(newTableCode, msg.to, chessAIClientFormOnline, Side, timectrl);
                         chatMainForm.Show();
 
                         currentChatMainForm = chatMainForm;
@@ -582,7 +581,7 @@ public partial class PvpModeForm : Form
             var timectrl = currentChatMainForm.timeCtrl;
             chessAIClientFormOnline.Show();
 
-            opponentUser = opponentUser == null ? new User(username: currentChatMainForm.opponentUserName, elo: currentChatMainForm.opponentElo): opponentUser;
+            opponentUser = string.IsNullOrEmpty(currentChatMainForm.opponentUserName)? new User(username: "NotFound" + new Random().Next(999, 9999), elo: 404) : new LoadUserData().GetUserData(currentChatMainForm.opponentUserName);
 
             chessAIClientFormOnline.SetupGame(pUser: playerUser, oUser: opponentUser, timeCtrl: timectrl, side: side, chatMainForm: currentChatMainForm);
             ParentForm.Hide();

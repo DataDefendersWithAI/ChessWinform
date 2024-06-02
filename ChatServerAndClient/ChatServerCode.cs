@@ -275,23 +275,12 @@ namespace winforms_chat
 
         private void BeginGame(string player1, string player2, string timectrl)
         {
-            string player1ELO = "404";
-            string player2ELO = "404";
             // remove the user from listview
             foreach (ListViewItem item in listview_userQueue.Items)
             {
                 if (item.SubItems[1].Text == player1 || item.SubItems[1].Text == player2)
                 {
-                    if(item.SubItems[1].Text == player2)
-                    {
-                        player2ELO = item.SubItems[3].Text;
-                    }
-                    if (item.SubItems[1].Text == player1)
-                    {
-                        player1ELO = item.SubItems[3].Text;
-                    }
                     listview_userQueue.Items.Remove(item);
-
                 }
             }
 
@@ -303,7 +292,7 @@ namespace winforms_chat
             
 
             Debug.WriteLine("[SVR] Begin game with code " + newTableCode + " between " + player1 + " and " + player2 + " with time control " + timectrl);
-            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode + "$" + userSide + "-" + oppSide+"$"+timectrl+"$"+player1ELO+"-"+player2ELO, DateTime.Now);
+            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode + "$" + userSide + "-" + oppSide+"$"+timectrl, DateTime.Now);
          //   ChessAI.ChatServerAndClient.Message msg2 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player2 + "-" + player1, newTableCode + "$" + oppSide + "-" + userSide  + "$" + timectrl, DateTime.Now);
 
             comm.SendMessage(msg1.ToJson());
