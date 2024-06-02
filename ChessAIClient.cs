@@ -274,7 +274,7 @@ namespace ChessAI
                 oppPanel.BackColor = System.Drawing.Color.GreenYellow;
                 WLinnerPanel.BackColor = System.Drawing.Color.LightCoral;
                 Score01.Text = (Side == PieceColor.White ? "0 : 1" : "1 : 0");
-                uELO.Text = "ELO:" + playerUser.ELO + " -15";
+                uELO.Text = playerUser.ELO >= 100 ? "ELO:" + playerUser.ELO + " -15" : "ELO:" + playerUser.ELO + " -0";
                 if (isOffline) uELO.Text = "ELO:" + playerUser.ELO + " -0";
             }
             else // draw
@@ -338,11 +338,12 @@ namespace ChessAI
                     Getuser.AddMatch(save_PGN);
                     if (!isOffline)
                     {
+                        
                         if (chessBoard.EndGame.WonSide == Side)
                         {
                             Getuser.ELO += 15;
                         }
-                        else if (chessBoard.EndGame.WonSide == Side.OppositeColor())
+                        else if (chessBoard.EndGame.WonSide == Side.OppositeColor() && Getuser.ELO >= 100)
                         {
                             Getuser.ELO -= 15;
                         }

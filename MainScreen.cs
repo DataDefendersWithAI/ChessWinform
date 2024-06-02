@@ -18,7 +18,9 @@ namespace winform_chat
 
         private User playerUser;
 
-        public bool isLoggedOut { get; set;} = false;
+        public bool isInPvPMode { get; set; } = false;
+
+        public bool isLoggedOut { get; set; } = false;
         public MainScreen(User pUser = null)
         {
             InitializeComponent();
@@ -27,7 +29,7 @@ namespace winform_chat
            | BindingFlags.Instance | BindingFlags.NonPublic, null,
            MainPanel, new object[] { true });   // Double buffer the panel prevent it from flickering
 
-            playerUser = pUser == null? new User(username: "Player" + new Random().Next(999, 9999), elo: 404):pUser;
+            playerUser = pUser == null ? new User(username: "Player" + new Random().Next(999, 9999), elo: 404) : pUser;
         }
 
         private void MainScreen_Load(object sender, EventArgs e)
@@ -65,7 +67,7 @@ namespace winform_chat
             SideBarTimer.Start();
         }
 
-        public void LoadForm(Form child , bool isLogged = true)
+        public void LoadForm(Form child, bool isLogged = true)
         {
             string formKey = child.GetType().Name;
             Debug.WriteLine($"Loading form: {formKey}");
@@ -99,7 +101,7 @@ namespace winform_chat
                 child.TopLevel = false;
                 child.FormBorderStyle = FormBorderStyle.None;
                 child.Dock = DockStyle.Fill;
-             //   child.Location = new Point((MainPanel.Width - child.Width) / 2, (MainPanel.Height - child.Height) / 2);
+                //   child.Location = new Point((MainPanel.Width - child.Width) / 2, (MainPanel.Height - child.Height) / 2);
                 MainPanel.Controls.Add(child);
                 MainPanel.Tag = child;
                 child.BringToFront();
@@ -133,8 +135,19 @@ namespace winform_chat
         private void LogoutButton_Click(object sender, EventArgs e)
         {
             isLoggedOut = true;
+            this.Dispose();
             this.Close();
+            if (isInPvPMode == true)
+            {
+                isInPvPMode = false;
+                LoginForm loginForm = new LoginForm();
+                loginForm.Show();
+            }
+
+
         }
+
+
 
         private void PvPButton_Click(object sender, EventArgs e)
         {
@@ -154,5 +167,22 @@ namespace winform_chat
             LoadForm(temp);
         }
 
+        private void MainScreen_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            isLoggedOut = true;
+            this.Dispose();
+            this.Close();
+            if (isInPvPMode == true)
+            {
+                isInPvPMode = false;
+                LoginForm loginForm = new LoginForm();
+                loginForm.Show();
+            }
+        }
+
+        private void MainScreen_VisibleChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

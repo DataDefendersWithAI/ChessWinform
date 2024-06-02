@@ -27,8 +27,9 @@ public partial class PvpModeForm : Form
 
     private System.Windows.Forms.Timer autoPickTimer;
     private List<PlayerRoom> playerRooms;
-    private Thread t;
 
+    //Threads;
+    private Thread t;
     MainScreen ParentForm;
     ChatServerLog serverLog;
     ChessAIClient chessAIClientFormOnline;
@@ -584,13 +585,21 @@ public partial class PvpModeForm : Form
             opponentUser = string.IsNullOrEmpty(currentChatMainForm.opponentUserName)? new User(username: "NotFound" + new Random().Next(999, 9999), elo: 404) : new LoadUserData().GetUserData(currentChatMainForm.opponentUserName);
 
             chessAIClientFormOnline.SetupGame(pUser: playerUser, oUser: opponentUser, timeCtrl: timectrl, side: side, chatMainForm: currentChatMainForm);
+            ParentForm.isInPvPMode = true;
             ParentForm.Hide();
             chessAIClientFormOnline.FormClosing += ChessAIClientFormOnline_FormClosing;
+           // chessAIClientFormOnline.FormClosing += ChessAIClientFormOnline_FormClosing;
             currentChatMainForm.FormClosing += currentChatMainForm_FormClosing;
 
             clientJoin.Close();
             clientJoin.Dispose();
         }
+    }
+
+    private void ParentForm_VisibleChanged(object? sender, EventArgs e)
+    {
+        ParentForm.Show();
+        
     }
 
     private void ChessAIClientFormOnline_FormClosing(object sender, FormClosingEventArgs e)
@@ -604,6 +613,7 @@ public partial class PvpModeForm : Form
     {
         if (ParentForm != null)
         {
+
             ParentForm.Show();
             try
             {
@@ -670,6 +680,7 @@ public partial class PvpModeForm : Form
 
         if (comm != null)
         {
+            t.Interrupt(); // interrupt old thread
             comm.ClientClose(); // close old connection
             comm = null;
         }

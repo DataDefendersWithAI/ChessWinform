@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "D:\\Lap trinh mang\\ChessAI\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|D:\\Lap trinh mang\\ChessAI\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|solutionrelative:loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|D:\\Lap trinh mang\\ChessAI\\dashboardform\\pvpmodeform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|solutionrelative:dashboardform\\pvpmodeform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -24,10 +28,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|d:\\lap trinh mang\\chessai\\dashboardform\\pvpmodeform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|solutionrelative:dashboardform\\pvpmodeform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|D:\\Lap trinh mang\\ChessAI\\loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|solutionrelative:loginform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{34D2C5EE-189F-41A9-98F3-1C1A494AAB8E}|ChessAI.csproj|D:\\Lap trinh mang\\ChessAI\\chatserverandclient\\utils.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -105,7 +105,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
@@ -122,20 +122,21 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 0,
               "Title": "LoginForm.cs",
               "DocumentMoniker": "D:\\Lap trinh mang\\ChessAI\\LoginForm.cs",
               "RelativeDocumentMoniker": "LoginForm.cs",
-              "ToolTip": "D:\\Lap trinh mang\\ChessAI\\LoginForm.cs",
-              "RelativeToolTip": "LoginForm.cs",
-              "ViewState": "AQIAAD0AAAAAAAAAAAAuwHsAAAAJAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003525|",
+              "ToolTip": "D:\\Lap trinh mang\\ChessAI\\LoginForm.cs*",
+              "RelativeToolTip": "LoginForm.cs*",
+              "ViewState": "AQIAAJIAAAAAAAAAAAAqwKQAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-31T16:43:48.089Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "ThrowHelper.cs",
               "DocumentMoniker": "C:\\Users\\admin\\AppData\\Local\\Temp\\.vsdbgsrc\\90793c3eb31d7122de8c9fc198b40ef620e753d16ec471ad4ebd91d387ca3092\\ThrowHelper.cs",
               "ToolTip": "C:\\Users\\admin\\AppData\\Local\\Temp\\.vsdbgsrc\\90793c3eb31d7122de8c9fc198b40ef620e753d16ec471ad4ebd91d387ca3092\\ThrowHelper.cs [Read Only]",
@@ -146,20 +147,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "PvpModeForm.cs",
               "DocumentMoniker": "D:\\Lap trinh mang\\ChessAI\\DashboardForm\\PvpModeForm.cs",
               "RelativeDocumentMoniker": "DashboardForm\\PvpModeForm.cs",
-              "ToolTip": "D:\\Lap trinh mang\\ChessAI\\DashboardForm\\PvpModeForm.cs",
-              "RelativeToolTip": "DashboardForm\\PvpModeForm.cs",
-              "ViewState": "AQIAAM8CAAAAAAAAAAAhwEECAAA0AAAA",
+              "ToolTip": "D:\\Lap trinh mang\\ChessAI\\DashboardForm\\PvpModeForm.cs*",
+              "RelativeToolTip": "DashboardForm\\PvpModeForm.cs*",
+              "ViewState": "AQIAAIwCAAAAAAAAAAAqwHACAAANAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-31T03:31:31.288Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "ChessAIClient.cs [Design]",
               "DocumentMoniker": "D:\\Lap trinh mang\\ChessAI\\ChessAIClient.cs",
               "RelativeDocumentMoniker": "ChessAIClient.cs",
@@ -171,7 +172,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "ChessAIClient.cs",
               "DocumentMoniker": "D:\\Lap trinh mang\\ChessAI\\ChessAIClient.cs",
               "RelativeDocumentMoniker": "ChessAIClient.cs",
@@ -184,7 +185,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "ChatServerCode.cs",
               "DocumentMoniker": "D:\\Lap trinh mang\\ChessAI\\ChatServerAndClient\\ChatServerCode.cs",
               "RelativeDocumentMoniker": "ChatServerAndClient\\ChatServerCode.cs",
@@ -197,12 +198,12 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "PvpModeForm.cs [Design]",
               "DocumentMoniker": "D:\\Lap trinh mang\\ChessAI\\DashboardForm\\PvpModeForm.cs",
               "RelativeDocumentMoniker": "DashboardForm\\PvpModeForm.cs",
-              "ToolTip": "D:\\Lap trinh mang\\ChessAI\\DashboardForm\\PvpModeForm.cs [Design]",
-              "RelativeToolTip": "DashboardForm\\PvpModeForm.cs [Design]",
+              "ToolTip": "D:\\Lap trinh mang\\ChessAI\\DashboardForm\\PvpModeForm.cs [Design]*",
+              "RelativeToolTip": "DashboardForm\\PvpModeForm.cs [Design]*",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-05-31T17:32:08.605Z",
               "EditorCaption": " [Design]"

@@ -282,7 +282,9 @@
             Margin = new Padding(3, 2, 3, 2);
             Name = "MainScreen";
             Text = "MainScreen";
+            FormClosed += MainScreen_FormClosed;
             Load += MainScreen_Load;
+            VisibleChanged += MainScreen_VisibleChanged;
             SideBar.ResumeLayout(false);
             SideBar.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
