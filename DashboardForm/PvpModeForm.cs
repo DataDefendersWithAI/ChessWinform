@@ -16,10 +16,6 @@ using ChessAI_Bck;
 using winforms_chat;
 
 namespace winform_chat.DashboardForm;
-
-
-
-
 public partial class PvpModeForm : Form
 {
 
@@ -68,6 +64,7 @@ public partial class PvpModeForm : Form
         { "90|30", "Classical"},// 90 minutes, 30 seconds increment
         { "120|60", "Classical"},// 120 minutes, 60 seconds increment
     };
+
     public class PlayerRoom
     {
         public string NameOfPlayer { get; set; }
@@ -94,6 +91,8 @@ public partial class PvpModeForm : Form
     public PvpModeForm(MainScreen ParentF, User pUser = null)
     {
         InitializeComponent();
+
+        playerRooms = new List<PlayerRoom>();
         // Initialize timer
         autoPickTimer = new System.Windows.Forms.Timer();
         autoPickTimer.Interval = 1000; // Set interval to 1 second (1000 ms)
@@ -101,8 +100,6 @@ public partial class PvpModeForm : Form
 
         log1.Visible = false;
         label3.Visible = false;
-
-        InitializePlayerRooms();
         DoubleBuffered = true;
         if (pUser != null)
         {
@@ -118,7 +115,7 @@ public partial class PvpModeForm : Form
         srvIP.Text = serverIP;
         cntSvr.BackColor = Color.LightGray;
         strSvr.BackColor = Color.LightGray;
-        label5.Text = OurName;
+        label5.Text = playerUser.Username + " - Elo: " + playerUser.ELO;
 
         FillListBoxPlayerRooms();
         // Add items to the ComboBox
@@ -129,9 +126,19 @@ public partial class PvpModeForm : Form
         comboBox1.SelectedIndex = 3;
 
         listBoxPlayerRooms.Click += listBoxPlayerRooms_Click;
+        listBoxPlayerRooms.DrawMode = DrawMode.OwnerDrawFixed;
+        listBoxPlayerRooms.DrawItem += ListBoxPlayerRooms_DrawItem;
 
         ParentForm = ParentF;
 
+    }
+
+    public void UpdateFomrUI()
+    {
+        Debug.WriteLine("[CL] ClientForm UI updating...");
+        playerUser = new LoadUserData().GetUserData(playerUser.Username); // update new data
+        label5.Text = playerUser.Username + " - Elo: " + playerUser.ELO;
+        Invalidate();
     }
 
     private void listBoxPlayerRooms_Click(object sender, EventArgs e)
@@ -159,19 +166,55 @@ public partial class PvpModeForm : Form
                         Debug.WriteLine("ClientJoin is null");
                         return;
                     }
-                    opponentUser = new User(username: selectedPlayerRoom.NameOfPlayer, elo: 404);
+                    opponentUser = new LoadUserData().GetUserData(selectedPlayerRoom.NameOfPlayer); //new User(username: selectedPlayerRoom.NameOfPlayer, elo: 404);
                     BeginPVPGame();
                 }
             }
         }
     }
 
-    private void InitializePlayerRooms()
+    private void ListBoxPlayerRooms_DrawItem(object sender, DrawItemEventArgs e)
     {
-        this.playerRooms = new List<PlayerRoom>
+        if (e.Index < 0) return;
+
+        var playerRoom = (PlayerRoom)listBoxPlayerRooms.Items[e.Index];
+
+        // Alternate row color
+        Color backColor = (e.Index % 2 == 0) ? Color.White : Color.LightGray;
+
+        // Change background color if the item is selected
+        if ((e.State & DrawItemState.Selected) == DrawItemState.Selected)
         {
-           
-        };
+            backColor = Color.LightBlue;
+        }
+
+        using (SolidBrush backgroundBrush = new SolidBrush(backColor))
+        {
+            e.Graphics.FillRectangle(backgroundBrush, e.Bounds);
+        }
+
+        var graphics = e.Graphics;
+        var bounds = e.Bounds;
+
+        // Draw player name and ELO
+        var playerNameAndELO = $"{playerRoom.NameOfPlayer} (ELO: {playerRoom.ELO})";
+        var playerNameAndELOFont = new Font("Arial", 14, FontStyle.Bold);
+        var playerNameAndELOBrush = Brushes.Black;
+        graphics.DrawString(playerNameAndELO, playerNameAndELOFont, playerNameAndELOBrush, bounds.Left + 10, bounds.Top + 5);
+
+        // Draw time control
+        var timeControl = playerRoom.GameMode;
+        var timeControlFont = new Font("Arial", 12, FontStyle.Regular);
+        var timeControlBrush = Brushes.Gray;
+        graphics.DrawString(timeControl, timeControlFont, timeControlBrush, bounds.Left + 200, bounds.Top + 5);
+
+        // Draw status
+        var status = playerRoom.Status_;
+        var statusFont = new Font("Arial", 12, FontStyle.Italic);
+        var statusBrush = Brushes.Black;
+        graphics.DrawString(status, statusFont, statusBrush, bounds.Left + 300, bounds.Top + 5);
+
+        e.DrawFocusRectangle();
     }
 
     private void ParseStringToPlayerRooms(string playerRoomsString)
@@ -319,6 +362,10 @@ public partial class PvpModeForm : Form
                         string Side = userSides[0];
                         string OpponentSide = userSides[1];
                         string timectrl = mess[2];
+                        string[] elos = mess[3].Split('-');
+                        int playerElo = int.Parse(elos[0]);
+                        int opponentElo = int.Parse(elos[1]);
+
                         // If user name is not equal to ourName, swap user name and opponent user name
                         if (ourName != OurName)
                         {
@@ -328,6 +375,10 @@ public partial class PvpModeForm : Form
                             string temp = Side;
                             Side = OpponentSide;
                             OpponentSide = temp;
+                            // Swap ELO as well
+                            int tempElo = playerElo;
+                            playerElo = opponentElo;
+                            opponentElo = tempElo;
                         }
                         // Merge userName and opponentUserName with "-" and pass it to ChatMainForm
                         msg.to = ourName + "-" + opponentUserName;
@@ -335,7 +386,7 @@ public partial class PvpModeForm : Form
                         Debug.WriteLine("[CL] " + ourName + " Side: " + Side + "- " + opponentUserName + " Side: " + OpponentSide);
                         //MessageBox.Show("Room code: " + msg.message);
                         // Open ChatMainForm with table code and username
-                        ChatMainForm chatMainForm = new ChatMainForm(newTableCode, msg.to, chessAIClientFormOnline, Side, timectrl);
+                        ChatMainForm chatMainForm = new ChatMainForm(newTableCode, msg.to, chessAIClientFormOnline, Side, timectrl,opponentElo);
                         chatMainForm.Show();
 
                         currentChatMainForm = chatMainForm;
@@ -368,7 +419,7 @@ public partial class PvpModeForm : Form
 
     private void Auto_Matching(object sender, EventArgs e)
     {
-        if (comm == null) return;
+        if (comm == null && isAutoMatching == false ) return;
         ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", OurName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.AutoMatching) + selectedTimeCtrl, DateTime.Now);
         isConnectedToServer = comm.SendMessage(msg1.ToJson());
     }
@@ -391,7 +442,6 @@ public partial class PvpModeForm : Form
             autoPickTimer.Stop();
             isAutoMatching = false;
             btn_autoJoin.Text = "🔄 Auto matching";
-
         }
         else
         {
@@ -536,7 +586,7 @@ public partial class PvpModeForm : Form
 
             chessAIClientFormOnline.SetupGame(pUser: playerUser, oUser: opponentUser, timeCtrl: timectrl, side: side, chatMainForm: currentChatMainForm);
             ParentForm.Hide();
-           // chessAIClientFormOnline.FormClosing += ChessAIClientFormOnline_FormClosing;
+            chessAIClientFormOnline.FormClosing += ChessAIClientFormOnline_FormClosing;
             currentChatMainForm.FormClosing += currentChatMainForm_FormClosing;
 
             clientJoin.Close();
@@ -549,11 +599,6 @@ public partial class PvpModeForm : Form
         if (ParentForm != null)
         {
             ParentForm.Show();
-            if (currentChatMainForm != null)
-            {
-                currentChatMainForm.Close();
-                currentChatMainForm.Dispose();
-            }
         }
     }
     private void currentChatMainForm_FormClosing(object sender , FormClosingEventArgs e)
@@ -561,10 +606,17 @@ public partial class PvpModeForm : Form
         if (ParentForm != null)
         {
             ParentForm.Show();
-            if (chessAIClientFormOnline != null)
+            try
             {
-                chessAIClientFormOnline.Close();
-                chessAIClientFormOnline.Dispose();
+                if (chessAIClientFormOnline != null)
+                {
+                    chessAIClientFormOnline.Close();
+                    chessAIClientFormOnline.Dispose();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
             }
         }
     }

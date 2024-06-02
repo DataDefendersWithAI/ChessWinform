@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PveModeForm));
             EvilButton = new Button();
             label1 = new Label();
@@ -36,6 +37,11 @@
             BabyButton = new Button();
             IntermidiateButton = new Button();
             HardButton = new Button();
+            comboBox1 = new ComboBox();
+            imageList1 = new ImageList(components);
+            comboBox2 = new ComboBox();
+            label3 = new Label();
+            label4 = new Label();
             SuspendLayout();
             // 
             // EvilButton
@@ -69,11 +75,12 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Showcard Gothic", 22.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.Location = new Point(438, 181);
+            label2.Location = new Point(441, 35);
             label2.Name = "label2";
             label2.Size = new Size(289, 74);
             label2.TabIndex = 16;
             label2.Text = "Please choose \r\nyour play mode";
+            label2.Click += label2_Click;
             // 
             // EasyButton
             // 
@@ -147,12 +154,66 @@
             HardButton.UseVisualStyleBackColor = false;
             HardButton.Click += HardButton_Click;
             // 
+            // comboBox1
+            // 
+            comboBox1.Font = new Font("Segoe UI", 12F);
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Location = new Point(554, 197);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(128, 29);
+            comboBox1.TabIndex = 21;
+            comboBox1.Text = "White";
+            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
+            // 
+            // imageList1
+            // 
+            imageList1.ColorDepth = ColorDepth.Depth32Bit;
+            imageList1.ImageStream = (ImageListStreamer)resources.GetObject("imageList1.ImageStream");
+            imageList1.TransparentColor = Color.Transparent;
+            imageList1.Images.SetKeyName(0, "Black");
+            imageList1.Images.SetKeyName(1, "White");
+            imageList1.Images.SetKeyName(2, "Random");
+            imageList1.Images.SetKeyName(3, "Clock.png");
+            // 
+            // comboBox2
+            // 
+            comboBox2.Font = new Font("Segoe UI", 12F);
+            comboBox2.FormattingEnabled = true;
+            comboBox2.Location = new Point(554, 301);
+            comboBox2.Name = "comboBox2";
+            comboBox2.Size = new Size(128, 29);
+            comboBox2.TabIndex = 23;
+            comboBox2.Text = "White";
+            comboBox2.SelectedIndexChanged += comboBox2_SelectedIndexChanged;
+            // 
+            // label3
+            // 
+            label3.ImageIndex = 3;
+            label3.ImageList = imageList1;
+            label3.Location = new Point(484, 279);
+            label3.Name = "label3";
+            label3.Size = new Size(64, 68);
+            label3.TabIndex = 24;
+            // 
+            // label4
+            // 
+            label4.ImageIndex = 1;
+            label4.ImageList = imageList1;
+            label4.Location = new Point(484, 176);
+            label4.Name = "label4";
+            label4.Size = new Size(64, 68);
+            label4.TabIndex = 25;
+            // 
             // PveModeForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.Wheat;
+            BackColor = Color.DarkGray;
             ClientSize = new Size(766, 455);
+            Controls.Add(label4);
+            Controls.Add(label3);
+            Controls.Add(comboBox2);
+            Controls.Add(comboBox1);
             Controls.Add(HardButton);
             Controls.Add(IntermidiateButton);
             Controls.Add(BabyButton);
@@ -175,5 +236,10 @@
         private Button BabyButton;
         private Button IntermidiateButton;
         private Button HardButton;
+        private ComboBox comboBox1;
+        private ImageList imageList1;
+        private ComboBox comboBox2;
+        private Label label3;
+        private Label label4;
     }
 }

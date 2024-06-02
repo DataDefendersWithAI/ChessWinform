@@ -136,7 +136,7 @@ namespace winforms_chat
                             };
                             // Add message to chat panel
                             ChatForm.TextChatModel chatModel = new ChatForm.TextChatModel();
-                            chatModel.Author = msg.from;
+                            chatModel.Author = "System"; //msg.from == "server" ? "System" : "Opponent
                             chatModel.Body = msg1;
                             chatModel.Inbound = true;
                             chatModel.Time = msg.date;
@@ -157,7 +157,7 @@ namespace winforms_chat
                                     if (msg.message.Contains("Resign"))
                                     {
                                         ChatForm.TextChatModel chatModel = new ChatForm.TextChatModel();
-                                        chatModel.Author = msg.from;
+                                        chatModel.Author = "System";
                                         chatModel.Body = "[S] " + opponentUserName + " resigned!";
                                         chatModel.Inbound = true;
                                         chatModel.Time = msg.date;
@@ -166,7 +166,7 @@ namespace winforms_chat
                                     else if (msg.message.Contains("DrawAsk"))
                                     {
                                         ChatForm.TextChatModel chatModel = new ChatForm.TextChatModel();
-                                        chatModel.Author = msg.from;
+                                        chatModel.Author = "System";
                                         chatModel.Body = "[S] " + opponentUserName + " requested a draw!";
                                         chatModel.Inbound = true;
                                         chatModel.Time = msg.date;
@@ -175,7 +175,7 @@ namespace winforms_chat
                                     else if (msg.message.Contains("DrawAccept"))
                                     {
                                         ChatForm.TextChatModel chatModel = new ChatForm.TextChatModel();
-                                        chatModel.Author = msg.from;
+                                        chatModel.Author = "System";
                                         chatModel.Body = "[S] " + opponentUserName + " accepted a draw!";
                                         chatModel.Inbound = true;
                                         chatModel.Time = msg.date;
@@ -184,7 +184,7 @@ namespace winforms_chat
                                     else if (msg.message.Contains("DrawDecline"))
                                     {
                                         ChatForm.TextChatModel chatModel = new ChatForm.TextChatModel();
-                                        chatModel.Author = msg.from;
+                                        chatModel.Author = "System";
                                         chatModel.Body = "[S] " + opponentUserName + " declined a draw!";
                                         chatModel.Inbound = true;
                                         chatModel.Time = msg.date;
@@ -193,7 +193,7 @@ namespace winforms_chat
                                     else if (msg.message.Contains("Timeout"))
                                     {
                                         ChatForm.TextChatModel chatModel = new ChatForm.TextChatModel();
-                                        chatModel.Author = msg.from;
+                                        chatModel.Author = "System";
                                         chatModel.Body = "[S] " + opponentUserName + "'s time up!";
                                         chatModel.Inbound = true;
                                         chatModel.Time = msg.date;
@@ -207,7 +207,7 @@ namespace winforms_chat
                                     if (msg.message.Contains("RestartAsk"))
                                     {
                                         ChatForm.TextChatModel chatModel = new ChatForm.TextChatModel();
-                                        chatModel.Author = msg.from;
+                                        chatModel.Author = "System";
                                         chatModel.Body = "[S] " + opponentUserName + " requested a rematch!";
                                         chatModel.Inbound = true;
                                         chatModel.Time = msg.date;
@@ -216,7 +216,7 @@ namespace winforms_chat
                                     else if (msg.message.Contains("RestartAccept"))
                                     {
                                         ChatForm.TextChatModel chatModel = new ChatForm.TextChatModel();
-                                        chatModel.Author = msg.from;
+                                        chatModel.Author = "System";
                                         chatModel.Body = "[S] "+ opponentUserName + " accepted your rematch request!";
                                         chatModel.Inbound = true;
                                         chatModel.Time = msg.date;
@@ -225,7 +225,7 @@ namespace winforms_chat
                                     else if (message == "RestartDecline")
                                     {
                                         ChatForm.TextChatModel chatModel = new ChatForm.TextChatModel();
-                                        chatModel.Author = msg.from;
+                                        chatModel.Author = "System";
                                         chatModel.Body = "[S] " + opponentUserName + " declined your rematch request!";
                                         chatModel.Inbound = true;
                                         chatModel.Time = msg.date;

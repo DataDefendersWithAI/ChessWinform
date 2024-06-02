@@ -59,7 +59,7 @@ namespace winforms_chat
                     return;
                 }
                 // ------------ All received logic here -------------
-                Debug.WriteLine("Server code received: " + message);
+                Debug.WriteLine("[SVR] received: " + message);
                 // If message is not valid JSON, return
                 if (!message.Contains("TableCode") || !message.Contains("type") || !message.Contains("from") || !message.Contains("to") || !message.Contains("message") || !message.Contains("date"))
                 {
@@ -126,32 +126,42 @@ namespace winforms_chat
                         {
                             Debug.WriteLine("[SVR] User " + msg.from + " is auto matching");
                             string timeCtrl = msg.message.Replace(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.AutoMatching), "");
-                            // check if timeCtrl is empty
+
+                            // Check if timeCtrl is empty
                             if (string.IsNullOrEmpty(timeCtrl))
                             {
                                 Debug.WriteLine("[SVR] User " + msg.from + " is auto matching but timeCtrl is empty, auto set to 10|0");
                                 timeCtrl = "10|0";
                             }
-                            // begin find a match , if found, remove user from listview
+
+                            // Begin finding a match; if found, remove users from listview
                             if (listview_userQueue.Items.Count >= 2)
                             {
                                 Random random = new Random();
-                                int index1;
-                                //find user index
-                                for (index1 = 0; index1 < listview_userQueue.Items.Count; index1++)
+                                int index1 = -1;
+
+                                // Find user index
+                                for (int i = 0; i < listview_userQueue.Items.Count; i++)
                                 {
-                                    if (listview_userQueue.Items[index1].SubItems[1].Text == msg.from)
+                                    if (listview_userQueue.Items[i].SubItems[1].Text == msg.from)
                                     {
+                                        index1 = i;
                                         break;
                                     }
                                 }
-                                if (index1 == null) return;
+
+                                if (index1 == -1)
+                                {
+                                    Debug.WriteLine("[SVR] User " + msg.from + " not found in queue.");
+                                    return;
+                                }
 
                                 int index2 = random.Next(0, listview_userQueue.Items.Count);
                                 while (index1 == index2)
                                 {
                                     index2 = random.Next(0, listview_userQueue.Items.Count);
                                 }
+
                                 string player1 = listview_userQueue.Items[index1].SubItems[1].Text;
                                 string player2 = listview_userQueue.Items[index2].SubItems[1].Text;
 
@@ -164,9 +174,9 @@ namespace winforms_chat
                                     index2--;
                                 }
                                 listview_userQueue.Items.RemoveAt(index2);
-                                BeginGame(player1, player2, listview_userQueue.Items[index1].SubItems[2].Text);
-                            }
 
+                                BeginGame(player1, player2, timeCtrl);
+                            }
                         }
                         else if (msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect)) || msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientLeaveRoom)))
                         {
@@ -265,12 +275,23 @@ namespace winforms_chat
 
         private void BeginGame(string player1, string player2, string timectrl)
         {
+            string player1ELO = "404";
+            string player2ELO = "404";
             // remove the user from listview
             foreach (ListViewItem item in listview_userQueue.Items)
             {
                 if (item.SubItems[1].Text == player1 || item.SubItems[1].Text == player2)
                 {
+                    if(item.SubItems[1].Text == player2)
+                    {
+                        player2ELO = item.SubItems[3].Text;
+                    }
+                    if (item.SubItems[1].Text == player1)
+                    {
+                        player1ELO = item.SubItems[3].Text;
+                    }
                     listview_userQueue.Items.Remove(item);
+
                 }
             }
 
@@ -279,9 +300,10 @@ namespace winforms_chat
             // pick player side 
             string userSide = Random.Shared.Next(2) == 0 ? "white" : "black";
             string oppSide = userSide == "white" ? "black" : "white";
+            
 
             Debug.WriteLine("[SVR] Begin game with code " + newTableCode + " between " + player1 + " and " + player2 + " with time control " + timectrl);
-            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode + "$" + userSide + "-" + oppSide+"$"+timectrl, DateTime.Now);
+            ChessAI.ChatServerAndClient.Message msg1 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player1 + "-" + player2, newTableCode + "$" + userSide + "-" + oppSide+"$"+timectrl+"$"+player1ELO+"-"+player2ELO, DateTime.Now);
          //   ChessAI.ChatServerAndClient.Message msg2 = new ChessAI.ChatServerAndClient.Message("000000", "join", "server", player2 + "-" + player1, newTableCode + "$" + oppSide + "-" + userSide  + "$" + timectrl, DateTime.Now);
 
             comm.SendMessage(msg1.ToJson());

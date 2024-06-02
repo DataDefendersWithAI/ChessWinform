@@ -79,6 +79,9 @@
             ResN = new Button();
             ResY = new Button();
             RestartText = new Label();
+            nextRev = new Button();
+            lastRev = new Button();
+            playRev = new Button();
             flowLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
             WLouterPanel.SuspendLayout();
@@ -685,12 +688,54 @@
             RestartText.Text = "Player X is asking for a draw. Would you accept?";
             RestartText.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // nextRev
+            // 
+            nextRev.BackColor = Color.PaleGoldenrod;
+            nextRev.Font = new Font("Segoe UI", 20F);
+            nextRev.Location = new Point(819, 622);
+            nextRev.Margin = new Padding(3, 2, 3, 2);
+            nextRev.Name = "nextRev";
+            nextRev.Size = new Size(49, 49);
+            nextRev.TabIndex = 30;
+            nextRev.Text = "⏭️";
+            nextRev.UseVisualStyleBackColor = false;
+            nextRev.Click += nextRev_Click;
+            // 
+            // lastRev
+            // 
+            lastRev.BackColor = Color.PaleGoldenrod;
+            lastRev.Font = new Font("Segoe UI", 20F);
+            lastRev.Location = new Point(683, 621);
+            lastRev.Margin = new Padding(3, 2, 3, 2);
+            lastRev.Name = "lastRev";
+            lastRev.Size = new Size(49, 49);
+            lastRev.TabIndex = 31;
+            lastRev.Text = "⏮️";
+            lastRev.UseVisualStyleBackColor = false;
+            lastRev.Click += lastRev_Click;
+            // 
+            // playRev
+            // 
+            playRev.BackColor = Color.YellowGreen;
+            playRev.Font = new Font("Segoe UI", 20F);
+            playRev.Location = new Point(753, 622);
+            playRev.Margin = new Padding(3, 2, 3, 2);
+            playRev.Name = "playRev";
+            playRev.Size = new Size(49, 49);
+            playRev.TabIndex = 32;
+            playRev.Text = "▶️";
+            playRev.UseVisualStyleBackColor = false;
+            playRev.Click += playRev_Click;
+            // 
             // ChessAIClient
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.MintCream;
             ClientSize = new Size(1280, 707);
+            Controls.Add(playRev);
+            Controls.Add(lastRev);
+            Controls.Add(nextRev);
             Controls.Add(RestartAsk);
             Controls.Add(DrawAsk);
             Controls.Add(HomeBtn);
@@ -781,5 +826,8 @@
         private Button ResN;
         private Button ResY;
         private Label RestartText;
+        private Button nextRev;
+        private Button lastRev;
+        private Button playRev;
     }
 }

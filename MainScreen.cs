@@ -80,6 +80,17 @@ namespace winform_chat
             {
                 currentChildForm = hiddenForms[formKey];
                 currentChildForm.Show();
+                // Check if the form has the UpdateFormUI method
+                MethodInfo updateMethod = currentChildForm.GetType().GetMethod("UpdateFomrUI");
+                if (updateMethod != null)
+                {
+                    updateMethod.Invoke(currentChildForm, null);
+                }
+                else
+                {
+                    Debug.WriteLine($"Method UpdateFormUI not found in {formKey}");
+                }
+
             }
             else
             {

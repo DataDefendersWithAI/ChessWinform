@@ -96,6 +96,7 @@
             rvwBtn.TabIndex = 22;
             rvwBtn.Text = "Review";
             rvwBtn.UseVisualStyleBackColor = false;
+            rvwBtn.Click += rvwBtn_Click;
             // 
             // cpyBtn
             // 
