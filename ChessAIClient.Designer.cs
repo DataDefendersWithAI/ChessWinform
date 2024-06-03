@@ -82,6 +82,7 @@
             nextRev = new Button();
             lastRev = new Button();
             playRev = new Button();
+            StopButton = new Button();
             flowLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
             WLouterPanel.SuspendLayout();
@@ -692,7 +693,7 @@
             // 
             nextRev.BackColor = Color.PaleGoldenrod;
             nextRev.Font = new Font("Segoe UI", 20F);
-            nextRev.Location = new Point(819, 622);
+            nextRev.Location = new Point(872, 621);
             nextRev.Margin = new Padding(3, 2, 3, 2);
             nextRev.Name = "nextRev";
             nextRev.Size = new Size(49, 49);
@@ -727,12 +728,26 @@
             playRev.UseVisualStyleBackColor = false;
             playRev.Click += playRev_Click;
             // 
+            // StopButton
+            // 
+            StopButton.BackColor = Color.YellowGreen;
+            StopButton.Font = new Font("Segoe UI", 20F);
+            StopButton.Location = new Point(808, 621);
+            StopButton.Margin = new Padding(3, 2, 3, 2);
+            StopButton.Name = "StopButton";
+            StopButton.Size = new Size(49, 49);
+            StopButton.TabIndex = 33;
+            StopButton.Text = "⏸️";
+            StopButton.UseVisualStyleBackColor = false;
+            StopButton.Click += StopButton_Click;
+            // 
             // ChessAIClient
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.MintCream;
             ClientSize = new Size(1280, 707);
+            Controls.Add(StopButton);
             Controls.Add(playRev);
             Controls.Add(lastRev);
             Controls.Add(nextRev);
@@ -829,5 +844,6 @@
         private Button nextRev;
         private Button lastRev;
         private Button playRev;
+        private Button StopButton;
     }
 }
