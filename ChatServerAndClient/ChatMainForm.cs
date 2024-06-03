@@ -39,6 +39,7 @@ namespace winforms_chat
         public PieceColor Side { get; private set; }
         public string timeCtrl { get; private set; }
 
+        private bool isConnectedToServer = false;
         public ChatMainForm(string tblCode = "123456", string userName = "testUser" , ChessAIClient chClient = null, String side = "", string timectrl ="", int OpponentELO = 1)
 		{
             if (ChatMainForm.isMainThread)
@@ -79,17 +80,27 @@ namespace winforms_chat
             // Send message: {"TableCode": newTableCode, "type": "chat", "from": userName, "to": opponentUserName, "message": message, "date": DateTime.Now}
 			ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message(tableCode, "chat", ourName, opponentUserName, chatmessage, DateTime.Now);
             if (msg == null || comm == null) return;
-            comm.SendMessage(msg.ToJson());
+            isConnectedToServer = comm.SendMessage(msg.ToJson());
+            if (!isConnectedToServer)
+            {
+                Debug.WriteLine("SendHandler: Not connected to server");
+                comm.ClientLoad();
+            }
         }
         public void moveSendHandler(string move)
         {
             // Send message: {"TableCode": newTableCode, "type": "chess", "from": userName, "to": opponentUserName, "message": move, "date": DateTime.Now}
             ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message(tableCode, "chess", ourName, opponentUserName, move, DateTime.Now);
             if (msg == null || comm == null) return;
-            comm.SendMessage(msg.ToJson());
+            isConnectedToServer = comm.SendMessage(msg.ToJson());
             if (chessClient != null)
             {
                 chessClient.timeSyncSend();
+            }
+            if (!isConnectedToServer)
+            {
+                Debug.WriteLine("MoveSendHandler: Not connected to server");
+                comm.ClientLoad();
             }
         }
         public void timeSyncSendHandler(string move) // write in a diff func to prevent recuresive call
@@ -97,7 +108,12 @@ namespace winforms_chat
             // Send message: {"TableCode": newTableCode, "type": "chess", "from": userName, "to": opponentUserName, "message": move, "date": DateTime.Now}
             ChessAI.ChatServerAndClient.Message msg = new ChessAI.ChatServerAndClient.Message(tableCode, "chess", ourName, opponentUserName, move, DateTime.Now);
             if (msg == null || comm == null) return;
-            comm.SendMessage(msg.ToJson());
+            isConnectedToServer = comm.SendMessage(msg.ToJson());
+            if (!isConnectedToServer)
+            {
+                Debug.WriteLine("TimeSyncSendHandler: Not connected to server");
+                comm.ClientLoad();
+            }
         }
 
         private void LogMessage(string message)

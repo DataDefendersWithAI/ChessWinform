@@ -14,6 +14,7 @@ using ChessAI;
 using System.Diagnostics;
 using ChessAI_Bck;
 using winforms_chat;
+using System.Drawing.Design;
 
 namespace winform_chat.DashboardForm;
 public partial class PvpModeForm : Form
@@ -158,7 +159,6 @@ public partial class PvpModeForm : Form
 
             // Background work to reconnect to the server
             cntSvr.Enabled = false;
-            Thread.Sleep(1000);
 
             // Use Invoke to call cntSvr_Click on the main thread
             this.Invoke((Action)(() =>
@@ -630,31 +630,48 @@ public partial class PvpModeForm : Form
 
     private void ChessAIClientFormOnline_FormClosing(object sender, FormClosingEventArgs e)
     {
-        if (ParentForm != null)
+
+        try
         {
-            ParentForm.Show();
+            if (ParentForm != null && !ParentForm.Visible )
+            {
+                ParentForm.Show();
+            }
+
+            if (currentChatMainForm != null)
+            {
+                currentChatMainForm.Close();
+               // currentChatMainForm.Dispose();
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
         }
     }
+
     private void currentChatMainForm_FormClosing(object sender, FormClosingEventArgs e)
     {
-        if (ParentForm != null)
+        
+        try
         {
-
-            ParentForm.Show();
-            try
+            if (ParentForm != null && !ParentForm.Visible)
             {
-                if (chessAIClientFormOnline != null)
-                {
-                    chessAIClientFormOnline.Close();
-                    chessAIClientFormOnline.Dispose();
-                }
+                ParentForm.Show();
             }
-            catch (Exception ex)
+
+            if (chessAIClientFormOnline != null)
             {
-                Debug.WriteLine(ex.Message);
+                chessAIClientFormOnline.Close();
+               // chessAIClientFormOnline.Dispose();
             }
         }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+        }
     }
+
     private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
     {
         label3.Visible = false;

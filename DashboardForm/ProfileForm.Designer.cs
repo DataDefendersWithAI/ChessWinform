@@ -26,6 +26,7 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
+
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProfileForm));
@@ -66,10 +67,10 @@
             panel4.BackColor = Color.Azure;
             panel4.Controls.Add(ReTypePasswordBox);
             panel4.Controls.Add(pictureBox6);
-            panel4.Location = new Point(57, 325);
+            panel4.Location = new Point(3, 325);
             panel4.Margin = new Padding(3, 2, 3, 2);
             panel4.Name = "panel4";
-            panel4.Size = new Size(466, 46);
+            panel4.Size = new Size(520, 46);
             panel4.TabIndex = 39;
             // 
             // ReTypePasswordBox
@@ -114,10 +115,10 @@
             panel2.BackColor = Color.Azure;
             panel2.Controls.Add(PasswordBox);
             panel2.Controls.Add(pictureBox4);
-            panel2.Location = new Point(57, 274);
+            panel2.Location = new Point(3, 274);
             panel2.Margin = new Padding(3, 2, 3, 2);
             panel2.Name = "panel2";
-            panel2.Size = new Size(466, 46);
+            panel2.Size = new Size(520, 46);
             panel2.TabIndex = 36;
             // 
             // PasswordBox
@@ -151,10 +152,10 @@
             panel1.BackColor = Color.Azure;
             panel1.Controls.Add(CurrAccountBox);
             panel1.Controls.Add(pictureBox3);
-            panel1.Location = new Point(57, 62);
+            panel1.Location = new Point(3, 62);
             panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(466, 46);
+            panel1.Size = new Size(520, 46);
             panel1.TabIndex = 35;
             // 
             // CurrAccountBox
@@ -198,10 +199,10 @@
             panel6.BackColor = Color.Azure;
             panel6.Controls.Add(NewAccountBox);
             panel6.Controls.Add(pictureBox1);
-            panel6.Location = new Point(57, 112);
+            panel6.Location = new Point(3, 112);
             panel6.Margin = new Padding(3, 2, 3, 2);
             panel6.Name = "panel6";
-            panel6.Size = new Size(466, 46);
+            panel6.Size = new Size(520, 46);
             panel6.TabIndex = 43;
             // 
             // NewAccountBox
@@ -215,7 +216,7 @@
             NewAccountBox.Name = "NewAccountBox";
             NewAccountBox.Size = new Size(395, 25);
             NewAccountBox.TabIndex = 1;
-            NewAccountBox.Text = "Enter username";
+            NewAccountBox.Text = "Enter new username";
             NewAccountBox.Enter += NewAccountBox_Enter;
             NewAccountBox.Leave += NewAccountBox_Leave;
             // 
@@ -251,10 +252,10 @@
             panel3.BackColor = Color.Azure;
             panel3.Controls.Add(AccountBox);
             panel3.Controls.Add(pictureBox2);
-            panel3.Location = new Point(57, 223);
+            panel3.Location = new Point(3, 223);
             panel3.Margin = new Padding(3, 2, 3, 2);
             panel3.Name = "panel3";
-            panel3.Size = new Size(466, 46);
+            panel3.Size = new Size(520, 46);
             panel3.TabIndex = 45;
             // 
             // AccountBox
@@ -347,6 +348,7 @@
             ResumeLayout(false);
             PerformLayout();
         }
+
 
         #endregion
         private Panel panel4;

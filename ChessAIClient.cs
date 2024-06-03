@@ -25,6 +25,12 @@ namespace ChessAI
 
         // Current username:
 
+        //Varibles for HistoryLog:
+        private List<string> HistoryLog = new List<string>();
+        private IReadOnlyList<Chess.Move> LogHistory;
+        private Thread RunningLog;
+        private bool PauseGame = false;
+
         //public string current_username { get; set; }
 
         private BoardRenderer boardRenderer;
@@ -71,6 +77,7 @@ namespace ChessAI
         {
             try
             {
+                if(!gameStarted) return;
                 string timeSyncStr = Side == PieceColor.White ? timeOur.TotalSeconds + "|" + timeOpponent.TotalSeconds : timeOpponent.TotalSeconds + "|" + timeOur.TotalSeconds;
                 if (currenChatMainForm != null)
                 {
@@ -141,6 +148,7 @@ namespace ChessAI
             lastRev.Visible = false;
             nextRev.Visible = false;
             playRev.Visible = false;
+            StopButton.Visible = false;
 
             //Set name player:
             if (pUser != null)
@@ -188,6 +196,7 @@ namespace ChessAI
                 lastRev.Visible = true;
                 nextRev.Visible = true;
                 playRev.Visible = true;
+                StopButton.Visible = true;
             }
 
             InitGame();
@@ -330,7 +339,7 @@ namespace ChessAI
                         WhiteELO = (Side == PieceColor.White ? playerUser.ELO : opponentUser.ELO),
                         BlackELO = (Side == PieceColor.Black ? playerUser.ELO : opponentUser.ELO),
 
-                        TimeControl = timeControl == "none"?"No limit":timeControl,
+                        TimeControl = timeControl == "none" ? "No limit" : timeControl,
                         Termination = reasonEndGame,
                         PGN = pgn,
                     };
@@ -338,7 +347,7 @@ namespace ChessAI
                     Getuser.AddMatch(save_PGN);
                     if (!isOffline)
                     {
-                        
+
                         if (chessBoard.EndGame.WonSide == Side)
                         {
                             Getuser.ELO += 15;
@@ -351,7 +360,7 @@ namespace ChessAI
                         {
                             Getuser.ELO += 0;
                         }
-                    }               
+                    }
 
                     playerUser = Getuser;
                     // Save the updated user back to the database
@@ -359,7 +368,7 @@ namespace ChessAI
                     if (save_match.StatusCode == System.Net.HttpStatusCode.OK)
                     {
                         Debug.WriteLine("Match saved successfully.");
-                       
+
                     }
                     else
                     {
@@ -530,6 +539,7 @@ namespace ChessAI
         /// </summary>
         private void timeControlInitialize()
         {
+            Debug.WriteLine("Time control: " + timeControl);
             if (isReview || timeControl == "none") // No time limit for offline mode
             {
                 opponentTimer.Visible = false;
@@ -584,6 +594,7 @@ namespace ChessAI
         /// <param name="message"></param>
         private void boardClick(object sender, MouseEventArgs e)
         {
+            if (isReview) return; // if reviewing the game, return
             if (!gameStarted) return; // If game not started, return
             Debug.WriteLineIf(isDebug, "X: " + e.X + " Y: " + e.Y);
 
@@ -771,7 +782,7 @@ namespace ChessAI
         }
         private void InitUserInfo()
         {
-          //  opponentUser = opponentUser == null ? new User(username: "NotFound", elo: 1000) : new LoadUserData().GetUserData(opponentUser.Username); // init opponent
+            //  opponentUser = opponentUser == null ? new User(username: "NotFound", elo: 1000) : new LoadUserData().GetUserData(opponentUser.Username); // init opponent
             // init display
             ourName.Text = playerUser.Username + " ( " + playerUser.ELO + " )";
             opponentName.Text = opponentUser.Username + " ( " + opponentUser.ELO + " )";
@@ -975,7 +986,7 @@ namespace ChessAI
                 new SoundFXHandler(chessBoard, "", "accept"); // accept sound
                 Side = Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
                 currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Rematch) + "RestartAccept-" + Side.OppositeColor());
-                RestartGameOnline(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Rematch) + "RestartAccept-" + Side);
+                RestartGameOnline("RestartAccept-" + Side);
             }
         }
 
@@ -1005,6 +1016,9 @@ namespace ChessAI
                     currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame) + "Resign");
                     if (chessBoard.IsEndGame) return; // if game already ended, return; 
                     chessBoard.Resign(Side);
+                    this.Close();
+                    this.Dispose();
+
                 }
             }
         }
@@ -1047,32 +1061,129 @@ namespace ChessAI
         {
             //clear old chess board
             PgnReview = pgn;
+            isReview = true;
             chessBoard.Clear();
             currentMoveIndex = 0;
             chessBoard = ChessBoard.LoadFromPgn(pgn);
-            panel1.Invalidate();
+            if (chessBoard.ExecutedMoves.Count == 0) return;
+            LogHistory = chessBoard.ExecutedMoves;
+            HistoryLog = chessBoard.MovesToSan;
+            chessBoard.MoveIndex = currentMoveIndex;
+            lastRev_Click(null, null);
+            //panel1.Invalidate();
+
 
         }
 
 
         private void nextRev_Click(object sender, EventArgs e)
         {
-               
-                //chessBoard.Next();
-
+            if (chessBoard.ExecutedMoves.Count == 0)
+            {
+                chessBoard.Clear();
                 panel1.Invalidate();
-            
+                return;
+            }
+            if (sender != null && e != null)
+            {
+                PauseGame = true;
+            }
+            if (currentMoveIndex < (chessBoard.ExecutedMoves.Count - 1))
+            {
+                chessBoard.MoveIndex = currentMoveIndex;
+                currentMoveIndex++;
+                chessBoard.Next();
+                panel1.Invalidate();
+            }
+            else
+            {
+                chessBoard.Last();
+                chessBoard.MoveIndex = chessBoard.ExecutedMoves.Count - 1;
+            }
+
         }
 
         private void lastRev_Click(object sender, EventArgs e)
         {
-                //chessBoard.Previous();
+            if (chessBoard.ExecutedMoves.Count == 0)
+            {
+                chessBoard.Clear();
                 panel1.Invalidate();
+                return;
+            }
+            if (sender != null && e != null)
+            {
+                PauseGame = true;
+            }
+            if (currentMoveIndex < 0)
+            {
+                currentMoveIndex = 0;
+                chessBoard.MoveIndex = currentMoveIndex;
+            }
+            else chessBoard.MoveIndex = currentMoveIndex;
+            chessBoard.Previous();
+            currentMoveIndex--;
+
+            //chessBoard.Previous();
+            //chessBoard.MoveIndex--;
+            panel1.Invalidate();
         }
 
+        private void Display_Log_History()
+        {
+            while (true)
+            {
+                if (PauseGame==true)
+                {
+                    while (true)
+                    {
+                        if (PauseGame == false)
+                        {
+                            break;
+                        }
+                        Thread.Sleep(1000);
+                    }
+                }
+                else
+                {
+                    if (currentMoveIndex == chessBoard.ExecutedMoves.Count - 1)
+                    {
+                        chessBoard.Last();
+                        Thread.Sleep(1000);
+                    }
+                    else
+                    {
+                        nextRev_Click(null, null);
+                        Thread.Sleep(1000);
+                    }
+                }
+                
+            }
+        }
         private void playRev_Click(object sender, EventArgs e)
         {
-         
+
+            if (RunningLog == null)
+            {
+                RunningLog = new Thread(Display_Log_History);
+                RunningLog.IsBackground = true;
+                RunningLog.Start();
+            }
+            else
+            {
+                PauseGame = false;
+            }
+            
+
+        }
+
+        private void StopButton_Click(object sender, EventArgs e)
+        {
+            if (RunningLog != null && RunningLog.IsAlive)
+            {
+                PauseGame = true;
+            }
+            else return;
         }
     }
 }
