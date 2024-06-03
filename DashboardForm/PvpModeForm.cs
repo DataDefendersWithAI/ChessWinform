@@ -46,8 +46,9 @@ public partial class PvpModeForm : Form
     private string OurName;
     private bool isAutoMatching = false;
     private bool isConnectedToServer = false;
-    private bool isServer;
-
+    private bool isServer = false;
+    private bool isChoosenRole = false;
+    private bool isChessAIOnlineClosing = false;
     // Predefined array of time control strings
     public static Dictionary<string, string> TimeControls = new Dictionary<string, string>()
     {
@@ -62,9 +63,6 @@ public partial class PvpModeForm : Form
         { "15|10", "Rapid"},  // 15 minutes, 10 seconds increment
         { "30|20", "Rapid"},  // 30 minutes, 20 seconds increment
         { "60|0", "Classical"},// 60 minutes, no increment
-        { "60|30", "Classical"},// 60 minutes, 30 seconds increment
-        { "90|30", "Classical"},// 90 minutes, 30 seconds increment
-        { "120|60", "Classical"},// 120 minutes, 60 seconds increment
     };
 
     public class PlayerRoom
@@ -100,6 +98,13 @@ public partial class PvpModeForm : Form
         autoPickTimer.Interval = 1000; // Set interval to 1 second (1000 ms)
         autoPickTimer.Tick += new EventHandler(Auto_Matching);
 
+        panelSvr.Visible = false;
+        button1.Visible = false;
+        btn_autoJoin.Visible = false;
+        btn_createRoom.Visible = false;
+        comboBox1.Visible = false;
+        label2.Visible = false;
+        label6.Visible = false;
         log1.Visible = false;
         label3.Visible = false;
         DoubleBuffered = true;
@@ -154,15 +159,42 @@ public partial class PvpModeForm : Form
                 }
                 label5.Text = playerUser.Username + " - Elo: " + playerUser.ELO;
                 listBoxPlayerRooms.Items.Clear();
-                Invalidate();
-            }));
+                if(isChoosenRole == false) return;
+                if(isServer)
+                {
+                    // Server
+                    panelSvr.Visible = true;
+                    button1.Visible = true;
+                    btn_autoJoin.Visible = false;
+                    btn_createRoom.Visible = false;
+                    comboBox1.Visible = false;
+                    label2.Visible = false;
+                    label6.Visible = false;
+                    log1.Visible = false;
+                    label3.Visible = false;
+                    strSvr_Click(null, null);
+                    return;
+                }
+                else
+                {
+                    // Client
+                    panelSvr.Visible = false;
+                    button1.Visible = false;
+                    btn_autoJoin.Visible = true;
+                    btn_createRoom.Visible = true;
+                    comboBox1.Visible = true;
+                    label2.Visible = true;
+                    label6.Visible = true;
+                    log1.Visible = true;
+                    label3.Visible = true;
+                }
 
-            // Background work to reconnect to the server
-            cntSvr.Enabled = false;
+                cntSvr.Text = "Connecting...";
+                cntSvr.BackColor = Color.PaleGoldenrod;
+                cntSvr.Enabled = false;
 
-            // Use Invoke to call cntSvr_Click on the main thread
-            this.Invoke((Action)(() =>
-            {
+                Thread.Sleep(1000);
+
                 cntSvr_Click(null, null); // reconnect to server
             }));
         });
@@ -174,7 +206,7 @@ public partial class PvpModeForm : Form
         if (listBoxPlayerRooms.SelectedItem != null)
         {
             PlayerRoom selectedPlayerRoom = (PlayerRoom)listBoxPlayerRooms.SelectedItem;
-            Debug.WriteLine("[CL] Selected player room: " + selectedPlayerRoom);
+            Debug.WriteLine("[CL] Selected player room: " + selectedPlayerRoom +" with time ctrl : " + selectedPlayerRoom.GameMode );
             if (selectedPlayerRoom != null)
             {
                 if (ParentForm != null)
@@ -194,7 +226,7 @@ public partial class PvpModeForm : Form
                         return;
                     }
                     opponentUser = new LoadUserData().GetUserData(selectedPlayerRoom.NameOfPlayer); //new User(username: selectedPlayerRoom.NameOfPlayer, elo: 404);
-                    BeginPVPGame();
+                    BeginPVPGame(selectedPlayerRoom.GameMode);
                 }
             }
         }
@@ -550,7 +582,7 @@ public partial class PvpModeForm : Form
         ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", OurName, "server", ms1, DateTime.Now);
         isConnectedToServer = comm.SendMessage(message.ToJson());
     }
-    public void BeginPVPGame()
+    public void BeginPVPGame(string presetTimeCtrl = "")
     {
         if (opponentUser == null)
         {
@@ -583,9 +615,9 @@ public partial class PvpModeForm : Form
         // to: 
         // message: 
         // date: DateTime.Now
-
+        var timeCtrl = string.IsNullOrEmpty(presetTimeCtrl) ? selectedTimeCtrl : presetTimeCtrl;
         // this will be classified as normal user if messafe is empty
-        string ms1 = ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerBeginGame) + selectedTimeCtrl + "@" + OurName + "-" + opponentUser.Username;
+        string ms1 = ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ServerBeginGame) + timeCtrl + "@" + OurName + "-" + opponentUser.Username;
         ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", OurName, "server", ms1, DateTime.Now);
         isConnectedToServer = comm.SendMessage(message.ToJson());
     }
@@ -615,6 +647,7 @@ public partial class PvpModeForm : Form
             chessAIClientFormOnline.SetupGame(pUser: playerUser, oUser: opponentUser, timeCtrl: timectrl, side: side, chatMainForm: currentChatMainForm);
             ParentForm.isInPvPMode = true;
             ParentForm.Hide();
+            isChessAIOnlineClosing = false;
             chessAIClientFormOnline.FormClosing += ChessAIClientFormOnline_FormClosing;
             // chessAIClientFormOnline.FormClosing += ChessAIClientFormOnline_FormClosing;
             currentChatMainForm.FormClosing += currentChatMainForm_FormClosing;
@@ -630,10 +663,12 @@ public partial class PvpModeForm : Form
 
     private void ChessAIClientFormOnline_FormClosing(object sender, FormClosingEventArgs e)
     {
+        if (isChessAIOnlineClosing) return;
+        isChessAIOnlineClosing = true;
 
         try
         {
-            if (ParentForm != null && !ParentForm.Visible )
+            if (ParentForm != null && !ParentForm.Visible)
             {
                 ParentForm.Show();
             }
@@ -641,18 +676,24 @@ public partial class PvpModeForm : Form
             if (currentChatMainForm != null)
             {
                 currentChatMainForm.Close();
-               // currentChatMainForm.Dispose();
+                currentChatMainForm.Dispose();
             }
         }
         catch (Exception ex)
         {
             Debug.WriteLine(ex.Message);
         }
+        finally
+        {
+            isChessAIOnlineClosing = false;
+        }
     }
 
     private void currentChatMainForm_FormClosing(object sender, FormClosingEventArgs e)
     {
-        
+        if (isChessAIOnlineClosing) return;
+        isChessAIOnlineClosing = true;
+
         try
         {
             if (ParentForm != null && !ParentForm.Visible)
@@ -663,12 +704,16 @@ public partial class PvpModeForm : Form
             if (chessAIClientFormOnline != null)
             {
                 chessAIClientFormOnline.Close();
-               // chessAIClientFormOnline.Dispose();
+                chessAIClientFormOnline.Dispose();
             }
         }
         catch (Exception ex)
         {
             Debug.WriteLine(ex.Message);
+        }
+        finally
+        {
+            isChessAIOnlineClosing = false;
         }
     }
 
@@ -715,6 +760,7 @@ public partial class PvpModeForm : Form
 
     private async void cntSvr_Click(object sender, EventArgs e)
     {
+        isChoosenRole = true;
         cntSvr.Enabled = false;
         log1.Visible = false;
         isServer = false;
@@ -823,6 +869,7 @@ public partial class PvpModeForm : Form
 
     private void strSvr_Click(object sender, EventArgs e)
     {
+        isChoosenRole = true;
         isServer = true;
         uiClientRefresh();
         VerifyAndSetIP();
@@ -839,7 +886,7 @@ public partial class PvpModeForm : Form
         else
         {
             // create new server log
-            serverLog = new ChatServerLog(false); // true = Hide the Code form after load
+            serverLog = new ChatServerLog(false, this ); // true = Hide the Code form after load
             serverLog.Show();
             serverLog.Hide();
             strSvr.Text = "Stop server";
@@ -849,12 +896,18 @@ public partial class PvpModeForm : Form
 
     private void uiClientRefresh()
     {
+        if (isChoosenRole == false) return;
         if (isServer)
         {
             cntSvr.Visible = false;
             btn_createRoom.Visible = false;
             btn_autoJoin.Visible = false;
             comboBox1.Visible = false;
+            listBoxPlayerRooms.Visible = false;
+            button1.Visible = false;
+            label2.Visible = false;
+            label6.Visible = false;
+            panelSvr.Visible = true;
             label1.Text = "Room list";
 
             label3.Text = "You are now a server!";
@@ -869,6 +922,11 @@ public partial class PvpModeForm : Form
             btn_createRoom.Visible = true;
             btn_autoJoin.Visible = true;
             comboBox1.Visible = true;
+            listBoxPlayerRooms.Visible = true;
+            button1.Visible = true;
+            label2.Visible = true;
+            label6.Visible = true;
+            panelSvr.Visible = false;
             label1.Text = "Select room";
         }
     }
@@ -877,6 +935,7 @@ public partial class PvpModeForm : Form
     {
         if (clientJoin != null) // Dispose the old form
         {
+            listBoxPlayerRooms.Items.Clear();
             clientJoin.Close();
             clientJoin.Dispose();
             clientJoin = null;
@@ -910,7 +969,21 @@ public partial class PvpModeForm : Form
         // When user closes the form, send message to server
         ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", OurName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientLeaveRoom), DateTime.Now);
         isConnectedToServer = comm.SendMessage(message.ToJson());
-        comm.ClientClose();
+       // comm.ClientClose();
+    }
+
+    public void AddOwnedForm( ChatServerCode codeForm = null)
+    {
+        if(codeForm != null)
+        {
+            codeForm.TopLevel = false;
+            codeForm.FormBorderStyle = FormBorderStyle.None;
+            codeForm.Dock = DockStyle.Fill;
+            panelSvr.Controls.Add(codeForm);
+            panelSvr.Tag = codeForm;
+            codeForm.BringToFront();
+            codeForm.Show();
+        }
     }
 
 }

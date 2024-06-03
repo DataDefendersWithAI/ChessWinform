@@ -26,9 +26,6 @@ namespace winform_chat.DashboardForm
             { "15|10", "Rapid"},  // 15 minutes, 10 seconds increment
             { "30|20", "Rapid"},  // 30 minutes, 20 seconds increment
             { "60|0", "Classical"},// 60 minutes, no increment
-            { "60|30", "Classical"},// 60 minutes, 30 seconds increment
-            { "90|30", "Classical"},// 90 minutes, 30 seconds increment
-            { "120|60", "Classical"},// 120 minutes, 60 seconds increment
         };
 
 

@@ -46,6 +46,7 @@
             log1 = new Label();
             label6 = new Label();
             imageList1 = new ImageList(components);
+            panelSvr = new Panel();
             SuspendLayout();
             // 
             // btn_createRoom
@@ -116,7 +117,6 @@
             listBoxPlayerRooms.Name = "listBoxPlayerRooms";
             listBoxPlayerRooms.Size = new Size(464, 420);
             listBoxPlayerRooms.TabIndex = 8;
-            //listBoxPlayerRooms.SelectedIndexChanged += listBoxPlayerRooms_SelectedIndexChanged;
             // 
             // label3
             // 
@@ -233,12 +233,21 @@
             imageList1.TransparentColor = Color.Transparent;
             imageList1.Images.SetKeyName(0, "Clock.png");
             // 
+            // panelSvr
+            // 
+            panelSvr.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            panelSvr.Location = new Point(12, 52);
+            panelSvr.Name = "panelSvr";
+            panelSvr.Size = new Size(484, 445);
+            panelSvr.TabIndex = 26;
+            // 
             // PvpModeForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.PowderBlue;
             ClientSize = new Size(772, 571);
+            Controls.Add(panelSvr);
             Controls.Add(label6);
             Controls.Add(log1);
             Controls.Add(label5);
@@ -280,5 +289,6 @@
         private Label log1;
         private Label label6;
         private ImageList imageList1;
+        private Panel panelSvr;
     }
 }

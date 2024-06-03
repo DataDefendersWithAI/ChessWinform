@@ -11,6 +11,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using winform_chat.DashboardForm;
 
 namespace winforms_chat
 {
@@ -23,15 +24,15 @@ namespace winforms_chat
         int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
         private System.Windows.Forms.Timer autoPickTimer;
         private bool isAutoPicking = false;
-   
-        public ChatServerCode()
+        private PvpModeForm pvpForm;
+        public ChatServerCode(PvpModeForm pForm = null )
         {
             InitializeComponent();
             // Initialize timer
             autoPickTimer = new System.Windows.Forms.Timer();
             autoPickTimer.Interval = 500; // Set interval to 1 second (1000 ms)
             autoPickTimer.Tick += btn_joinRandom_Click;
-            
+            pvpForm = pForm;
         }
 
         private void ClientForm_Load(object sender, EventArgs e)
@@ -46,6 +47,11 @@ namespace winforms_chat
             listview_userQueue.Columns.Add("Elo", 200);
             listview_userQueue.Columns.Add("Status", 100);
             listview_userQueue.Columns.Add("Type", 200);
+
+            if(pvpForm != null)
+            {
+                pvpForm.AddOwnedForm(this);
+            }
         }
 
         private void LogMessage(string message)

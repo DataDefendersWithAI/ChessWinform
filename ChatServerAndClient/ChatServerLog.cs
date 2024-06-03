@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using ChessAI;
 using ChessAI.ChatServerAndClient;
+using winform_chat.DashboardForm;
 
 namespace winforms_chat
 {
@@ -25,14 +26,15 @@ namespace winforms_chat
         int serverPort = ChessAI.ChatServerAndClient.Constants.serverPort;
         bool isFormHideOnLoad;
         ChatServerCode codeForm;
-        public ChatServerLog(bool hidOnLoad = false)
+        PvpModeForm pvpForm;
+        public ChatServerLog(bool hidOnLoad = false, PvpModeForm pForm = null )
         {
             InitializeComponent();
             this.FormClosing += new FormClosingEventHandler(this.ServerForm_Closing);
             isFormHideOnLoad = hidOnLoad;
             serverComm = new ServerCommunication(serverIP, serverPort, LogMessage);
             serverComm.StartServer();
-
+            pvpForm = pForm;
             if (serverComm.IsServerRunning())
             {
                 Debug.WriteLine("Server is running");
@@ -54,7 +56,8 @@ namespace winforms_chat
                 codeForm.Close(); // clear the code form
                 codeForm.Dispose();
             }
-            codeForm = new ChatServerCode();
+
+            codeForm = new ChatServerCode(pvpForm);
             codeForm.Show();
 
             if (isFormHideOnLoad)

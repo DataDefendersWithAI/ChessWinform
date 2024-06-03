@@ -351,7 +351,7 @@ namespace ChessAI
                         {
                             Getuser.ELO += 15;
                         }
-                        else if (chessBoard.EndGame.WonSide == Side.OppositeColor() && Getuser.ELO >= 100)
+                        else if (chessBoard.EndGame.WonSide == Side.OppositeColor() && Getuser.ELO > 100)
                         {
                             Getuser.ELO -= 15;
                         }
@@ -538,7 +538,7 @@ namespace ChessAI
         /// </summary>
         private void timeControlInitialize()
         {
-            Debug.WriteLine("Time control: " + timeControl);
+            Debug.WriteLine("[CAI] Time control: " + timeControl);
             if (isReview || timeControl == "none") // No time limit for offline mode
             {
                 opponentTimer.Visible = false;
@@ -984,8 +984,8 @@ namespace ChessAI
             {
                 new SoundFXHandler(chessBoard, "", "accept"); // accept sound
                 Side = Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
-                currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Rematch) + "RestartAccept-" + Side.OppositeColor());
                 RestartGameOnline("RestartAccept-" + Side);
+                currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Rematch) + "RestartAccept-" + Side.OppositeColor()); 
             }
         }
 
@@ -1068,7 +1068,10 @@ namespace ChessAI
             LogHistory = chessBoard.ExecutedMoves;
             HistoryLog = chessBoard.MovesToSan;
             chessBoard.MoveIndex = currentMoveIndex;
+            new SoundFXHandler(chessBoard, "", "start"); // start game sound
+
             lastRev_Click(null, null);
+            
             //panel1.Invalidate();
 
 
@@ -1100,6 +1103,13 @@ namespace ChessAI
                 chessBoard.MoveIndex = chessBoard.ExecutedMoves.Count - 1;
             }
 
+            // check if the game is ended
+           
+            if (chessBoard.ExecutedMoves.Count - 1 != chessBoard.MoveIndex)
+            {
+                new SoundFXHandler(chessBoard, "", "move");
+            }
+
         }
 
         private void lastRev_Click(object sender, EventArgs e)
@@ -1120,11 +1130,14 @@ namespace ChessAI
                 chessBoard.MoveIndex = currentMoveIndex;
             }
             else chessBoard.MoveIndex = currentMoveIndex;
+
             chessBoard.Previous();
             currentMoveIndex--;
-
-            //chessBoard.Previous();
-            //chessBoard.MoveIndex--;
+            // check if the game is ended
+            if (chessBoard.MoveIndex != -1 )
+            {
+                new SoundFXHandler(chessBoard, "", "move");
+            }
             panel1.Invalidate();
         }
 

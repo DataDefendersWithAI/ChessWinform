@@ -29,10 +29,10 @@ namespace winform_chat
         public LoginForm()
         {
             InitializeComponent();
-            AccountBox.Text = "Null";
-            PasswordBox.Text = "p1c0CTFp4s$%2255";
-            PasswordBox.PasswordChar = '*';
-            PasswordBox.UseSystemPasswordChar = true;
+          //  AccountBox.Text = "Null";
+           // PasswordBox.Text = "p1c0CTFp4s$%2255";
+           // PasswordBox.PasswordChar = '*';
+           // PasswordBox.UseSystemPasswordChar = true;
         }
 
         private void AccountBox_Enter(object sender, EventArgs e)

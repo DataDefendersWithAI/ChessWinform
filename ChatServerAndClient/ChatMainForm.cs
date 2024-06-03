@@ -84,7 +84,7 @@ namespace winforms_chat
             if (!isConnectedToServer)
             {
                 Debug.WriteLine("SendHandler: Not connected to server");
-                comm.ClientLoad();
+               // comm.ClientLoad();
             }
         }
         public void moveSendHandler(string move)
@@ -100,7 +100,7 @@ namespace winforms_chat
             if (!isConnectedToServer)
             {
                 Debug.WriteLine("MoveSendHandler: Not connected to server");
-                comm.ClientLoad();
+               // comm.ClientLoad();
             }
         }
         public void timeSyncSendHandler(string move) // write in a diff func to prevent recuresive call
@@ -112,7 +112,7 @@ namespace winforms_chat
             if (!isConnectedToServer)
             {
                 Debug.WriteLine("TimeSyncSendHandler: Not connected to server");
-                comm.ClientLoad();
+              //  comm.ClientLoad();
             }
         }
 

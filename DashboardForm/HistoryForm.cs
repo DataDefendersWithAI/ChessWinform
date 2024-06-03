@@ -58,8 +58,9 @@ namespace winform_chat.DashboardForm
             listBoxHistory.DrawMode = DrawMode.OwnerDrawFixed;
             listBoxHistory.DrawItem += ListBoxHistory_DrawItem;
 
-
-            listBoxHistory.Items.AddRange(pgnLogs.ToArray());
+            var arr = pgnLogs.ToArray();
+            Array.Reverse(arr);
+            listBoxHistory.Items.AddRange(arr);
             if (listBoxHistory.Items.Count > 0)
                 listBoxHistory.SelectedIndex = 0;
         }
