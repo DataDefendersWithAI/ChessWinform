@@ -9,6 +9,8 @@ using System.Diagnostics;
 using System.Media;
 using ChessAI_Bck;
 using ChessAI;
+using System.Collections.Concurrent;
+using System.Drawing;
 
 namespace ChessAI
 {
@@ -50,133 +52,169 @@ namespace ChessAI
 
         public void DrawBoard(Graphics g, ChessBoard chessBoard, int edgeSet = 800, bool isDebug = false, PieceColor side = null)
         {
-           
-            if (g == null)
-            {
-                Debug.WriteLine("Graphics object is null");
-            }
-            debugMode = isDebug;
-            edge = edgeSet;
-            Offset = new Size((int)Math.Floor(edge * 0.1), (int)Math.Floor(edge * 0.1));
-            TileSize = new Size(( int) (edge - Offset.Width*2) / noOfTiles,(int) (edge-Offset.Height*2) /noOfTiles);
-
-
             try
             {
-                // Pre-calculate valid moves and store them in validMovesGrid
-                CalculateValidMoves(chessBoard, side);
-                // Draw tiles and pieces separately for better performance
-                Parallel.Invoke
-                    (() => DrawTiles(g, chessBoard, side),
-                    () => DrawPieces(g, chessBoard, side)
-                    );
-            } catch (Exception e)
-            {
-                Debug.WriteLineIf(isDebug,"Error in DrawBoard: " + e.Message);
-            }
+                if (g == null)
+                {
+                    Debug.WriteLine("Graphics object is null");
+                }
+                debugMode = isDebug;
+                edge = edgeSet;
+                Offset = new Size((int)Math.Floor(edge * 0.1), (int)Math.Floor(edge * 0.1));
+                TileSize = new Size((int)(edge - Offset.Width * 2) / noOfTiles, (int)(edge - Offset.Height * 2) / noOfTiles);
 
+
+                try
+                {
+                    // Pre-calculate valid moves and store them in validMovesGrid
+                    CalculateValidMoves(chessBoard, side);
+                    // Draw tiles and pieces separately for better performance
+                    Parallel.Invoke
+                        (() => DrawTiles(g, chessBoard, side),
+                        () => DrawPieces(g, chessBoard, side)
+                        );
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLineIf(isDebug, "Error in DrawBoard: " + e.Message);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLineIf(isDebug, "Error in DrawBoard: " + e.Message);
+            }
         }
 
         private void DrawTiles(Graphics g, ChessBoard chessBoard, PieceColor side)
         {
-            bool white = true;
-            Brush b;
-            Pen pen = new Pen(new SolidBrush(Color.Black), 0);
-
-            for (int i = 0; i < noOfTiles; i++)
+            try
             {
-                for (int j = 0; j < noOfTiles; j++)
+                bool white = true;
+                Brush whiteBrush = new SolidBrush(WhiteTilesColor);
+                Brush blackBrush = new SolidBrush(BlackTilesColor);
+                Brush checkBrush = new SolidBrush(PositionColor.Check);
+                Brush pathBrush = new SolidBrush(PositionColor.Path);
+                Brush notPathBrush = new SolidBrush(PositionColor.NotPath);
+                Pen defaultPen = new Pen(Color.Black, 0);
+                Pen selectedPen = new Pen(Color.Black, 2);
+                Font coordFontSmall = new Font("Arial", 10);
+                Font coordFontLarge = new Font("Arial", 13);
+                Brush redBrush = new SolidBrush(Color.Red);
+
+
+                for (int i = 0; i < noOfTiles; i++)
                 {
-                    var x = i;
-                    var y = j;
-                    if (side == PieceColor.Black) // if the side is black, flip the board
+                    for (int j = 0; j < noOfTiles; j++)
                     {
-                        x = noOfTiles - 1 - i;
-                        y = noOfTiles - 1 - j;
+                        var x = i;
+                        var y = j;
+                        if (side == PieceColor.Black) // if the side is black, flip the board
+                        {
+                            x = noOfTiles - 1 - i;
+                            y = noOfTiles - 1 - j;
+                        }
+
+
+                        // Use a single brush object for different tile colors
+                        //Mark all posibles moves
+                        Brush b = white ? whiteBrush : blackBrush;
+                        Pen pen = defaultPen;
+
+                        if (selectedPiece != null && (validMovesGrid[x, y] || selectedPiece.X == x && selectedPiece.Y == y))
+                        {
+                            b = (chessBoard[selectedPiece.toSAN()] != null && chessBoard.Turn == chessBoard[selectedPiece.toSAN()].Color) ? chessBoard.Turn == side || showOpponentValidMoves && chessBoard.Turn != side ? pathBrush :notPathBrush :notPathBrush;
+                            pen = selectedPen;
+
+                        }
+
+                        // If white kings are in check, mark the tiles
+                        if (chessBoard.WhiteKingChecked && chessBoard.WhiteKing.X == x && chessBoard.WhiteKing.Y == noOfTiles - 1 - y)
+                        {
+                            b = checkBrush;
+                        }
+                        // If black kings are in check, mark the tiles
+                        if (chessBoard.BlackKingChecked && chessBoard.BlackKing.X == x && chessBoard.BlackKing.Y == noOfTiles - 1 - y)
+                        {
+                            b = checkBrush;
+                        }
+
+                        g.FillRectangle(b, i * TileSize.Width + Offset.Width, j * TileSize.Height + Offset.Height, TileSize.Width, TileSize.Height);
+                        g.DrawRectangle(pen, i * TileSize.Width + Offset.Width, j * TileSize.Height + Offset.Height, TileSize.Width, TileSize.Height);
+
+
+
+                        if (showTileCoord)
+                        {
+                            g.DrawString((char)('a' + x) + (noOfTiles - y).ToString(), coordFontSmall, redBrush , i * TileSize.Width + Offset.Width + 5, j * TileSize.Height + Offset.Height + 5);
+                        }
+
+                        if (j == noOfTiles - 1)
+                        {
+                            g.DrawString(((char)('a' + x)).ToString(),coordFontLarge,redBrush , i * TileSize.Width + Offset.Width + TileSize.Width - (float)(TileSize.Width * .7), j * TileSize.Height + Offset.Height + TileSize.Height + (float)(TileSize.Height * .2));
+                        }
+                        if (i == 0)
+                        {
+                            g.DrawString((noOfTiles - y).ToString(), coordFontLarge, redBrush, i * TileSize.Width + Offset.Width - (float)(TileSize.Width * .5), j * TileSize.Height + Offset.Height + (float)(TileSize.Height * .2));
+                        }
+
+                        white = !white;
                     }
-
-
-                    // Use a single brush object for different tile colors
-                    //Mark all posibles moves
-                    b = white ? new SolidBrush(WhiteTilesColor) : new SolidBrush(BlackTilesColor);
-                    pen = new Pen(new SolidBrush(Color.Black), 0);
-
-                    if (selectedPiece != null && (validMovesGrid[x, y] || selectedPiece.X == x && selectedPiece.Y == y))
-                    {
-                        b = (chessBoard[selectedPiece.toSAN()] != null && chessBoard.Turn == chessBoard[selectedPiece.toSAN()].Color) ? chessBoard.Turn == side || showOpponentValidMoves && chessBoard.Turn != side ? new SolidBrush(PositionColor.Path) : new SolidBrush(PositionColor.NotPath) : new SolidBrush(PositionColor.NotPath);
-                        pen = new Pen(new SolidBrush(Color.Black), 2);
-
-                    }
-
-                    // If white kings are in check, mark the tiles
-                    if (chessBoard.WhiteKingChecked && chessBoard.WhiteKing.X == x && chessBoard.WhiteKing.Y == noOfTiles - 1 - y)
-                    {
-                        b = new SolidBrush(PositionColor.Check);
-                    }
-                    // If black kings are in check, mark the tiles
-                    if (chessBoard.BlackKingChecked && chessBoard.BlackKing.X == x && chessBoard.BlackKing.Y == noOfTiles - 1 - y)
-                    {
-                        b = new SolidBrush(PositionColor.Check);
-                    }
-
-                    g.FillRectangle(b, i * TileSize.Width + Offset.Width, j * TileSize.Height + Offset.Height, TileSize.Width, TileSize.Height);
-                    g.DrawRectangle(pen, i * TileSize.Width + Offset.Width, j * TileSize.Height + Offset.Height, TileSize.Width, TileSize.Height);
-
-
-
-                    if (showTileCoord)
-                    {
-                        g.DrawString((char)('a' + x) + (noOfTiles - y).ToString(), new Font("Arial", 10), new SolidBrush(Color.Red), i * TileSize.Width + Offset.Width + 5, j * TileSize.Height + Offset.Height + 5);
-                    }
-
-                    if (j == noOfTiles - 1)
-                    {
-                        g.DrawString(((char)('a' + x)).ToString(), new Font("Arial", 13), new SolidBrush(Color.Red), i * TileSize.Width + Offset.Width + TileSize.Width - (float)(TileSize.Width * .7), j * TileSize.Height + Offset.Height + TileSize.Height + (float)(TileSize.Height * .2));
-                    }
-                    if (i == 0)
-                    {
-                        g.DrawString((noOfTiles - y).ToString(), new Font("Arial", 13), new SolidBrush(Color.Red), i * TileSize.Width + Offset.Width - (float)(TileSize.Width * .5), j * TileSize.Height + Offset.Height + (float)(TileSize.Height * .2));
-                    }
-
-
-
-                    // Dispose the brush after use
-                    b.Dispose();
-
                     white = !white;
                 }
-                white = !white;
+
+                whiteBrush.Dispose();
+                blackBrush.Dispose();
+                checkBrush.Dispose();
+                pathBrush.Dispose();
+                notPathBrush.Dispose();
+                defaultPen.Dispose();
+                selectedPen.Dispose();
+                coordFontSmall.Dispose();
+                coordFontLarge.Dispose();
+                redBrush.Dispose();
+
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLineIf(debugMode, "Error in DrawTiles: " + e.Message);
             }
         }
 
         private void DrawPieces(Graphics g, ChessBoard chessBoard, PieceColor side)
         {
-            Bitmap bitmap;
-
-            for (int i = 0; i < noOfTiles; i++)
+            try
             {
-                for (int j = 0; j < noOfTiles; j++)
-                {
-                    // Retrieve the piece once instead of multiple times
-                    var x = i;
-                    var y = j;
-                    if (side == PieceColor.Black) // if the side is black, flip the board
-                    {
-                        x = noOfTiles - 1 - i;
-                        y = noOfTiles - 1 - j;
-                    }
+                Bitmap bitmap;
 
-                    var piece = chessBoard[new Position(x, y).toSAN()];
-                    if (piece != null)
+                for (int i = 0; i < noOfTiles; i++)
+                {
+                    for (int j = 0; j < noOfTiles; j++)
                     {
-                        bitmap = new PiecesCustomize().mapFromSANToBitmap(g, piece.ToString()[1], piece.ToString()[0] == 'w');
-                        if (bitmap != null)
+                        // Retrieve the piece once instead of multiple times
+                        var x = i;
+                        var y = j;
+                        if (side == PieceColor.Black) // if the side is black, flip the board
                         {
-                            g.DrawImage(bitmap, i * TileSize.Width + Offset.Width, j * TileSize.Height + Offset.Height, TileSize.Width, TileSize.Height);
-                            bitmap.Dispose(); // Dispose the bitmap after use
+                            x = noOfTiles - 1 - i;
+                            y = noOfTiles - 1 - j;
+                        }
+
+                        var piece = chessBoard[new Position(x, y).toSAN()];
+                        if (piece != null)
+                        {
+                            bitmap = new PiecesCustomize().mapFromSANToBitmap(g, piece.ToString()[1], piece.ToString()[0] == 'w');
+                            if (bitmap != null)
+                            {
+                                g.DrawImage(bitmap, i * TileSize.Width + Offset.Width, j * TileSize.Height + Offset.Height, TileSize.Width, TileSize.Height);
+                                bitmap.Dispose(); // Dispose the bitmap after use
+                            }
                         }
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLineIf(debugMode, "Error in DrawPieces: " + e.Message);
             }
         }
         private void CalculateValidMoves(ChessBoard chessBoard, PieceColor side)

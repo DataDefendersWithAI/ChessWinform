@@ -169,14 +169,22 @@ namespace winform_chat
 
         private void MainScreen_FormClosed(object sender, FormClosedEventArgs e)
         {
-            isLoggedOut = true;
-            this.Dispose();
-            this.Close();
-            if (isInPvPMode == true)
+            try
             {
-                isInPvPMode = false;
-                LoginForm loginForm = new LoginForm();
-                loginForm.Show();
+                isLoggedOut = true;
+
+                this.Dispose();
+                this.Close();
+                if (isInPvPMode == true)
+                {
+                    isInPvPMode = false;
+                    LoginForm loginForm = new LoginForm();
+                    loginForm.Show();
+                }
+            }
+            catch (System.Exception)
+            {
+                Debug.WriteLine("Error in MainScreen_FormClosed");
             }
         }
 

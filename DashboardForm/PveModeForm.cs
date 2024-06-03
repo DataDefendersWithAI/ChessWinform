@@ -50,7 +50,10 @@ namespace winform_chat.DashboardForm
         public void UpdateFomrUI()
         {
             Debug.WriteLine("[PVE] Pve UI updating...");
-            playerUser = new LoadUserData().GetUserData(playerUser.Username); // update new data
+            Task.Run(() =>
+            {
+                playerUser = new LoadUserData().GetUserData(playerUser.Username); // update new data
+            });
             Invalidate();
         }
 

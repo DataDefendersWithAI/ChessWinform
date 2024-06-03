@@ -220,7 +220,7 @@ namespace ChessAI
             {
                 OpponentAIMove(); // first move for AI white
             }
-
+            
             LogMessage("Game started! You are: " + Side);
             panel1.Invalidate(); // Redraw whole board
             timeControlInitialize();

@@ -99,6 +99,7 @@
         {
           "DockedWidth": 200,
           "SelectedChildIndex": 5,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Document",
@@ -143,7 +144,7 @@
               "ToolTip": "E:\\Stuff or sth like that\\LapTrinhMangCanBan\\TestingGeraChess\\ChessWinform\\ChessAIClient.cs [Design]",
               "RelativeToolTip": "ChessAIClient.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-06-01T12:31:43.248Z",
+              "WhenOpened": "2024-06-02T08:39:35.574Z",
               "EditorCaption": " [Design]"
             },
             {
@@ -347,7 +348,8 @@
               "ToolTip": "E:\\Stuff or sth like that\\LapTrinhMangCanBan\\TestingGeraChess\\ChessWinform\\ChatServerAndClient\\ChatClientJoin.cs [Design]",
               "RelativeToolTip": "ChatServerAndClient\\ChatClientJoin.cs [Design]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-05-31T17:53:12.923Z"
+              "WhenOpened": "2024-05-31T17:53:12.923Z",
+              "EditorCaption": " [Design]"
             },
             {
               "$type": "Document",
