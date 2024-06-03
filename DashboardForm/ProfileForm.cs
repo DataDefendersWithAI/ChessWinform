@@ -4,6 +4,7 @@ using FireSharp.Config;
 using FireSharp.Interfaces;
 using System.Security.Cryptography;
 using ChessAI_Bck;
+using System.Diagnostics.Eventing.Reader;
 
 namespace winform_chat.DashboardForm
 {
@@ -16,9 +17,12 @@ namespace winform_chat.DashboardForm
         };
         IFirebaseClient Client;
         private User playerUser;
-        public ProfileForm(User pUser)
+        //Update user event
+        private MainScreen ParentForm;
+        public ProfileForm(User pUser, MainScreen thisMainScreen = null)
         {
             InitializeComponent();
+            if (thisMainScreen != null) ParentForm = thisMainScreen;
             if (pUser != null)
             {
                 playerUser = pUser;
@@ -178,6 +182,44 @@ namespace winform_chat.DashboardForm
                 }
                 else
                 {
+                    if (update_user.MatchHistory.Count > 0)
+                    {
+                        var opponent = "";
+                        foreach (var match in update_user.MatchHistory)
+                        {
+                            var match_pgn = match.PGN;
+                            var match_id = match.ID;    
+                            if (match.Black == CurrAccountBox.Text.Trim())
+                            {
+                                match.Black = NewAccountBox.Text.Trim();
+                                match.BlackELO = update_user.ELO;
+                                opponent = match.White;
+                            }
+                            else
+                            {
+                                match.White = NewAccountBox.Text.Trim();
+                                match.WhiteELO = update_user.ELO;
+                                opponent = match.Black;
+                            }
+                            if (match.Result.Contains(CurrAccountBox.Text.Trim())) match.Result = match.Result.Replace(CurrAccountBox.Text.Trim(), NewAccountBox.Text.Trim());
+                            if (opponent != "AI")
+                            {
+                                var update_opponent = await Client.GetAsync("Users/" + EncodeSha256(opponent));
+                                var opponent_user = update_opponent.ResultAs<User>();
+                                for (int i = 0; i < opponent_user.MatchHistory.Count; i++)
+                                {
+                                    if (opponent_user.MatchHistory[i].PGN == match_pgn || opponent_user.MatchHistory[i].ID==match_id)
+                                    {
+                                        opponent_user.MatchHistory[i] = match;
+                                        break;
+                                    }
+                                }
+                                var set_opponent = await Client.SetAsync("Users/" + EncodeSha256(opponent), opponent_user);
+                            }
+                           
+                        }
+                    }
+                    
                     var delete_user = await Client.DeleteAsync("Users/" + EncodeSha256(CurrAccountBox.Text));
                     var set_user = await Client.SetAsync("Users/" + EncodeSha256(NewAccountBox.Text), update_user);
                     StatusText.Text = "Current Status: User Updated";
@@ -185,6 +227,7 @@ namespace winform_chat.DashboardForm
                     CurrAccountBox.ForeColor = Color.Gray;
                     NewAccountBox.Text = "Enter new username";
                     NewAccountBox.ForeColor = Color.Gray;
+                    ParentForm.playerUser = update_user;
                 }
             }
         }
@@ -222,6 +265,7 @@ namespace winform_chat.DashboardForm
                 PasswordBox.ForeColor = Color.Gray;
                 ReTypePasswordBox.Text = "Retype password";
                 ReTypePasswordBox.ForeColor = Color.Gray;
+                ParentForm.playerUser = update_user;
             }
         }
     }

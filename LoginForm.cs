@@ -98,7 +98,7 @@ namespace winform_chat
                 var temp = EncodeSha256(AccountBox.Text);
                 var find_user = JsonConvert.DeserializeObject<User>(searching_user.Body.ToString());
 
-                if (find_user.Username == AccountBox.Text && find_user.Password == EncodeSha256(PasswordBox.Text))
+                if (find_user != null && find_user.Username == AccountBox.Text && find_user.Password == EncodeSha256(PasswordBox.Text))
                 {
                     StatusText.Text = "Current Status: Login successful";
 

@@ -91,7 +91,7 @@ namespace winform_chat.DashboardForm
         modeDepth = depth;
         this.Hide();
         Debug.WriteLine($"[PVE] Starting PVE mode with depth: {modeDepth} side: {selectedSide} time control: {selectedTimeCtrl}");
-            var newboard = new ChessAIClient(modeDepth, isOffl: true, pUser: playerUser, setSide: selectedSide, timeCtrl: selectedTimeCtrl);
+        var newboard = new ChessAIClient(modeDepth, isOffl: true, pUser: playerUser, setSide: selectedSide, timeCtrl: selectedTimeCtrl);
         newboard.Show();
         this.Show();
     }
