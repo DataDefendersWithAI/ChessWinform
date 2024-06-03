@@ -36,12 +36,6 @@
             cntSvr = new Button();
             OfflineButton = new Button();
             imageList1 = new ImageList(components);
-            flowLayoutPanel1 = new FlowLayoutPanel();
-            Queen = new Button();
-            Rook = new Button();
-            Knight = new Button();
-            Bishop = new Button();
-            label1 = new Label();
             panel1 = new Panel();
             WLouterPanel = new Panel();
             reasonText = new Label();
@@ -79,7 +73,10 @@
             ResN = new Button();
             ResY = new Button();
             RestartText = new Label();
-            flowLayoutPanel1.SuspendLayout();
+            nextRev = new Button();
+            lastRev = new Button();
+            playRev = new Button();
+            StopButton = new Button();
             panel1.SuspendLayout();
             WLouterPanel.SuspendLayout();
             WLinnerPanel.SuspendLayout();
@@ -94,6 +91,7 @@
             richTextBox1.Location = new Point(954, 56);
             richTextBox1.Margin = new Padding(3, 2, 3, 2);
             richTextBox1.Name = "richTextBox1";
+            richTextBox1.ReadOnly = true;
             richTextBox1.Size = new Size(288, 321);
             richTextBox1.TabIndex = 0;
             richTextBox1.Text = "";
@@ -117,6 +115,7 @@
             richTextBox2.Location = new Point(954, 479);
             richTextBox2.Margin = new Padding(3, 2, 3, 2);
             richTextBox2.Name = "richTextBox2";
+            richTextBox2.ReadOnly = true;
             richTextBox2.Size = new Size(300, 217);
             richTextBox2.TabIndex = 3;
             richTextBox2.Text = "";
@@ -161,78 +160,6 @@
             imageList1.Images.SetKeyName(6, "WQueen");
             imageList1.Images.SetKeyName(7, "WRook");
             // 
-            // flowLayoutPanel1
-            // 
-            flowLayoutPanel1.BackColor = Color.SandyBrown;
-            flowLayoutPanel1.Controls.Add(Queen);
-            flowLayoutPanel1.Controls.Add(Rook);
-            flowLayoutPanel1.Controls.Add(Knight);
-            flowLayoutPanel1.Controls.Add(Bishop);
-            flowLayoutPanel1.Controls.Add(label1);
-            flowLayoutPanel1.Location = new Point(1230, 422);
-            flowLayoutPanel1.Margin = new Padding(3, 2, 3, 2);
-            flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(64, 225);
-            flowLayoutPanel1.TabIndex = 6;
-            flowLayoutPanel1.Visible = false;
-            // 
-            // Queen
-            // 
-            Queen.ImageIndex = 1;
-            Queen.ImageList = imageList1;
-            Queen.Location = new Point(3, 2);
-            Queen.Margin = new Padding(3, 2, 3, 2);
-            Queen.Name = "Queen";
-            Queen.Size = new Size(60, 51);
-            Queen.TabIndex = 0;
-            Queen.Text = " ";
-            Queen.UseVisualStyleBackColor = true;
-            // 
-            // Rook
-            // 
-            Rook.ImageIndex = 1;
-            Rook.ImageList = imageList1;
-            Rook.Location = new Point(3, 57);
-            Rook.Margin = new Padding(3, 2, 3, 2);
-            Rook.Name = "Rook";
-            Rook.Size = new Size(60, 51);
-            Rook.TabIndex = 1;
-            Rook.Text = " ";
-            Rook.UseVisualStyleBackColor = true;
-            // 
-            // Knight
-            // 
-            Knight.ImageKey = "WKnight";
-            Knight.ImageList = imageList1;
-            Knight.Location = new Point(3, 112);
-            Knight.Margin = new Padding(3, 2, 3, 2);
-            Knight.Name = "Knight";
-            Knight.Size = new Size(60, 51);
-            Knight.TabIndex = 2;
-            Knight.Text = " ";
-            Knight.UseVisualStyleBackColor = true;
-            // 
-            // Bishop
-            // 
-            Bishop.ImageIndex = 1;
-            Bishop.ImageList = imageList1;
-            Bishop.Location = new Point(3, 167);
-            Bishop.Margin = new Padding(3, 2, 3, 2);
-            Bishop.Name = "Bishop";
-            Bishop.Size = new Size(60, 51);
-            Bishop.TabIndex = 3;
-            Bishop.Text = " ";
-            Bishop.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(3, 220);
-            label1.Name = "label1";
-            label1.Size = new Size(38, 15);
-            label1.TabIndex = 4;
-            label1.Text = "label1";
-            // 
             // panel1
             // 
             panel1.BackColor = Color.LightCyan;
@@ -272,7 +199,7 @@
             // 
             WLText.BackColor = Color.Transparent;
             WLText.FlatStyle = FlatStyle.Flat;
-            WLText.Font = new Font("Copperplate Gothic Bold", 35F, FontStyle.Bold);
+            WLText.Font = new Font("Microsoft Sans Serif", 35F, FontStyle.Bold);
             WLText.Location = new Point(0, 0);
             WLText.Name = "WLText";
             WLText.Size = new Size(457, 64);
@@ -682,12 +609,68 @@
             RestartText.Text = "Player X is asking for a draw. Would you accept?";
             RestartText.TextAlign = ContentAlignment.MiddleCenter;
             // 
+            // nextRev
+            // 
+            nextRev.BackColor = Color.PaleGoldenrod;
+            nextRev.Font = new Font("Segoe UI", 20F);
+            nextRev.Location = new Point(872, 621);
+            nextRev.Margin = new Padding(3, 2, 3, 2);
+            nextRev.Name = "nextRev";
+            nextRev.Size = new Size(49, 49);
+            nextRev.TabIndex = 30;
+            nextRev.Text = "⏭️";
+            nextRev.UseVisualStyleBackColor = false;
+            nextRev.Click += nextRev_Click;
+            // 
+            // lastRev
+            // 
+            lastRev.BackColor = Color.PaleGoldenrod;
+            lastRev.Font = new Font("Segoe UI", 20F);
+            lastRev.Location = new Point(683, 621);
+            lastRev.Margin = new Padding(3, 2, 3, 2);
+            lastRev.Name = "lastRev";
+            lastRev.Size = new Size(49, 49);
+            lastRev.TabIndex = 31;
+            lastRev.Text = "⏮️";
+            lastRev.UseVisualStyleBackColor = false;
+            lastRev.Click += lastRev_Click;
+            // 
+            // playRev
+            // 
+            playRev.BackColor = Color.YellowGreen;
+            playRev.Font = new Font("Segoe UI", 20F);
+            playRev.Location = new Point(753, 622);
+            playRev.Margin = new Padding(3, 2, 3, 2);
+            playRev.Name = "playRev";
+            playRev.Size = new Size(49, 49);
+            playRev.TabIndex = 32;
+            playRev.Text = "⏯️";
+            playRev.UseVisualStyleBackColor = false;
+            playRev.Click += playRev_Click;
+            // 
+            // StopButton
+            // 
+            StopButton.BackColor = Color.YellowGreen;
+            StopButton.Font = new Font("Segoe UI", 20F);
+            StopButton.Location = new Point(808, 621);
+            StopButton.Margin = new Padding(3, 2, 3, 2);
+            StopButton.Name = "StopButton";
+            StopButton.Size = new Size(49, 49);
+            StopButton.TabIndex = 33;
+            StopButton.Text = "⏸️";
+            StopButton.UseVisualStyleBackColor = false;
+            StopButton.Click += StopButton_Click;
+            // 
             // ChessAIClient
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.MintCream;
             ClientSize = new Size(1280, 707);
+            Controls.Add(StopButton);
+            Controls.Add(playRev);
+            Controls.Add(lastRev);
+            Controls.Add(nextRev);
             Controls.Add(RestartAsk);
             Controls.Add(DrawAsk);
             Controls.Add(HomeBtn);
@@ -704,7 +687,6 @@
             Controls.Add(ourTimer);
             Controls.Add(opponentTimer);
             Controls.Add(panel1);
-            Controls.Add(flowLayoutPanel1);
             Controls.Add(richTextBox2);
             Controls.Add(OppMoveButton);
             Controls.Add(richTextBox1);
@@ -715,8 +697,6 @@
             FormClosing += ClientForm_Closed;
             Load += ClientForm_Load;
             SizeChanged += boardResize;
-            flowLayoutPanel1.ResumeLayout(false);
-            flowLayoutPanel1.PerformLayout();
             panel1.ResumeLayout(false);
             WLouterPanel.ResumeLayout(false);
             WLinnerPanel.ResumeLayout(false);
@@ -736,13 +716,7 @@
         private Button cntSvr;
         private Button OfflineButton;
         private ImageList imageList1;
-        private FlowLayoutPanel flowLayoutPanel1;
-        private Button Queen;
-        private Button Rook;
-        private Button Knight;
-        private Button Bishop;
         private Panel panel1;
-        private Label label1;
         private Label opponentTimer;
         private Label ourTimer;
         private FlowLayoutPanel opponentCaptured;
@@ -779,5 +753,9 @@
         private Button ResN;
         private Button ResY;
         private Label RestartText;
+        private Button nextRev;
+        private Button lastRev;
+        private Button playRev;
+        private Button StopButton;
     }
 }

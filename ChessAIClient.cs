@@ -1,27 +1,41 @@
-using Ardalis.SmartEnum.Core;
 using Chess;
-using ChessAI;
+using ChessAI_Bck;
+using FireSharp.Config;
+using FireSharp.Interfaces;
 using Stockfish.NET;
-using System;
 using System.Diagnostics;
-using System.Net.Sockets;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading;
-using System.Windows.Forms;
 using winforms_chat;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using System.Security.Cryptography;
+using winform_chat;
 
 
 namespace ChessAI
 {
     public partial class ChessAIClient : Form
     {
+        //Firebase config
+        IFirebaseConfig config = new FirebaseConfig
+        {
+            AuthSecret = "RZxEKkX6ffq8XZgw9p0jbPYhqLYXQOeH1FIcmGIa",
+            BasePath = "https://chess-database-a25f7-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+        IFirebaseClient Client;
+
+        // Current username:
+
+        //Varibles for HistoryLog:
+        private List<string> HistoryLog = new List<string>();
+        private IReadOnlyList<Chess.Move> LogHistory;
+        private Thread RunningLog;
+        private bool PauseGame = false;
+
+        //public string current_username { get; set; }
+
         private BoardRenderer boardRenderer;
         private ChessBoard chessBoard;
-        private PieceColor Side;
+        public PieceColor Side;
         private PieceColor presetSide;
 
         private TimeSpan timeOur;
@@ -32,23 +46,27 @@ namespace ChessAI
 
         private float initialDpi = 96f; // 100% =96  125% = 120, 150% = 144, 175% = 168, 200% = 192
         private float currentScale = 1.0f; // Current scale of the form
+        private string timeControl; // time control
 
-        private bool gameStarted = false;
+        private string PgnReview; // PGN for reviewing the game
+
+        private bool gameStarted;
         private bool isDebug;
         private bool isOffline; // Playing offline with bots/ AI
+        private bool isReview; // Reviewing the game
+        private int currentMoveIndex = 0;
 
         private string reasonEndGame = "Checkmate";
 
-        private PromotionType selectedPromotion;
-        ChatClientJoin x;
+        public PromotionType selectedPromotion;
+
         ChatMainForm currenChatMainForm;
+
         string chessLastMove; // prevent sending too much when clicking on the board
 
         // Random player name
-        private string PlayerName = "Player" + new Random().Next(1000, 24000);
-        private string OpponentName = "Opponent";
-        // Random player number in range 1-2000
-        private int PlayerNumber = new Random().Next(1, 2000);
+        private User playerUser;
+        private User opponentUser;
         // Stockfish module
         private IStockfish Stockfish { get; set; }
 
@@ -57,11 +75,13 @@ namespace ChessAI
         /// </summary>
         public void timeSyncSend()
         {
-            try {
-                string timeSyncStr = Side == PieceColor.White ? timeOur.TotalSeconds + "|" + timeOpponent.TotalSeconds :  timeOpponent.TotalSeconds + "|" + timeOur.TotalSeconds;
+            try
+            {
+                if(!gameStarted) return;
+                string timeSyncStr = Side == PieceColor.White ? timeOur.TotalSeconds + "|" + timeOpponent.TotalSeconds : timeOpponent.TotalSeconds + "|" + timeOur.TotalSeconds;
                 if (currenChatMainForm != null)
                 {
-                    currenChatMainForm.timeSyncSendHandler(ChatCommand.TimeSync.ToString() + timeSyncStr); // sync display time
+                    currenChatMainForm.timeSyncSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.TimeSync) + timeSyncStr); // sync display time
                 }
             }
             catch (Exception e)
@@ -71,7 +91,7 @@ namespace ChessAI
             }
         }
 
-        public ChessAIClient(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, bool DebugMode = false, PieceColor setSide = null)
+        public ChessAIClient(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, bool DebugMode = false, PieceColor setSide = null, User pUser = null, User oUser = null, ChatMainForm chatMainForm = null, bool setUpGame = true, bool isRvw = false)
         {
             InitializeComponent();
 
@@ -79,28 +99,75 @@ namespace ChessAI
             | BindingFlags.Instance | BindingFlags.NonPublic, null,
             panel1, new object[] { true });   // Double buffer the panel prevent it from flickering
 
-            this.isDebug = DebugMode; // Set the debug mode 
-            this.isOffline = isOffl; // Set the offline mode
-            presetSide = setSide; // Set the preset side
-
-            chessBoard = new ChessBoard() { AutoEndgameRules = AutoEndgameRules.All }; // Init new board
-            chessBoard.OnPromotePawn += PromotePawn; // Add event when pawn is promoted
-            chessBoard.OnEndGame += GameEnded; // Add event when game is ended
-            boardRenderer = new BoardRenderer(); // Init new renderer
+            isDebug = DebugMode; // Set the debug mode 
 
             currentScale = initialDpi / this.DeviceDpi; // Get the current scale of the form
-        
-          //  this.Width = (int)(this.Width * currentScale); // Scale the width
+
+            //  this.Width = (int)(this.Width * currentScale); // Scale the width
             this.Height = (int)(this.Height * currentScale); // Scale the height
             // panel1.Size = new System.Drawing.Size((int)Math.Floor(this.Size.Height - 100 * currentScale) , (int)Math.Floor(this.Size.Height - 100 * currentScale));
 
             this.MaximizeBox = false; // Prevent maximizing the window
             this.MinimizeBox = false; // Prevent minimizing the window
+            if (!setUpGame) return; // Prevent setting up the game when the form is loaded for the first time
+            SetupGame(modeDepth: modeDepth, timeCtrl: timeCtrl, isOffl: isOffl, setSide: setSide, pUser: pUser, oUser: oUser, chatMainForm: chatMainForm, isRvw: isRvw);
+        }
+
+        public void SetupGame(int modeDepth = 1, string timeCtrl = "10|0", bool isOffl = false, PieceColor setSide = null, PieceColor side = null, User pUser = null, User oUser = null, ChatMainForm chatMainForm = null, bool isRvw = false)
+        {
+            currenChatMainForm = chatMainForm;
+
+            isReview = isRvw;
+            isOffline = isOffl; // Set the offline mode
+            gameStarted = false; // Set the game started 
+            Side = side; // Set the side
+            presetSide = setSide; // Set the preset side // Offline only
+            isOffline = isOffl;
+            timeControl = timeCtrl; // Set the time control
+
+            if (currenChatMainForm == null)
+            {
+                isOffline = true;
+                Debug.WriteLine("Offline mode enabled due to found no ChatMainForm");
+            }
+
+            //Create new board tha exist through the game
+            chessBoard = new ChessBoard() { AutoEndgameRules = AutoEndgameRules.All }; // Init new board
+            chessBoard.OnPromotePawn += PromotePawn; // Add event when pawn is promoted
+            chessBoard.OnEndGame += GameEnded; // Add event when game is ended
+            // create a renderer
+            boardRenderer = new BoardRenderer(); // Init new renderer
+
+            // Hide some unessesary things
             WLouterPanel.Visible = false;
             AgainBtn.Visible = false;
             HomeBtn.Visible = false;
             DrawAsk.Visible = false;
             RestartAsk.Visible = false;
+
+            lastRev.Visible = false;
+            nextRev.Visible = false;
+            playRev.Visible = false;
+            StopButton.Visible = false;
+
+            //Set name player:
+            if (pUser != null)
+            {
+                playerUser = pUser;
+            }
+            else
+            {
+                playerUser = new User(username: "You", elo: 404);
+            }
+
+            if (oUser != null)
+            {
+                opponentUser = oUser;
+            }
+            else
+            {
+                opponentUser = new User(username: "Opponent", elo: 404);
+            }
 
             if (isDebug == false)
             {
@@ -110,39 +177,57 @@ namespace ChessAI
                 richTextBox2.Visible = false; // Hide the log
             }
 
-            if (isOffline) // if player playing Offline
+            if (isOffline && !isReview) // if player playing Offline
             {
                 //Generate stockfish default
                 var pathStockFish = GetStockfishDir();
                 Stockfish = new Stockfish.NET.Stockfish(pathStockFish, modeDepth);
-
+                Stockfish.SkillLevel = 0;
                 // Set the side randomly or preset
                 Side = presetSide != null ? presetSide : Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
-                OpponentName = "AI";
-                InitGame(Side);
+                opponentUser = new User(username: "AI", elo: 1);
             }
-        }
 
+            if (isReview) // if player reviewing the game
+            {
+                Side = presetSide;
+                resignBtn.Visible = false;
+                drawBtn.Visible = false;
+                lastRev.Visible = true;
+                nextRev.Visible = true;
+                playRev.Visible = true;
+                StopButton.Visible = true;
+            }
+
+            InitGame();
+
+        }
         /// <summary>
         /// Begin the game when the message is received/ Connected to another player
         /// </summary>
         /// <param name="message"></param>
-        private void InitGame(PieceColor side, string timeCtrl = "10s|0")
+        private void InitGame()
         {
+
             if (gameStarted) return; // If game already started, return
 
-            // Set the side
-            Side = side;
+            new SoundFXHandler(chessBoard, "", "start"); // start game sound
+            if (!isReview)
+            {
+                resignBtn.Visible = true;
+                drawBtn.Visible = true;
+            }
             // Set the game started
             gameStarted = true;
-            if (Side == PieceColor.Black && isOffline)
+            if (Side == PieceColor.Black && isOffline && !isReview)
             {
                 OpponentAIMove(); // first move for AI white
             }
+            
             LogMessage("Game started! You are: " + Side);
             panel1.Invalidate(); // Redraw whole board
-            timeControlInitialize(timeCtrl);
-            InitUserInfo(OpponentName);
+            timeControlInitialize();
+            InitUserInfo();
             Invalidate();
         }
 
@@ -151,16 +236,31 @@ namespace ChessAI
         /// </summary>
         private void GameEnded(object sender, EndgameEventArgs e)
         {
+            // Hide components on end game
+            resignBtn.Visible = false;
+            drawBtn.Visible = false;
+            //
             timer1.Stop();
+            new SoundFXHandler(chessBoard, "", "end"); // end game sound
+            //
+            if (chessBoard.EndGame.WonSide == Side) // won
+            {
+                if (chessBoard.EndGame.EndgameType == EndgameType.Checkmate) { reasonEndGame = playerUser.Username + " checkmated " + opponentUser.Username + " king! "; }
+                if (chessBoard.EndGame.EndgameType == EndgameType.Resigned && !isTimeoutEndGame) { reasonEndGame = opponentUser.Username + " resigned!"; }
+                if (chessBoard.EndGame.EndgameType == EndgameType.Resigned && isTimeoutEndGame) { reasonEndGame = opponentUser + " timeout!"; }
+            }
+            if (chessBoard.EndGame.WonSide == Side.OppositeColor()) // lose
+            {
+                if (chessBoard.EndGame.EndgameType == EndgameType.Checkmate) { reasonEndGame = opponentUser.Username + " checkmate " + playerUser.Username + " king! "; }
+                if (chessBoard.EndGame.EndgameType == EndgameType.Resigned && !isTimeoutEndGame) { reasonEndGame = playerUser.Username + " resigned!"; }
+                if (chessBoard.EndGame.EndgameType == EndgameType.Resigned && isTimeoutEndGame) { reasonEndGame = playerUser.Username + " timeout!"; }
+            }
 
-            if (chessBoard.EndGame.EndgameType == EndgameType.Checkmate) { reasonEndGame = "Checkmate"; }
-            if (chessBoard.EndGame.EndgameType == EndgameType.Resigned && !isTimeoutEndGame) { reasonEndGame = "Resigned"; }
             if (chessBoard.EndGame.EndgameType == EndgameType.Stalemate) { reasonEndGame = "Stalemate"; }
-            if (chessBoard.EndGame.EndgameType == EndgameType.DrawDeclared) { reasonEndGame = "Draw"; }
+            if (chessBoard.EndGame.EndgameType == EndgameType.DrawDeclared) { reasonEndGame = "Draw declared"; }
             if (chessBoard.EndGame.EndgameType == EndgameType.Repetition) { reasonEndGame = "Repetition"; }
             if (chessBoard.EndGame.EndgameType == EndgameType.FiftyMoveRule) { reasonEndGame = "Fifty Move Rule"; }
-            if (chessBoard.EndGame.EndgameType == EndgameType.InsufficientMaterial) { reasonEndGame = "Insufficient Material"; }
-            if (chessBoard.EndGame.EndgameType == EndgameType.Resigned && isTimeoutEndGame) { reasonEndGame = "Timeout"; }
+            if (chessBoard.EndGame.EndgameType == EndgameType.InsufficientMaterial) { reasonEndGame = "Insufficient material"; }
 
 
             if (chessBoard.EndGame.WonSide == Side) // won
@@ -170,20 +270,20 @@ namespace ChessAI
                 userPanel.BackColor = System.Drawing.Color.GreenYellow;
                 oppPanel.BackColor = System.Drawing.Color.Transparent;
                 WLinnerPanel.BackColor = System.Drawing.Color.LightGreen;
-                Score01.Text = "1 : 0";
-                uELO.Text = "ELO:";
-                uELO.Visible = false;
+                Score01.Text = (Side == PieceColor.White ? "1 : 0" : "0 : 1");
+                uELO.Text = "ELO: " + playerUser.ELO + " +15";
+                if (isOffline) uELO.Text = "ELO: " + playerUser.ELO + " +0";
             }
             else if (chessBoard.EndGame.WonSide == Side.OppositeColor()) // lose
             {
-                WLText.Text = "You lost!";
+                WLText.Text = "You lose!";
                 reasonText.Text = reasonEndGame;
                 userPanel.BackColor = System.Drawing.Color.Transparent;
                 oppPanel.BackColor = System.Drawing.Color.GreenYellow;
                 WLinnerPanel.BackColor = System.Drawing.Color.LightCoral;
-                Score01.Text = "0 : 1";
-                uELO.Text = "ELO:";
-                uELO.Visible = false;
+                Score01.Text = (Side == PieceColor.White ? "0 : 1" : "1 : 0");
+                uELO.Text = playerUser.ELO >= 100 ? "ELO:" + playerUser.ELO + " -15" : "ELO:" + playerUser.ELO + " -0";
+                if (isOffline) uELO.Text = "ELO:" + playerUser.ELO + " -0";
             }
             else // draw
             {
@@ -193,11 +293,106 @@ namespace ChessAI
                 oppPanel.BackColor = System.Drawing.Color.Transparent;
                 WLinnerPanel.BackColor = System.Drawing.Color.LightGray;
                 Score01.Text = "1/2 : 1/2";
-                uELO.Text = "ELO:";
-                uELO.Visible = false;
+                uELO.Text = "ELO:" + playerUser.ELO + " -0";
             }
+            Parallel.Invoke(() => ShowPanelWithDelay(), () => SaveToDatabase());
+        }
 
-            Parallel.Invoke(() => ShowPanelWithDelay());
+        private async void SaveToDatabase()
+        {
+            if (isReview) return; // if reviewing the game, return
+            if (!playerUser.IsAValidUser()) return; // if user is not valid, return
+
+            try
+            {
+                Client = new FireSharp.FirebaseClient(config);
+                if (Client != null)
+                {
+                    var current_username = playerUser.Username;
+                    if (current_username == null) return;
+
+                    var load_user = await Client.GetAsync("Users/" + EncodeSha256(current_username));
+                    User Getuser = load_user.ResultAs<User>();
+
+                    if (Getuser == null)
+                    {
+                        Debug.WriteLine("Error: User not found in the database.");
+                        return;
+                    }
+
+                    var match_id = Guid.NewGuid().ToString();
+                    var pgn = chessBoard.ToPgn();
+                    var save_PGN = new PGNLog
+                    {
+                        ID = match_id,
+                        Date = DateTime.Now.ToString("yyyy-MM-dd"),
+
+                        White = (Side == PieceColor.White ? playerUser.Username : opponentUser.Username),
+                        Black = (Side == PieceColor.Black ? playerUser.Username : opponentUser.Username),
+
+                        Result = string.IsNullOrEmpty(Score01.Text)
+                        ? (pgn.Contains("1-0") ? "1 : 0" : (pgn.Contains("0-1") ? "0 : 1" : "1/2 : 1/2"))
+                        : Score01.Text,
+
+
+                        WhiteELO = (Side == PieceColor.White ? playerUser.ELO : opponentUser.ELO),
+                        BlackELO = (Side == PieceColor.Black ? playerUser.ELO : opponentUser.ELO),
+
+                        TimeControl = timeControl == "none" ? "No limit" : timeControl,
+                        Termination = reasonEndGame,
+                        PGN = pgn,
+                    };
+
+                    Getuser.AddMatch(save_PGN);
+                    if (!isOffline)
+                    {
+
+                        if (chessBoard.EndGame.WonSide == Side)
+                        {
+                            Getuser.ELO += 15;
+                        }
+                        else if (chessBoard.EndGame.WonSide == Side.OppositeColor() && Getuser.ELO > 100)
+                        {
+                            Getuser.ELO -= 15;
+                        }
+                        else
+                        {
+                            Getuser.ELO += 0;
+                        }
+                    }
+
+                    playerUser = Getuser;
+                    // Save the updated user back to the database
+                    var save_match = await Client.SetAsync("Users/" + EncodeSha256(current_username), Getuser);
+                    if (save_match.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        Debug.WriteLine("Match saved successfully.");
+
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Error saving match: " + save_match.StatusCode);
+                    }
+                }
+                else
+                {
+                    Debug.WriteLine("Firebase client is null.");
+                    return;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Error in SaveToDatabase: " + e.Message);
+            }
+        }
+
+
+        private string EncodeSha256(string input)
+        {
+            byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+            byte[] inputHashByte = SHA256.Create().ComputeHash(inputBytes);
+            string result = BitConverter.ToString(inputHashByte).Replace("-", string.Empty).ToLower();
+            return result;
         }
         /// <summary>
         /// Show the end game panel with delay
@@ -206,10 +401,24 @@ namespace ChessAI
         {
             // Add a 2-second delay
             await Task.Delay(2000);
+
+            new SoundFXHandler(chessBoard, "", side: Side); // win or lose sound
             // Make the panel visible after the delay
             WLouterPanel.Visible = true;
-            AgainBtn.Visible = true;
             HomeBtn.Visible = true;
+
+            if (isReview) return; // if reviewing the game, return
+
+            AgainBtn.Visible = true;
+            WLAgain.Visible = true;
+
+            if (RestartAsk.Visible)
+            {
+                WLAgain.Visible = false;
+                AgainBtn.Visible = false;
+                return;
+            }
+
         }
 
         /// <summary>
@@ -217,6 +426,7 @@ namespace ChessAI
         /// </summary>
         public void EndGameOnline(string message)
         {
+            if (isReview) return; // if reviewing the game, return
             if (message == "Resign")
             {
                 if (chessBoard.IsEndGame) return; // if game already ended, return; 
@@ -230,6 +440,12 @@ namespace ChessAI
             {
                 chessBoard.Draw();
             }
+            if (message == "DrawDecline")
+            {
+                DrawAsk.Visible = false;
+                drawBtn.Visible = true;
+                resignBtn.Visible = true;
+            }
             if (message == "Timeout")
             {
                 isTimeoutEndGame = true;
@@ -242,8 +458,11 @@ namespace ChessAI
         /// </summary>
         private void AskingForDraw()
         {
+            new SoundFXHandler(chessBoard, "", "Offer");
             DrawAsk.Visible = true;
-            DrawText.Text = OpponentName + " asking for a draw. Would you accept?";
+            DrawText.Text = opponentUser.Username + " asking for a draw. Would you accept?";
+            drawBtn.Visible = false;
+            resignBtn.Visible = false;
         }
 
         /// <summary>
@@ -251,25 +470,26 @@ namespace ChessAI
         /// </summary>
         private void RestartGame()
         {
+            if (isReview) return; // if reviewing the game, return
             WLouterPanel.Visible = false;
             AgainBtn.Visible = false;
             HomeBtn.Visible = false;
             if (isOffline)
             {
                 Debug.WriteLine("Restarting game...");
-                Debug.WriteLineIf(isDebug, "presetSide: " + presetSide);
+                Debug.WriteLine("presetSide: " + presetSide);
                 chessBoard.Clear();
                 panel1.Invalidate();
                 gameStarted = false;
                 // Set the side randomly or preset
                 Side = presetSide != null ? presetSide : Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
-                InitGame(Side);
+                InitGame();
             }
             else
             {
                 if (currenChatMainForm != null)
                 {
-                    currenChatMainForm.moveSendHandler(ChatCommand.Rematch.ToString()+ "RestartAsk" );
+                    currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Rematch) + "RestartAsk");
                 }
             }
         }
@@ -279,13 +499,18 @@ namespace ChessAI
         /// </summary>
         public void RestartGameOnline(string message)
         {
+            if (isReview) return; // if reviewing the game, return
             if (message == "RestartAsk")
             {
+                new SoundFXHandler(chessBoard, "", "Offer");
                 RestartAsk.Visible = true;
-                RestartText.Text = OpponentName + " asking for a rematch. Would you accept?";
+                RestartText.Text = opponentUser.Username + " asking for a rematch. Would you accept?";
+                AgainBtn.Visible = false;
+                WLAgain.Visible = false;
             }
             if (message.Contains("RestartAccept"))
             {
+                new SoundFXHandler(chessBoard, "", "accept");
                 WLouterPanel.Visible = false;
                 AgainBtn.Visible = false;
                 HomeBtn.Visible = false;
@@ -297,24 +522,33 @@ namespace ChessAI
                 chessBoard.Clear();
                 panel1.Invalidate();
                 gameStarted = false;
-                InitGame(Side);
+                InitGame();
+            }
+            if (message == "RestartDecline")
+            {
+                new SoundFXHandler(chessBoard, "", "decline");
+                RestartAsk.Visible = false;
+                AgainBtn.Visible = true;
+                HomeBtn.Visible = true;
             }
         }
 
         /// <summary>
         /// Initialize the time control for the game
         /// </summary>
-        private void timeControlInitialize(string timeControl)
+        private void timeControlInitialize()
         {
-            //if ((isOffline)) // No time limit for offline mode
-            //{
-            //    opponentTimer.Visible = false;
-            //    ourTimer.Visible = false;
-            //    return;
-            //}
+            Debug.WriteLine("[CAI] Time control: " + timeControl);
+            if (isReview || timeControl == "none") // No time limit for offline mode
+            {
+                opponentTimer.Visible = false;
+                ourTimer.Visible = false;
+                return;
+            }
+
             string[] timeCtrl = timeControl.Split("|");
             if (timeCtrl.Length != 2) return;
-           
+
             timeIncrement = Convert.ToInt32(timeCtrl[1]);
             if (timeCtrl[0].Contains("s")) // if time is in seconds
             {
@@ -340,7 +574,7 @@ namespace ChessAI
             panel1.Invalidate(); // Redraw whole board
         }
 
- 
+
         /// <summary>
         /// Redraw the board
         /// </summary>
@@ -349,7 +583,8 @@ namespace ChessAI
         {
             if (!gameStarted) return; // If game not started, return
             boardRenderer.DrawBoard(e.Graphics, chessBoard, panel1.Size.Height, isDebug: isDebug, side: Side); // Draw the board
-            richTextBox1.Text = chessBoard.ToPgn(); // Show the moves     
+            richTextBox1.Text = chessBoard.ToPgn(); // Show the moves
+            panel1.BackColor = chessBoard.Turn == PieceColor.White ? System.Drawing.Color.Gainsboro : System.Drawing.Color.Gray; // Change the background color
         }
 
         /// <summary>
@@ -358,20 +593,21 @@ namespace ChessAI
         /// <param name="message"></param>
         private void boardClick(object sender, MouseEventArgs e)
         {
+            if (isReview) return; // if reviewing the game, return
             if (!gameStarted) return; // If game not started, return
             Debug.WriteLineIf(isDebug, "X: " + e.X + " Y: " + e.Y);
 
-            chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard, isNormalized: false, side: Side); // Handle the click
+            chessBoard = boardRenderer.onClicked(new Position(e.X, e.Y), chessBoard, isNormalized: false, side: Side, chessClientUI: this); // Handle the click
 
             panel1.Invalidate(); // Redraw whole board
-            var mv = ChatCommand.Move.ToString() + (chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none"); //move
+            var mv = ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Move) + (chessBoard.MovesToSan.Any() ? chessBoard.MovesToSan.Last() : "none"); //move
             LogMessage(mv);
-            
+
             if (chessBoard.Turn != Side)
             {
                 timeOur = timeOur.Add(TimeSpan.FromSeconds(timeIncrement));
                 ourTimer.Text = timeOur.ToString(@"mm\:ss");
-                if (isOffline)
+                if (isOffline && !isReview)
                 {
                     OpponentAIMove();
                 }
@@ -380,15 +616,16 @@ namespace ChessAI
             //  SendMessage(mv);
             if (currenChatMainForm != null
                 && mv != chessLastMove // prevent  spamming the same move
-                && mv != (ChatCommand.Move.ToString() + "none") // prevent sending none move
+                && mv != (ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Move) + "none") // prevent sending none move
                 && chessBoard.Turn != Side  //prevent sending move when it's not our turn // using != because it's end of our turn
                 && isOffline == false // prevent sending move when offline
+                && isReview == false // prevent sending move when reviewing
                 )
             {
                 currenChatMainForm.moveSendHandler(mv);
                 chessLastMove = mv;
             }
-           
+
         }
 
         /// <summary>
@@ -397,24 +634,10 @@ namespace ChessAI
         /// <param name="message"></param>
         private void OpponentMoveButton_Click(object sender, EventArgs e)
         {
-            if (!gameStarted) return; // If game not started, return
-            if (chessBoard.Turn == Side) return; // Simulate opponent when offline
-            if (isOffline == false) return; // If it's not offline mode, return
-            //var moves = chessBoard.Moves();
-            if (chessBoard.IsEndGame)
-            {
-                Debug.WriteLine("Game end " + chessBoard.EndGame.WonSide + " won!");
-                return;
-            }
-            Stockfish.SetFenPosition(chessBoard.ToFen());
-            var bestMove = Stockfish.GetBestMove();
-            var move = new Move(bestMove.Substring(0, 2), bestMove.Substring(2, 2));
-            //chessBoard.Move(moves[Random.Shared.Next(moves.Length)]);
-            chessBoard.Move(move);
-            panel1.Invalidate();
+            OpponentAIMove();
         }
 
-        public void OpponentAIMove()
+        public void OpponentAIMove(bool isDum = false)
         {
             //var moves = chessBoard.Moves();
             if (chessBoard.IsEndGame)
@@ -423,10 +646,28 @@ namespace ChessAI
                 return;
             }
             Stockfish.SetFenPosition(chessBoard.ToFen());
-            var bestMove = Stockfish.GetBestMove();
-            var move = new Move(bestMove.Substring(0, 2), bestMove.Substring(2, 2));
-            //chessBoard.Move(moves[Random.Shared.Next(moves.Length)]);
+
+            Move move;
+
+            if (isDum)
+            {
+                // Option 1: dumb AI
+                var moves = chessBoard.Moves();
+                move = moves[Random.Shared.Next(moves.Length)];
+            }
+            else
+            {
+                // Option 2: smart AI (StockFish)
+                var bestMove = Stockfish.GetBestMove();
+                move = new Move(bestMove.Substring(0, 2), bestMove.Substring(2, 2));
+            }
+
+            //add sound FX
+            new SoundFXHandler(chessBoard, move.NewPosition.ToString(), side: Side.OppositeColor(), isOfflGame: true);
             chessBoard.Move(move);
+            //add sound FX
+            new SoundFXHandler(chessBoard, "", side: Side.OppositeColor(), isOfflGame: true); // castle?
+
             timeOpponent = timeOpponent.Add(TimeSpan.FromSeconds(timeIncrement));
             opponentTimer.Text = timeOpponent.ToString(@"mm\:ss");
             panel1.Invalidate();
@@ -444,6 +685,7 @@ namespace ChessAI
             if (!gameStarted) return; // If game not started, return
             if (chessBoard.Turn == Side) return; // If it's our turn, return
             if (isOffline == true) return; // If it's offline mode, return
+            if (isReview) return; // if reviewing the game, return
             if (message == "none") return; // If no move, return
 
             // Opponent move
@@ -454,46 +696,23 @@ namespace ChessAI
                 Debug.WriteLine("Game end " + chessBoard.EndGame.WonSide + " won!");
                 return;
             }
+            new SoundFXHandler(chessBoard, move.NewPosition.ToString(), side: Side.OppositeColor());
             chessBoard.Move(move);
+            //add sound FX
+            new SoundFXHandler(chessBoard, "", side: Side.OppositeColor()); // castle?
+
             panel1.Invalidate();
         }
 
-    
+
         /// <summary>
         /// Promotion UI for the pawn/ not implemeted yet
         /// </summary>
         /// <param name="message"></param>
-        public PromotionType PromotePawnUIAsync()
-        {
-            if (Side == PieceColor.White) // set up images for promotion
-            {
-                Queen.ImageKey = "WQueen";
-                Knight.ImageKey = "WKnight";
-                Rook.ImageKey = "WRook";
-                Bishop.ImageKey = "WBishop";
-            }
-            else
-            {
-                Queen.ImageKey = "BQueen";
-                Knight.ImageKey = "BKnight";
-                Rook.ImageKey = "BRook";
-                Bishop.ImageKey = "BBishop";
-            }
-
-            Queen.Click += (s, ev) => { selectedPromotion = PromotionType.ToQueen; };
-            Knight.Click += (s, ev) => { selectedPromotion = PromotionType.ToKnight; };
-            Rook.Click += (s, ev) => { selectedPromotion = PromotionType.ToRook; };
-            Bishop.Click += (s, ev) => { selectedPromotion = PromotionType.ToBishop; };
-
-            flowLayoutPanel1.Visible = true;
-            var selectedPromote = selectedPromotion;
-            return selectedPromote;
-        }
-
         private void PromotePawn(object sender, PromotionEventArgs e)
         {
-            e.PromotionResult = selectedPromotion == null ? selectedPromotion : PromotionType.Default;
-            //e.PromotionResult = PromotionType.ToRook;
+            e.PromotionResult = selectedPromotion == null ? PromotionType.Default : selectedPromotion;
+            new SoundFXHandler(chessBoard, "", "promote");
         }
 
         private void ClientForm_Load(object sender, EventArgs e)
@@ -501,23 +720,11 @@ namespace ChessAI
             ScaleControls(currentScale);
             if (isOffline) return; // If offline mode, return
             // Do something when form is loaded
-            x = new ChatClientJoin();
-            x.Show();
-            x.JoiningRoom(PlayerName, this);
-            x.Joined += Room_Joined;
+            //x = new ChatClientJoin();
+            //x.Show();
+            //x.JoiningRoom(playerName, this);
+            //x.Joined += Room_Joined;
         }
-
-        private void Room_Joined(object sender, EventArgs e)
-        {
-            currenChatMainForm = x.currentChatMainForm;
-            // Add any additional actions needed once the chat is joined
-            if (currenChatMainForm != null)
-            {
-                Console.WriteLine("Joined room with : " + currenChatMainForm.Side);
-                InitGame(currenChatMainForm.Side, "1|5");
-            }
-        }
-
 
         /// <summary>
         /// Log message for debugging
@@ -542,8 +749,12 @@ namespace ChessAI
             // Set the side randomly
             Side = Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
             isOffline = true;
-            OpponentName = "AI";
-            InitGame(Side);
+
+            opponentUser = new User();
+            opponentUser.Username = "AI";
+            opponentUser.ELO = 1;
+
+            InitGame();
         }
 
         public static string GetStockfishDir()
@@ -565,18 +776,18 @@ namespace ChessAI
             }
 
             // Print the determined path
-            Console.WriteLine(fullPath);
+            Debug.WriteLine(fullPath);
             return fullPath;
         }
-        private void InitUserInfo(string oppName = "Opponent")
+        private void InitUserInfo()
         {
+            //  opponentUser = opponentUser == null ? new User(username: "NotFound", elo: 1000) : new LoadUserData().GetUserData(opponentUser.Username); // init opponent
             // init display
-            ourName.Text = PlayerName + " ( " + PlayerNumber + " )";
-            opponentName.Text = oppName;
+            ourName.Text = playerUser.Username + " ( " + playerUser.ELO + " )";
+            opponentName.Text = opponentUser.Username + " ( " + opponentUser.ELO + " )";
             // init end game
-            uName1.Text = PlayerName;
-            uName2.Text = oppName;
-
+            uName1.Text = playerUser.Username;
+            uName2.Text = opponentUser.Username;
 
         }
         private void beginTimer()
@@ -624,22 +835,27 @@ namespace ChessAI
                     ourTimer.Text = timeOur.ToString(@"mm\:ss");
                     ourTimer.BackColor = Color.Chartreuse;
                     opponentTimer.BackColor = Color.LightGray;
+                    if (timeOur.TotalSeconds <= 30)
+                    {
+                        new SoundFXHandler(chessBoard, "", "tenSec"); // time sound
+                        ourTimer.BackColor = Color.Salmon;
+                    }
                     if (timeOur.TotalSeconds <= 0)
                     {
                         timer1.Stop();
-                        LogMessage(PlayerName + "'s time is up!");
+                        LogMessage("Your's time is up!");
                         isTimeoutEndGame = true;
                         chessBoard.Resign(Side);
-                        
+
                         if (currenChatMainForm != null)
                         {
-                            currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "Timeout" );
+                            currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame) + "Timeout");
                         }
                     }
                 }
                 else
                 {
-                    
+
                     timeOpponent = timeOpponent.Subtract(TimeSpan.FromSeconds(1));
                     opponentTimer.Text = timeOpponent.ToString(@"mm\:ss");
                     opponentTimer.BackColor = Color.Chartreuse;
@@ -650,7 +866,7 @@ namespace ChessAI
                         LogMessage("Opponent's time is up!");
                         isTimeoutEndGame = true;
                         chessBoard.Resign(Side.OppositeColor());
-                        
+
                     }
                 }
             }
@@ -669,6 +885,7 @@ namespace ChessAI
         private void WLok_Click(object sender, EventArgs e)
         {
             WLouterPanel.Visible = false;
+            new SoundFXHandler(null, "", "click");
         }
 
         private void WLAgain_Click(object sender, EventArgs e)
@@ -678,7 +895,9 @@ namespace ChessAI
 
         private void WLHome_Click(object sender, EventArgs e)
         {
-
+            new SoundFXHandler(null, "", "click");
+            this.Close();
+          //  this.Dispose();
         }
 
         private void Again_Click(object sender, EventArgs e)
@@ -689,13 +908,17 @@ namespace ChessAI
 
         private void Home_Click(object sender, EventArgs e)
         {
-
+            new SoundFXHandler(null, "", "click");
+            this.Close();
+           // this.Dispose();
         }
 
         private void drawBtn_Click(object sender, EventArgs e)
         {
+            if (isReview) return; // if reviewing the game, return
             if (!gameStarted) return; // If game not started, return
             if (chessBoard.IsEndGame == true) return;
+            new SoundFXHandler(chessBoard, "", "drawOffer"); // draw offer sound
             if (isOffline)
             {
                 chessBoard.Draw();
@@ -704,13 +927,16 @@ namespace ChessAI
             {
                 if (currenChatMainForm != null)
                 {
-                    currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "DrawAsk" );
+                    drawBtn.Visible = false;
+                    resignBtn.Visible = false;
+                    currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame) + "DrawAsk");
                 }
             }
         }
 
         private void resignBtn_Click(object sender, EventArgs e)
         {
+            if (isReview) return; // if reviewing the game, return
             if (!gameStarted) return; // If game not started, return
             if (chessBoard.IsEndGame == true) return;
             if (isOffline)
@@ -721,7 +947,7 @@ namespace ChessAI
             {
                 if (currenChatMainForm != null)
                 {
-                    currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "Resign" );
+                    currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame) + "Resign");
                     chessBoard.Resign(Side);
                 }
             }
@@ -733,13 +959,22 @@ namespace ChessAI
             chessBoard.Draw();
             if (currenChatMainForm != null)
             {
-                currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "DrawAccept" );
+                new SoundFXHandler(chessBoard, "", "accept"); //accept sound
+                currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame) + "DrawAccept");
+
             }
         }
 
         private void DrawN_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(chessBoard, "", "decline"); // decline sound
             DrawAsk.Visible = false;
+            drawBtn.Visible = true;
+            resignBtn.Visible = true;
+            if (currenChatMainForm != null)
+            {
+                currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame) + "DrawDecline");
+            }
         }
 
         private void ResY_Click(object sender, EventArgs e)
@@ -747,31 +982,42 @@ namespace ChessAI
             RestartAsk.Visible = false;
             if (currenChatMainForm != null)
             {
+                new SoundFXHandler(chessBoard, "", "accept"); // accept sound
                 Side = Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
-                currenChatMainForm.moveSendHandler(ChatCommand.Rematch.ToString() + "RestartAccept-" +Side.OppositeColor());
-                RestartGameOnline(ChatCommand.Rematch.ToString() + "RestartAccept-" + Side);
+                RestartGameOnline("RestartAccept-" + Side);
+                currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Rematch) + "RestartAccept-" + Side.OppositeColor()); 
             }
         }
 
         private void ResN_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(chessBoard, "", "decline"); //accept sound
             RestartAsk.Visible = false;
+            AgainBtn.Visible = true;
+            HomeBtn.Visible = true;
+            if (currenChatMainForm != null)
+            {
+                currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.Rematch) + "RestartDecline");
+            }
         }
-        
+
         private void ClientForm_Closed(object sender, FormClosingEventArgs e)
         {
-            if (isOffline)
+            if (isOffline || isReview)
             {
                 // Close the stockfish process?
+
             }
             else
             {
                 if (currenChatMainForm != null)
                 {
-                    currenChatMainForm.moveSendHandler(ChatCommand.EndGame.ToString() + "Resign");
-                    currenChatMainForm.Close();
+                    currenChatMainForm.moveSendHandler(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.EndGame) + "Resign");
                     if (chessBoard.IsEndGame) return; // if game already ended, return; 
                     chessBoard.Resign(Side);
+                    this.Close();
+                   // this.Dispose();
+
                 }
             }
         }
@@ -782,33 +1028,174 @@ namespace ChessAI
             var oldPanel1_Width = panel1.Width;
             panel1.Size = new System.Drawing.Size((int)Math.Floor(this.Size.Height - 100 * scale), (int)Math.Floor(this.Size.Height - 100 * scale));
             var deltaWidth = Math.Abs(panel1.Width - oldPanel1_Width);
-         //this.Width = (int)(this.Width + deltaWidth); // Scale the width
+            //this.Width = (int)(this.Width + deltaWidth); // Scale the width
             WLouterPanel.Left = (int)(WLouterPanel.Left + deltaWidth);
 
             foreach (Control control in this.Controls)
             {
-                Debug.WriteLine(control.Name);
+                ///  Debug.WriteLine(control.Name);
                 if (control.Name == "panel1") continue;
-                ScaleControl(control, deltaWidth, true,scale);
+                ScaleControl(control, deltaWidth, true, scale);
             }
             foreach (Control childControl in panel1.Controls)
             {
-                ScaleControl(childControl, deltaWidth, true,scale);
+                ScaleControl(childControl, deltaWidth, true, scale);
             }
         }
-        private void ScaleControl(Control control, int deltaWidth, bool usingDelta , float scale )
+        private void ScaleControl(Control control, int deltaWidth, bool usingDelta, float scale)
         {
-            control.Left = usingDelta? (int)(control.Left  + deltaWidth): (int)(control.Left *scale);  
-            control.Width = (int)(control.Width *scale);
+            control.Left = usingDelta ? (int)(control.Left + deltaWidth) : (int)(control.Left * scale);
+            control.Width = (int)(control.Width * scale);
             control.Height = (int)(control.Height * scale);
             control.Top = (int)(control.Top * currentScale);
             control.Font = new System.Drawing.Font(control.Font.FontFamily, control.Font.Size * scale);
 
             foreach (Control childControl in control.Controls)
             {
-                ScaleControl(childControl, deltaWidth, false ,scale);
+                ScaleControl(childControl, deltaWidth, false, scale);
             }
         }
 
+        public void LoadBoardFromPgn(string pgn)
+        {
+            //clear old chess board
+            PgnReview = pgn;
+            isReview = true;
+            chessBoard.Clear();
+            currentMoveIndex = 0;
+            chessBoard = ChessBoard.LoadFromPgn(pgn);
+            if (chessBoard.ExecutedMoves.Count == 0) return;
+            LogHistory = chessBoard.ExecutedMoves;
+            HistoryLog = chessBoard.MovesToSan;
+            chessBoard.MoveIndex = currentMoveIndex;
+            new SoundFXHandler(chessBoard, "", "start"); // start game sound
+
+            lastRev_Click(null, null);
+            
+            //panel1.Invalidate();
+
+
+        }
+
+
+        private void nextRev_Click(object sender, EventArgs e)
+        {
+            if (chessBoard.ExecutedMoves.Count == 0)
+            {
+                chessBoard.Clear();
+                panel1.Invalidate();
+                return;
+            }
+            if (sender != null && e != null)
+            {
+                PauseGame = true;
+            }
+            if (currentMoveIndex < (chessBoard.ExecutedMoves.Count - 1))
+            {
+                chessBoard.MoveIndex = currentMoveIndex;
+                currentMoveIndex++;
+                chessBoard.Next();
+                panel1.Invalidate();
+            }
+            else
+            {
+                chessBoard.Last();
+                chessBoard.MoveIndex = chessBoard.ExecutedMoves.Count - 1;
+            }
+
+            // check if the game is ended
+           
+            if (chessBoard.ExecutedMoves.Count - 1 != chessBoard.MoveIndex)
+            {
+                new SoundFXHandler(chessBoard, "", "move");
+            }
+
+        }
+
+        private void lastRev_Click(object sender, EventArgs e)
+        {
+            if (chessBoard.ExecutedMoves.Count == 0)
+            {
+                chessBoard.Clear();
+                panel1.Invalidate();
+                return;
+            }
+            if (sender != null && e != null)
+            {
+                PauseGame = true;
+            }
+            if (currentMoveIndex < 0)
+            {
+                currentMoveIndex = 0;
+                chessBoard.MoveIndex = currentMoveIndex;
+            }
+            else chessBoard.MoveIndex = currentMoveIndex;
+
+            chessBoard.Previous();
+            currentMoveIndex--;
+            // check if the game is ended
+            if (chessBoard.MoveIndex != -1 )
+            {
+                new SoundFXHandler(chessBoard, "", "move");
+            }
+            panel1.Invalidate();
+        }
+
+        private void Display_Log_History()
+        {
+            while (true)
+            {
+                if (PauseGame==true)
+                {
+                    while (true)
+                    {
+                        if (PauseGame == false)
+                        {
+                            break;
+                        }
+                        Thread.Sleep(1000);
+                    }
+                }
+                else
+                {
+                    if (currentMoveIndex == chessBoard.ExecutedMoves.Count - 1)
+                    {
+                        chessBoard.Last();
+                        Thread.Sleep(1000);
+                    }
+                    else
+                    {
+                        nextRev_Click(null, null);
+                        Thread.Sleep(1000);
+                    }
+                }
+                
+            }
+        }
+        private void playRev_Click(object sender, EventArgs e)
+        {
+
+            if (RunningLog == null)
+            {
+                RunningLog = new Thread(Display_Log_History);
+                RunningLog.IsBackground = true;
+                RunningLog.Start();
+            }
+            else
+            {
+                PauseGame = false;
+            }
+            
+
+        }
+
+        private void StopButton_Click(object sender, EventArgs e)
+        {
+            if (RunningLog != null && RunningLog.IsAlive)
+            {
+                PauseGame = true;
+            }
+            else return;
+        }
     }
 }

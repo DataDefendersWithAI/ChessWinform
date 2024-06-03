@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -44,6 +45,7 @@ namespace ChessAI.ChatServerAndClient
         public string message { get; set; }
         public DateTime date { get; set; }
 
+     
         /// <summary>
         /// Initializes a new instance of the <see cref="Message"/> class.
         /// </summary>
@@ -117,7 +119,7 @@ namespace ChessAI.ChatServerAndClient
         /// <summary>
         /// Loads the client and starts the connection and message receiving process.
         /// </summary>
-        public void ClientLoad()
+        public bool ClientLoad()
         {
             try
             {
@@ -125,10 +127,12 @@ namespace ChessAI.ChatServerAndClient
                 receiveThread = new Thread(new ThreadStart(ReceiveMessages));
                 receiveThread.IsBackground = true;
                 receiveThread.Start();
+                return true;
             }
             catch (Exception ex)
             {
                 LogMessage("Error: " + ex.Message);
+                return false;
             }
         }
         /// <summary>
@@ -180,7 +184,7 @@ namespace ChessAI.ChatServerAndClient
         /// Sends a message to the server.
         /// </summary>
         /// <param name="message">The message to send.</param>
-        public void SendMessage(string message)
+        public bool SendMessage(string message)
         {
             try
             {
@@ -189,15 +193,18 @@ namespace ChessAI.ChatServerAndClient
                     byte[] data = Encoding.ASCII.GetBytes(message);
                     stream.Write(data, 0, data.Length);
                     LogMessage(message);
+                    return true;
                 }
                 else
                 {
                     LogMessage("Not connected to server.");
+                    return false;
                 }
             }
             catch (Exception ex)
             {
                 LogMessage("Error: " + ex.Message);
+                return false;
             }
             
         }
@@ -207,13 +214,14 @@ namespace ChessAI.ChatServerAndClient
         /// <param name="message">The message to log.</param>
         public void LogMessage(string message)
         {
+            Debug.WriteLine("[Comm] Logged: " + message);
             if (Communication.isMainThread)
             {
                 // If message is error, MessageBox it
                 if (message.Contains("Error:"))
                 {
                    // MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Console.WriteLine("Error: "+message);
+                    Debug.WriteLine(message);
                 }
                 // Invoke the receive handler to log the message
                 receiveHandler?.Invoke(message);
@@ -265,7 +273,7 @@ namespace ChessAI.ChatServerAndClient
         private TcpListener server;
         private Thread serverThread;
         private List<TcpClient> connectedClients = new List<TcpClient>();
-
+        private bool isListening;
         /// <summary>
         /// Initializes a new instance of the <see cref="ServerCommunication"/> class.
         /// </summary>
@@ -282,15 +290,17 @@ namespace ChessAI.ChatServerAndClient
         /// </summary>
         public void StartServer()
         {
-            serverThread = new Thread(new ThreadStart(ListenForClients));
+            cancellationTokenSource = new CancellationTokenSource();
+            Thread serverThread = new Thread(new ThreadStart(ListenForClients));
             serverThread.IsBackground = true;
             serverThread.Start();
-            LogMessage($"Server running on {base.ipAddress}:{base.port}");
         }
 
         /// <summary>
         /// Listens for incoming client connections.
         /// </summary>
+        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
         private void ListenForClients()
         {
             try
@@ -298,22 +308,46 @@ namespace ChessAI.ChatServerAndClient
                 server = new TcpListener(IPAddress.Parse(base.ipAddress), base.port);
                 server.Start();
 
-                while (true)
-                {
-                    TcpClient client = server.AcceptTcpClient();
-                    LogMessage("New client connected from: " + ((IPEndPoint)client.Client.RemoteEndPoint).ToString());
-                    connectedClients.Add(client);
+                CancellationToken token = cancellationTokenSource.Token;
 
-                    Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClient));
-                    clientThread.IsBackground = true;
-                    clientThread.Start(client);
+                while (!token.IsCancellationRequested)
+                {
+                    try
+                    {
+                        TcpClient client = server.AcceptTcpClientAsync().Result; // Use AcceptTcpClientAsync for non-blocking
+                        LogMessage("New client connected from: " + ((IPEndPoint)client.Client.RemoteEndPoint).ToString());
+                        connectedClients.Add(client);
+
+                        Thread clientThread = new Thread(new ParameterizedThreadStart(HandleClient));
+                        clientThread.IsBackground = true;
+                        clientThread.Start(client);
+                    }
+                    catch (AggregateException ae)
+                    {
+                        if (ae.InnerException is OperationCanceledException)
+                        {
+                            Debug.WriteLine("Server is stopping");
+                            break;
+                        }
+                        else
+                        {
+                            throw; // Rethrow if it's not a cancellation
+                        }
+                    }
                 }
+
+                // Cleanup server
+                server.Stop();
+                server = null;
+                Debug.WriteLine("Server stopped");
             }
             catch (Exception ex)
             {
                 LogMessage("Error: " + ex.Message);
+               
             }
         }
+
 
         /// <summary>
         /// Handles communication with a connected client.
@@ -383,12 +417,46 @@ namespace ChessAI.ChatServerAndClient
             LogMessage($"{message}");
         }
 
-        private void ServerClose()
+        public void CloseServer()
         {
+            cancellationTokenSource.Cancel();
+
             if (server != null)
             {
                 server.Stop();
+                server = null;
             }
-        }   
+
+            foreach (var client in connectedClients)
+            {
+                client.Close();
+            }
+            connectedClients.Clear();
+
+            Debug.WriteLine("Server and all clients stopped");
+        }
+
+        public bool IsServerRunning()
+        {
+            // Check if server is running
+            if (server != null)
+            {
+                // Try to verify if the server is actively listening
+                try
+                {
+                    return server.Server.IsBound; // Checks if the underlying Socket is bound to an endpoint and thus is active
+                }
+                catch (ObjectDisposedException)
+                {
+                    // If server object is disposed, it means it has stopped
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
     }
 }

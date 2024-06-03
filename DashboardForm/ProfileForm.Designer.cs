@@ -26,6 +26,7 @@
         /// Required method for Designer support - do not modify
         /// the contents of this method with the code editor.
         /// </summary>
+
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ProfileForm));
@@ -215,7 +216,7 @@
             NewAccountBox.Name = "NewAccountBox";
             NewAccountBox.Size = new Size(395, 25);
             NewAccountBox.TabIndex = 1;
-            NewAccountBox.Text = "Enter username";
+            NewAccountBox.Text = "Enter new username";
             NewAccountBox.Enter += NewAccountBox_Enter;
             NewAccountBox.Leave += NewAccountBox_Leave;
             // 
@@ -347,6 +348,7 @@
             ResumeLayout(false);
             PerformLayout();
         }
+
 
         #endregion
         private Panel panel4;

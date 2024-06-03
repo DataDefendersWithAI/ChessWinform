@@ -33,7 +33,7 @@
             PvPButton = new Button();
             PvEButton = new Button();
             label1 = new Label();
-            label2 = new Label();
+            DisplayText = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -57,7 +57,7 @@
             PvPButton.FlatStyle = FlatStyle.Flat;
             PvPButton.Font = new Font("Showcard Gothic", 22.2F, FontStyle.Bold);
             PvPButton.ForeColor = Color.Sienna;
-            PvPButton.Location = new Point(502, 337);
+            PvPButton.Location = new Point(494, 357);
             PvPButton.Margin = new Padding(3, 2, 3, 2);
             PvPButton.Name = "PvPButton";
             PvPButton.Size = new Size(222, 58);
@@ -74,7 +74,7 @@
             PvEButton.FlatAppearance.BorderSize = 0;
             PvEButton.FlatStyle = FlatStyle.Flat;
             PvEButton.Font = new Font("Showcard Gothic", 22.2F, FontStyle.Bold);
-            PvEButton.Location = new Point(502, 238);
+            PvEButton.Location = new Point(494, 258);
             PvEButton.Margin = new Padding(3, 2, 3, 2);
             PvEButton.Name = "PvEButton";
             PvEButton.Size = new Size(222, 58);
@@ -93,15 +93,14 @@
             label1.TabIndex = 15;
             label1.Text = "Chess.ai";
             // 
-            // label2
+            // DisplayText
             // 
-            label2.AutoSize = true;
-            label2.Font = new Font("Microsoft Sans Serif", 22.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label2.Location = new Point(502, 104);
-            label2.Name = "label2";
-            label2.Size = new Size(232, 108);
-            label2.TabIndex = 16;
-            label2.Text = "Welcome user,\r\nplease choose \r\nyour play mode";
+            DisplayText.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            DisplayText.Location = new Point(461, 84);
+            DisplayText.Name = "DisplayText";
+            DisplayText.Size = new Size(293, 87);
+            DisplayText.TabIndex = 16;
+            DisplayText.Text = "Welcome user, please choose your play mode";
             // 
             // HomeForm
             // 
@@ -109,7 +108,7 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Gainsboro;
             ClientSize = new Size(766, 455);
-            Controls.Add(label2);
+            Controls.Add(DisplayText);
             Controls.Add(label1);
             Controls.Add(PvEButton);
             Controls.Add(PvPButton);
@@ -117,6 +116,7 @@
             Margin = new Padding(3, 2, 3, 2);
             Name = "HomeForm";
             Text = "HomeForm";
+            Load += HomeForm_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -128,6 +128,6 @@
         private Button PvPButton;
         private Button PvEButton;
         private Label label1;
-        private Label label2;
+        private Label DisplayText;
     }
 }

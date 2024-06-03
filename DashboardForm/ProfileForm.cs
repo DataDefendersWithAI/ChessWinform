@@ -3,6 +3,7 @@ using System.Text;
 using FireSharp.Config;
 using FireSharp.Interfaces;
 using System.Security.Cryptography;
+using ChessAI_Bck;
 
 namespace winform_chat.DashboardForm
 {
@@ -14,9 +15,18 @@ namespace winform_chat.DashboardForm
             BasePath = "https://chess-database-a25f7-default-rtdb.asia-southeast1.firebasedatabase.app/"
         };
         IFirebaseClient Client;
-        public ProfileForm()
+        private User playerUser;
+        public ProfileForm(User pUser)
         {
             InitializeComponent();
+            if (pUser != null)
+            {
+                playerUser = pUser;
+            }
+            else
+            {
+                playerUser = new User(username: "NotFound" + new Random().Next(999, 9999), elo: 404);
+            }
         }
 
         private void ProfileForm_Load(object sender, EventArgs e)
@@ -141,6 +151,7 @@ namespace winform_chat.DashboardForm
         }
         private async void UpdateUserButton_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(null, "", "click");
             if (CurrAccountBox.Text == "Enter current username" || NewAccountBox.Text == "Enter new username")
             {
                 StatusText.Text = "Current Status: Please fill in all fields";
@@ -155,20 +166,32 @@ namespace winform_chat.DashboardForm
                     ID = EncodeSha256(NewAccountBox.Text),
                     Username = NewAccountBox.Text,
                     Email = user.Email,
-                    Password = user.Password
+                    Password = user.Password,
+                    ELO = user.ELO,
+                    MatchHistory = user.MatchHistory
                 };
-                var delete_user = await Client.DeleteAsync("Users/" + EncodeSha256(CurrAccountBox.Text));
-                var set = await Client.SetAsync("Users/" + EncodeSha256(NewAccountBox.Text), update_user);
-                StatusText.Text = "Current Status: User Updated";
-                CurrAccountBox.Text = "Enter current username";
-                CurrAccountBox.ForeColor = Color.Gray;
-                NewAccountBox.Text = "Enter new username";
-                NewAccountBox.ForeColor = Color.Gray;
+                var exists = await Client.GetAsync("Users/" + EncodeSha256(NewAccountBox.Text));
+                if (exists.Body != "null")
+                {
+                    StatusText.Text = "Current Status: Username already exists";
+                    return;
+                }
+                else
+                {
+                    var delete_user = await Client.DeleteAsync("Users/" + EncodeSha256(CurrAccountBox.Text));
+                    var set_user = await Client.SetAsync("Users/" + EncodeSha256(NewAccountBox.Text), update_user);
+                    StatusText.Text = "Current Status: User Updated";
+                    CurrAccountBox.Text = "Enter current username";
+                    CurrAccountBox.ForeColor = Color.Gray;
+                    NewAccountBox.Text = "Enter new username";
+                    NewAccountBox.ForeColor = Color.Gray;
+                }
             }
         }
 
         private void UpdatePassButton_Click(object sender, EventArgs e)
         {
+            new SoundFXHandler(null, "", "click");
             if (CurrAccountBox.Text == "Enter username" || PasswordBox.Text == "Enter password" || ReTypePasswordBox.Text == "Retype password")
             {
                 StatusText.Text = "Current Status: Please fill in all fields";
@@ -187,7 +210,9 @@ namespace winform_chat.DashboardForm
                     ID = EncodeSha256(CurrAccountBox.Text),
                     Username = user.Username,
                     Email = user.Email,
-                    Password = EncodeSha256(PasswordBox.Text)
+                    Password = EncodeSha256(PasswordBox.Text),
+                    ELO = user.ELO,
+                    MatchHistory = user.MatchHistory
                 };
                 var set = Client.SetAsync("Users/" + EncodeSha256(CurrAccountBox.Text), update_user);
                 StatusText.Text = "Current Status: Password Updated";
