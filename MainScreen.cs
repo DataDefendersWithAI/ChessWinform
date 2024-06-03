@@ -16,7 +16,7 @@ namespace winform_chat
         public string username { get; set; }
         public int ELO { get; set; }
 
-        private User playerUser;
+        public User playerUser;
 
         public bool isInPvPMode { get; set; } = false;
 
@@ -157,7 +157,7 @@ namespace winform_chat
 
         private void ProfileButton_Click(object sender, EventArgs e)
         {
-            var temp = new DashboardForm.ProfileForm(playerUser);
+            var temp = new DashboardForm.ProfileForm(playerUser, this);
             LoadForm(temp);
         }
 

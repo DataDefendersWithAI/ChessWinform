@@ -185,7 +185,25 @@ namespace ChessAI
                 Stockfish.SkillLevel = 0;
                 // Set the side randomly or preset
                 Side = presetSide != null ? presetSide : Random.Shared.Next(2) == 0 ? PieceColor.White : PieceColor.Black;
-                opponentUser = new User(username: "AI", elo: 1);
+                switch (modeDepth)
+                {
+                    case 1:
+                        opponentUser = new User(username: "AI", elo: 800);
+                        break;
+                    case 2:
+                        opponentUser = new User(username: "AI", elo: 1100);
+                        break;
+                    case 4:
+                        opponentUser = new User(username: "AI", elo: 1700);
+                        break;
+                    case 6:
+                        opponentUser = new User(username: "AI", elo: 2300);
+                        break;
+                    case 8:
+                        opponentUser = new User(username: "AI", elo: 3000);
+                        break;
+                }
+                //opponentUser = new User(username: "AI", elo: 1);
             }
 
             if (isReview) // if player reviewing the game
@@ -319,9 +337,8 @@ namespace ChessAI
                         Debug.WriteLine("Error: User not found in the database.");
                         return;
                     }
-
-                    var match_id = Guid.NewGuid().ToString();
                     var pgn = chessBoard.ToPgn();
+                    var match_id = EncodeSha256(pgn);
                     var save_PGN = new PGNLog
                     {
                         ID = match_id,

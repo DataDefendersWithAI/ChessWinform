@@ -46,7 +46,9 @@ namespace winform_chat.DashboardForm
             playerUser = new LoadUserData().GetUserData(playerUser.Username); // update new data
             pgnLogs = playerUser.MatchHistory;
             listBoxHistory.Items.Clear();
-            listBoxHistory.Items.AddRange(pgnLogs.ToArray());
+            var arr = pgnLogs.ToArray();
+            Array.Reverse(arr);
+            listBoxHistory.Items.AddRange(arr);
             if (listBoxHistory.Items.Count > 0)
                 listBoxHistory.SelectedIndex = 0;
         }
