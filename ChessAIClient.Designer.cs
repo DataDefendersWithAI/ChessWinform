@@ -36,12 +36,6 @@
             cntSvr = new Button();
             OfflineButton = new Button();
             imageList1 = new ImageList(components);
-            flowLayoutPanel1 = new FlowLayoutPanel();
-            Queen = new Button();
-            Rook = new Button();
-            Knight = new Button();
-            Bishop = new Button();
-            label1 = new Label();
             panel1 = new Panel();
             WLouterPanel = new Panel();
             reasonText = new Label();
@@ -83,7 +77,6 @@
             lastRev = new Button();
             playRev = new Button();
             StopButton = new Button();
-            flowLayoutPanel1.SuspendLayout();
             panel1.SuspendLayout();
             WLouterPanel.SuspendLayout();
             WLinnerPanel.SuspendLayout();
@@ -167,83 +160,10 @@
             imageList1.Images.SetKeyName(6, "WQueen");
             imageList1.Images.SetKeyName(7, "WRook");
             // 
-            // flowLayoutPanel1
-            // 
-            flowLayoutPanel1.BackColor = Color.SandyBrown;
-            flowLayoutPanel1.Controls.Add(Queen);
-            flowLayoutPanel1.Controls.Add(Rook);
-            flowLayoutPanel1.Controls.Add(Knight);
-            flowLayoutPanel1.Controls.Add(Bishop);
-            flowLayoutPanel1.Controls.Add(label1);
-            flowLayoutPanel1.Location = new Point(586, 109);
-            flowLayoutPanel1.Margin = new Padding(3, 2, 3, 2);
-            flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(64, 239);
-            flowLayoutPanel1.TabIndex = 6;
-            flowLayoutPanel1.Visible = false;
-            // 
-            // Queen
-            // 
-            Queen.ImageIndex = 1;
-            Queen.ImageList = imageList1;
-            Queen.Location = new Point(3, 2);
-            Queen.Margin = new Padding(3, 2, 3, 2);
-            Queen.Name = "Queen";
-            Queen.Size = new Size(60, 51);
-            Queen.TabIndex = 0;
-            Queen.Text = " ";
-            Queen.UseVisualStyleBackColor = true;
-            // 
-            // Rook
-            // 
-            Rook.ImageIndex = 1;
-            Rook.ImageList = imageList1;
-            Rook.Location = new Point(3, 57);
-            Rook.Margin = new Padding(3, 2, 3, 2);
-            Rook.Name = "Rook";
-            Rook.Size = new Size(60, 51);
-            Rook.TabIndex = 1;
-            Rook.Text = " ";
-            Rook.UseVisualStyleBackColor = true;
-            // 
-            // Knight
-            // 
-            Knight.ImageKey = "WKnight";
-            Knight.ImageList = imageList1;
-            Knight.Location = new Point(3, 112);
-            Knight.Margin = new Padding(3, 2, 3, 2);
-            Knight.Name = "Knight";
-            Knight.Size = new Size(60, 51);
-            Knight.TabIndex = 2;
-            Knight.Text = " ";
-            Knight.UseVisualStyleBackColor = true;
-            // 
-            // Bishop
-            // 
-            Bishop.ImageIndex = 1;
-            Bishop.ImageList = imageList1;
-            Bishop.Location = new Point(3, 167);
-            Bishop.Margin = new Padding(3, 2, 3, 2);
-            Bishop.Name = "Bishop";
-            Bishop.Size = new Size(60, 51);
-            Bishop.TabIndex = 3;
-            Bishop.Text = " ";
-            Bishop.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(3, 220);
-            label1.Name = "label1";
-            label1.Size = new Size(38, 15);
-            label1.TabIndex = 4;
-            label1.Text = "label1";
-            // 
             // panel1
             // 
             panel1.BackColor = Color.LightCyan;
             panel1.Controls.Add(WLouterPanel);
-            panel1.Controls.Add(flowLayoutPanel1);
             panel1.Location = new Point(16, 20);
             panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
@@ -777,8 +697,6 @@
             FormClosing += ClientForm_Closed;
             Load += ClientForm_Load;
             SizeChanged += boardResize;
-            flowLayoutPanel1.ResumeLayout(false);
-            flowLayoutPanel1.PerformLayout();
             panel1.ResumeLayout(false);
             WLouterPanel.ResumeLayout(false);
             WLinnerPanel.ResumeLayout(false);
@@ -798,13 +716,7 @@
         private Button cntSvr;
         private Button OfflineButton;
         private ImageList imageList1;
-        private FlowLayoutPanel flowLayoutPanel1;
-        private Button Queen;
-        private Button Rook;
-        private Button Knight;
-        private Button Bishop;
         private Panel panel1;
-        private Label label1;
         private Label opponentTimer;
         private Label ourTimer;
         private FlowLayoutPanel opponentCaptured;

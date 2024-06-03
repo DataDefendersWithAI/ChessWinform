@@ -234,7 +234,6 @@ namespace ChessAI
         private void GameEnded(object sender, EndgameEventArgs e)
         {
             // Hide components on end game
-            flowLayoutPanel1.Visible = false;
             resignBtn.Visible = false;
             drawBtn.Visible = false;
             //
