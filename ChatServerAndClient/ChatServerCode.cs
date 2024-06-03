@@ -142,15 +142,25 @@ namespace winforms_chat
 
                             // Begin finding a match; if found, remove users from listview
                             string player1 = msg.from;
+               
                             Random random = new Random();
-
                             int index2 = random.Next(0, listview_userQueue.Items.Count);
-                            while (listview_userQueue.Items[index2].SubItems[1].Text == player1)
+                            string player2 = "";
+
+                            foreach (ListViewItem item in listview_userQueue.Items)
                             {
-                                index2 = random.Next(0, listview_userQueue.Items.Count);
+                                if (item.SubItems[1].Text != player1 && item.SubItems[3].Text == timeCtrl )
+                                {
+                                    player2 = item.SubItems[1].Text;
+                                }
                             }
-                            
-                            string player2 = listview_userQueue.Items[index2].SubItems[1].Text;
+
+                            if (string.IsNullOrWhiteSpace(player2))
+                            {
+                                Debug.WriteLine("[SVR] User " + msg.from + " is auto matching but no room available!");
+
+                                return;
+                            }
 
                             Debug.WriteLine("Pick auto match players: " + player1 + " and " + player2 );
                             BeginGame(player1, player2, timeCtrl);

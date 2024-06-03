@@ -147,6 +147,10 @@ public partial class PvpModeForm : Form
             // Use Invoke to update the UI on the main thread
             this.Invoke((Action)(() =>
             {
+                if(playerUser.ELO <= 0 )
+                {
+                    playerUser.ELO = 400;
+                }
                 label5.Text = playerUser.Username + " - Elo: " + playerUser.ELO;
                 listBoxPlayerRooms.Items.Clear();
                 Invalidate();
@@ -217,24 +221,22 @@ public partial class PvpModeForm : Form
 
         var graphics = e.Graphics;
         var bounds = e.Bounds;
+        var bTop = bounds.Top + 5;
+        var bLeft = bounds.Left;
 
         // Draw player name and ELO
-        var playerNameAndELO = $"{playerRoom.NameOfPlayer} (ELO: {playerRoom.ELO})";
-        var playerNameAndELOFont = new Font("Arial", 14, FontStyle.Bold);
+        var playerNameAndELO = $"{playerRoom.NameOfPlayer} (Elo: {playerRoom.ELO})";
+        var playerNameAndELOFont = new Font("Arial", 15, FontStyle.Bold);
         var playerNameAndELOBrush = Brushes.Black;
-        graphics.DrawString(playerNameAndELO, playerNameAndELOFont, playerNameAndELOBrush, bounds.Left + 10, bounds.Top + 5);
+        graphics.DrawString(playerNameAndELO, playerNameAndELOFont, playerNameAndELOBrush,bLeft + 10, bTop + 5);
 
         // Draw time control
         var timeControl = playerRoom.GameMode;
-        var timeControlFont = new Font("Arial", 12, FontStyle.Regular);
+        if (TimeControls[playerRoom.GameMode]!= null)
+             timeControl = playerRoom.GameMode +" - " + TimeControls[playerRoom.GameMode];
+        var timeControlFont = new Font("Arial", 15, FontStyle.Regular);
         var timeControlBrush = Brushes.Gray;
-        graphics.DrawString(timeControl, timeControlFont, timeControlBrush, bounds.Left + 200, bounds.Top + 5);
-
-        // Draw status
-        var status = playerRoom.Status_;
-        var statusFont = new Font("Arial", 12, FontStyle.Italic);
-        var statusBrush = Brushes.Black;
-        graphics.DrawString(status, statusFont, statusBrush, bounds.Left + 300, bounds.Top + 5);
+        graphics.DrawString(timeControl, timeControlFont, timeControlBrush, bLeft + 300, bTop + 5);
 
         e.DrawFocusRectangle();
     }
@@ -297,6 +299,7 @@ public partial class PvpModeForm : Form
     private void ClientForm_Load(object sender, EventArgs e)
     {
         Debug.WriteLine("[CL] ClientForm Loaded");
+       
     }
 
     private void connectToServer()
@@ -605,7 +608,10 @@ public partial class PvpModeForm : Form
             chessAIClientFormOnline.Show();
 
             opponentUser = string.IsNullOrEmpty(currentChatMainForm.opponentUserName) ? new User(username: "NotFound" + new Random().Next(999, 9999), elo: 404) : new LoadUserData().GetUserData(currentChatMainForm.opponentUserName);
-            
+            if (opponentUser.ELO <= 0)
+            {
+                opponentUser.ELO = 400;
+            }
             chessAIClientFormOnline.SetupGame(pUser: playerUser, oUser: opponentUser, timeCtrl: timectrl, side: side, chatMainForm: currentChatMainForm);
             ParentForm.isInPvPMode = true;
             ParentForm.Hide();

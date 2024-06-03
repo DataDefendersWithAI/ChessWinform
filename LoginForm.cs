@@ -110,6 +110,7 @@ namespace winform_chat
                     if (playerUser.ELO <= 0)
                     {
                         playerUser.ELO = 400;
+
                     }
                     this.Hide();
                     MainScreen newMain = new MainScreen(playerUser);

@@ -39,11 +39,11 @@ namespace winforms_chat
         public PieceColor Side { get; private set; }
         public string timeCtrl { get; private set; }
 
-        public ChatMainForm(string tableCode = "123456", string userName = "testUser" , ChessAIClient chClient = null, String side = "", string timectrl ="", int OpponentELO = 1)
+        public ChatMainForm(string tblCode = "123456", string userName = "testUser" , ChessAIClient chClient = null, String side = "", string timectrl ="", int OpponentELO = 1)
 		{
             if (ChatMainForm.isMainThread)
             {
-                tableCode = tableCode;
+                tableCode = tblCode;
                 // Split userName by - and get the first part as userName, second part as opponentUserName
                 Debug.WriteLine("[CMF] userName: " + userName);
                 string[] userNames = userName.Split('-');
@@ -133,10 +133,11 @@ namespace winforms_chat
                             if ( msg1.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect)))
                             {
                                 msg1 = opponentUserName + " has left the game!";
+                                msg.from = "System";
                             };
                             // Add message to chat panel
                             ChatForm.TextChatModel chatModel = new ChatForm.TextChatModel();
-                            chatModel.Author = "System"; //msg.from == "server" ? "System" : "Opponent
+                            chatModel.Author = msg.from;
                             chatModel.Body = msg1;
                             chatModel.Inbound = true;
                             chatModel.Time = msg.date;

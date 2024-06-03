@@ -42,10 +42,7 @@ namespace winform_chat.DashboardForm
         public void UpdateFomrUI()
         {
             Debug.WriteLine("[HS] History UI updating...");
-            Task.Run(() =>
-            {
-                playerUser = new LoadUserData().GetUserData(playerUser.Username); // update new data
-            });
+            playerUser = new LoadUserData().GetUserData(playerUser.Username); // update new data
             pgnLogs = playerUser.MatchHistory;
             listBoxHistory.Items.Clear();
             listBoxHistory.Items.AddRange(pgnLogs.ToArray());

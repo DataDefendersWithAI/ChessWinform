@@ -101,10 +101,10 @@
             panel2.BackColor = Color.Azure;
             panel2.Controls.Add(PasswordBox);
             panel2.Controls.Add(pictureBox4);
-            panel2.Location = new Point(407, 254);
+            panel2.Location = new Point(438, 254);
             panel2.Margin = new Padding(3, 2, 3, 2);
             panel2.Name = "panel2";
-            panel2.Size = new Size(550, 46);
+            panel2.Size = new Size(498, 46);
             panel2.TabIndex = 5;
             // 
             // PasswordBox
@@ -182,7 +182,7 @@
             StatusText.AutoSize = true;
             StatusText.Font = new Font("Microsoft Sans Serif", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             StatusText.ForeColor = Color.Red;
-            StatusText.Location = new Point(413, 413);
+            StatusText.Location = new Point(438, 413);
             StatusText.Name = "StatusText";
             StatusText.Size = new Size(321, 26);
             StatusText.TabIndex = 11;
@@ -235,10 +235,10 @@
             panel1.BackColor = Color.Azure;
             panel1.Controls.Add(AccountBox);
             panel1.Controls.Add(pictureBox3);
-            panel1.Location = new Point(407, 185);
+            panel1.Location = new Point(438, 185);
             panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(550, 46);
+            panel1.Size = new Size(498, 46);
             panel1.TabIndex = 4;
             // 
             // LoginForm

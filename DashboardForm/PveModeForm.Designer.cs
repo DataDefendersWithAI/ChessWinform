@@ -160,7 +160,7 @@
             comboBox1.FormattingEnabled = true;
             comboBox1.Location = new Point(554, 197);
             comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(128, 29);
+            comboBox1.Size = new Size(176, 29);
             comboBox1.TabIndex = 21;
             comboBox1.Text = "White";
             comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
@@ -181,7 +181,7 @@
             comboBox2.FormattingEnabled = true;
             comboBox2.Location = new Point(554, 301);
             comboBox2.Name = "comboBox2";
-            comboBox2.Size = new Size(128, 29);
+            comboBox2.Size = new Size(176, 29);
             comboBox2.TabIndex = 23;
             comboBox2.Text = "White";
             comboBox2.SelectedIndexChanged += comboBox2_SelectedIndexChanged;
