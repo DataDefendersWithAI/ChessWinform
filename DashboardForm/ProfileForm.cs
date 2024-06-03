@@ -166,15 +166,26 @@ namespace winform_chat.DashboardForm
                     ID = EncodeSha256(NewAccountBox.Text),
                     Username = NewAccountBox.Text,
                     Email = user.Email,
-                    Password = user.Password
+                    Password = user.Password,
+                    ELO = user.ELO,
+                    MatchHistory = user.MatchHistory
                 };
-                var delete_user = await Client.DeleteAsync("Users/" + EncodeSha256(CurrAccountBox.Text));
-                var set = await Client.SetAsync("Users/" + EncodeSha256(NewAccountBox.Text), update_user);
-                StatusText.Text = "Current Status: User Updated";
-                CurrAccountBox.Text = "Enter current username";
-                CurrAccountBox.ForeColor = Color.Gray;
-                NewAccountBox.Text = "Enter new username";
-                NewAccountBox.ForeColor = Color.Gray;
+                var exists = await Client.GetAsync("Users/" + EncodeSha256(NewAccountBox.Text));
+                if (exists.Body != "null")
+                {
+                    StatusText.Text = "Current Status: Username already exists";
+                    return;
+                }
+                else
+                {
+                    var delete_user = await Client.DeleteAsync("Users/" + EncodeSha256(CurrAccountBox.Text));
+                    var set_user = await Client.SetAsync("Users/" + EncodeSha256(NewAccountBox.Text), update_user);
+                    StatusText.Text = "Current Status: User Updated";
+                    CurrAccountBox.Text = "Enter current username";
+                    CurrAccountBox.ForeColor = Color.Gray;
+                    NewAccountBox.Text = "Enter new username";
+                    NewAccountBox.ForeColor = Color.Gray;
+                }
             }
         }
 
@@ -199,7 +210,9 @@ namespace winform_chat.DashboardForm
                     ID = EncodeSha256(CurrAccountBox.Text),
                     Username = user.Username,
                     Email = user.Email,
-                    Password = EncodeSha256(PasswordBox.Text)
+                    Password = EncodeSha256(PasswordBox.Text),
+                    ELO = user.ELO,
+                    MatchHistory = user.MatchHistory
                 };
                 var set = Client.SetAsync("Users/" + EncodeSha256(CurrAccountBox.Text), update_user);
                 StatusText.Text = "Current Status: Password Updated";

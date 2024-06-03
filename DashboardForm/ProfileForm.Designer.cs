@@ -215,7 +215,7 @@
             NewAccountBox.Name = "NewAccountBox";
             NewAccountBox.Size = new Size(395, 25);
             NewAccountBox.TabIndex = 1;
-            NewAccountBox.Text = "Enter username";
+            NewAccountBox.Text = "Enter new username";
             NewAccountBox.Enter += NewAccountBox_Enter;
             NewAccountBox.Leave += NewAccountBox_Leave;
             // 

@@ -12,6 +12,7 @@ namespace winform_chat.DashboardForm
 {
     public partial class HistoryForm : Form
     {
+
         private User playerUser;
         private List<PGNLog> pgnLogs;
         private ChessAIClient client;
