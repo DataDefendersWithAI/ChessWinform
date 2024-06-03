@@ -427,7 +427,7 @@ public partial class PvpModeForm : Form
 
     }
 
-    private void ClientForm_FormClosed(object sender, FormClosedEventArgs e)
+    private void ClientForm_FormClosed(object sender, FormClosingEventArgs e)
     {
         if (comm == null) return;
         // Send last message to server
@@ -908,7 +908,7 @@ public partial class PvpModeForm : Form
 
         if (comm == null) return;
         // When user closes the form, send message to server
-        ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", OurName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientDisconnect), DateTime.Now);
+        ChessAI.ChatServerAndClient.Message message = new ChessAI.ChatServerAndClient.Message("000000", "join", OurName, "server", ChatCommandExt.ToString(ChatCommandExt.ChatCommand.ClientLeaveRoom), DateTime.Now);
         isConnectedToServer = comm.SendMessage(message.ToJson());
         comm.ClientClose();
     }

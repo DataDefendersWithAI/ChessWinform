@@ -257,7 +257,7 @@
             Margin = new Padding(3, 2, 3, 2);
             Name = "PvpModeForm";
             Text = "ChatServer";
-            FormClosed += ClientForm_FormClosed;
+            FormClosing += ClientForm_FormClosed;
             Load += ClientForm_Load;
             ResumeLayout(false);
             PerformLayout();

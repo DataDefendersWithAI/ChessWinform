@@ -237,7 +237,6 @@ namespace ChessAI
         private void GameEnded(object sender, EndgameEventArgs e)
         {
             // Hide components on end game
-            flowLayoutPanel1.Visible = false;
             resignBtn.Visible = false;
             drawBtn.Visible = false;
             //
@@ -898,7 +897,7 @@ namespace ChessAI
         {
             new SoundFXHandler(null, "", "click");
             this.Close();
-            this.Dispose();
+          //  this.Dispose();
         }
 
         private void Again_Click(object sender, EventArgs e)
@@ -911,7 +910,7 @@ namespace ChessAI
         {
             new SoundFXHandler(null, "", "click");
             this.Close();
-            this.Dispose();
+           // this.Dispose();
         }
 
         private void drawBtn_Click(object sender, EventArgs e)
@@ -1017,7 +1016,7 @@ namespace ChessAI
                     if (chessBoard.IsEndGame) return; // if game already ended, return; 
                     chessBoard.Resign(Side);
                     this.Close();
-                    this.Dispose();
+                   // this.Dispose();
 
                 }
             }
