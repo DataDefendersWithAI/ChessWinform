@@ -196,7 +196,7 @@
             LoginButton.FlatStyle = FlatStyle.Flat;
             LoginButton.Font = new Font("Microsoft Sans Serif", 22.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             LoginButton.Location = new Point(558, 335);
-            LoginButton.Margin = new Padding(3, 2, 3, 2);
+            LoginButton.Margin = new Padding(0);
             LoginButton.Name = "LoginButton";
             LoginButton.Size = new Size(222, 58);
             LoginButton.TabIndex = 12;
@@ -243,6 +243,7 @@
             // 
             // LoginForm
             // 
+            AcceptButton = LoginButton;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Aquamarine;

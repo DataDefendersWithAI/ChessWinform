@@ -46,7 +46,7 @@ namespace winform_chat.DashboardForm
         private void HomeForm_Load(object sender, EventArgs e)
         {
             DisplayText.AutoSize = false;
-            DisplayText.Size = new Size(350,210);
+            DisplayText.Size = new Size(350,150);
             DisplayText.Text = "Welcome " + playerUser.Username + ", " + "please choose your playmode!";
 
         }
