@@ -407,6 +407,11 @@ public partial class PvpModeForm : Form
                     }
                     else if (msg.to.Contains(OurName) && !msg.message.Contains(ChatCommandExt.ChatCommand.ServerDisconnect.ToString()))
                     {
+                        // Stop auto pick
+                        autoPickTimer.Stop();
+                        isAutoMatching = false;
+                        btn_autoJoin.Text = "🔄 Auto matching";
+                        //
                         Debug.WriteLine("[CL] Game begin with " + msg.to);
                         // Split msg.to by - and swap if needed to make sure that first part is user name and second part is opponent user name
                         string[] userNames = msg.to.Split('-');
