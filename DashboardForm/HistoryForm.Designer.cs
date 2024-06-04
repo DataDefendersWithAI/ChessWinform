@@ -150,7 +150,7 @@
             // 
             gameResult.BackColor = Color.OliveDrab;
             gameResult.BorderStyle = BorderStyle.Fixed3D;
-            gameResult.Font = new Font("Varela Round", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            gameResult.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
             gameResult.ForeColor = Color.LawnGreen;
             gameResult.Location = new Point(85, 122);
             gameResult.Name = "gameResult";
@@ -273,6 +273,7 @@
             Controls.Add(label1);
             Controls.Add(panel1);
             Controls.Add(listBoxHistory);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "HistoryForm";
             Text = "HistoryForm";
             panel1.ResumeLayout(false);

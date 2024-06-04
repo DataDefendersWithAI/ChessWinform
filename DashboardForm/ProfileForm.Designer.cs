@@ -314,7 +314,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.Gainsboro;
+            BackColor = Color.PeachPuff;
             ClientSize = new Size(700, 492);
             Controls.Add(label1);
             Controls.Add(UpdatePassButton);
@@ -326,6 +326,7 @@
             Controls.Add(panel2);
             Controls.Add(panel1);
             Controls.Add(label2);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(3, 2, 3, 2);
             Name = "ProfileForm";
             Text = "ProfileForm";

@@ -31,11 +31,11 @@
             components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PromotePawnForm));
             QueenButton = new Button();
+            imageList1 = new ImageList(components);
             RookButton = new Button();
             KnightButton = new Button();
             BishopButton = new Button();
             imageList2 = new ImageList(components);
-            imageList1 = new ImageList(components);
             promoteText = new Label();
             SuspendLayout();
             // 
@@ -50,6 +50,20 @@
             QueenButton.TabIndex = 5;
             QueenButton.Text = " ";
             QueenButton.UseVisualStyleBackColor = true;
+            // 
+            // imageList1
+            // 
+            imageList1.ColorDepth = ColorDepth.Depth8Bit;
+            imageList1.ImageStream = (ImageListStreamer)resources.GetObject("imageList1.ImageStream");
+            imageList1.TransparentColor = Color.Transparent;
+            imageList1.Images.SetKeyName(0, "BBishop");
+            imageList1.Images.SetKeyName(1, "BKnight");
+            imageList1.Images.SetKeyName(2, "BQueen");
+            imageList1.Images.SetKeyName(3, "BRook");
+            imageList1.Images.SetKeyName(4, "WBishop");
+            imageList1.Images.SetKeyName(5, "WKnight");
+            imageList1.Images.SetKeyName(6, "WQueen");
+            imageList1.Images.SetKeyName(7, "WRook");
             // 
             // RookButton
             // 
@@ -101,20 +115,6 @@
             imageList2.Images.SetKeyName(6, "WQueen");
             imageList2.Images.SetKeyName(7, "WRook");
             // 
-            // imageList1
-            // 
-            imageList1.ColorDepth = ColorDepth.Depth8Bit;
-            imageList1.ImageStream = (ImageListStreamer)resources.GetObject("imageList1.ImageStream");
-            imageList1.TransparentColor = Color.Transparent;
-            imageList1.Images.SetKeyName(0, "BBishop");
-            imageList1.Images.SetKeyName(1, "BKnight");
-            imageList1.Images.SetKeyName(2, "BQueen");
-            imageList1.Images.SetKeyName(3, "BRook");
-            imageList1.Images.SetKeyName(4, "WBishop");
-            imageList1.Images.SetKeyName(5, "WKnight");
-            imageList1.Images.SetKeyName(6, "WQueen");
-            imageList1.Images.SetKeyName(7, "WRook");
-            // 
             // promoteText
             // 
             promoteText.AutoSize = true;
@@ -135,6 +135,7 @@
             Controls.Add(RookButton);
             Controls.Add(BishopButton);
             Controls.Add(KnightButton);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "PromotePawnForm";
             Text = "Promote Your Pawn";
             ResumeLayout(false);

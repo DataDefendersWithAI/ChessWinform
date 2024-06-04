@@ -279,6 +279,7 @@
             ClientSize = new Size(973, 516);
             Controls.Add(MainPanel);
             Controls.Add(SideBar);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(3, 2, 3, 2);
             Name = "MainScreen";
             Text = "MainScreen";

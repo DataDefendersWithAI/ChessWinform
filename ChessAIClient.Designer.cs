@@ -665,7 +665,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.MintCream;
+            BackColor = Color.MistyRose;
             ClientSize = new Size(1280, 707);
             Controls.Add(StopButton);
             Controls.Add(playRev);
@@ -691,9 +691,10 @@
             Controls.Add(OppMoveButton);
             Controls.Add(richTextBox1);
             FormBorderStyle = FormBorderStyle.Fixed3D;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(3, 2, 3, 2);
             Name = "ChessAIClient";
-            Text = "Form1";
+            Text = "ChessBattle";
             FormClosing += ClientForm_Closed;
             Load += ClientForm_Load;
             SizeChanged += boardResize;

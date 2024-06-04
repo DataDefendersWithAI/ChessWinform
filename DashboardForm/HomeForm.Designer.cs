@@ -106,13 +106,14 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = Color.Gainsboro;
+            BackColor = Color.LightGreen;
             ClientSize = new Size(766, 455);
             Controls.Add(DisplayText);
             Controls.Add(label1);
             Controls.Add(PvEButton);
             Controls.Add(PvPButton);
             Controls.Add(pictureBox1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(3, 2, 3, 2);
             Name = "HomeForm";
             Text = "HomeForm";

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChatBox_Server_Form));
             btnListen = new Button();
             richTextBox = new RichTextBox();
             SuspendLayout();
@@ -35,9 +36,10 @@
             // btnListen
             // 
             btnListen.BackColor = Color.PaleGreen;
-            btnListen.Location = new Point(623, 25);
+            btnListen.Location = new Point(545, 19);
+            btnListen.Margin = new Padding(3, 2, 3, 2);
             btnListen.Name = "btnListen";
-            btnListen.Size = new Size(124, 48);
+            btnListen.Size = new Size(108, 36);
             btnListen.TabIndex = 0;
             btnListen.Text = "Listen";
             btnListen.UseVisualStyleBackColor = false;
@@ -45,21 +47,24 @@
             // 
             // richTextBox
             // 
-            richTextBox.Location = new Point(15, 96);
+            richTextBox.Location = new Point(13, 72);
+            richTextBox.Margin = new Padding(3, 2, 3, 2);
             richTextBox.Name = "richTextBox";
             richTextBox.ReadOnly = true;
-            richTextBox.Size = new Size(773, 342);
+            richTextBox.Size = new Size(677, 258);
             richTextBox.TabIndex = 1;
             richTextBox.Text = "";
             // 
             // ChatBox_Server_Form
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Azure;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(700, 338);
             Controls.Add(richTextBox);
             Controls.Add(btnListen);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(3, 2, 3, 2);
             Name = "ChatBox_Server_Form";
             Text = "ChatBox_Server_Form";
             Load += ServerForm_Load;

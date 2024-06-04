@@ -263,6 +263,7 @@
             Controls.Add(btn_autoJoin);
             Controls.Add(label1);
             Controls.Add(btn_createRoom);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(3, 2, 3, 2);
             Name = "PvpModeForm";
             Text = "ChatServer";
