@@ -29,14 +29,15 @@ namespace winforms_chat
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChatMainForm));
             SuspendLayout();
             // 
             // ChatMainForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(514, 754);
-            Margin = new Padding(3, 4, 3, 4);
+            ClientSize = new Size(450, 566);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "ChatMainForm";
             Text = "Form1";
             FormClosing += Form1_FormClosing;

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChatServerCode));
             btn_joinRandom = new Button();
             listview_userQueue = new ListView();
             btn_autoJoin = new Button();
@@ -35,9 +36,10 @@
             // 
             // btn_joinRandom
             // 
-            btn_joinRandom.Location = new Point(25, 23);
+            btn_joinRandom.Location = new Point(22, 17);
+            btn_joinRandom.Margin = new Padding(3, 2, 3, 2);
             btn_joinRandom.Name = "btn_joinRandom";
-            btn_joinRandom.Size = new Size(197, 60);
+            btn_joinRandom.Size = new Size(172, 45);
             btn_joinRandom.TabIndex = 0;
             btn_joinRandom.Text = "Join 2 random people to random room";
             btn_joinRandom.UseVisualStyleBackColor = true;
@@ -45,17 +47,19 @@
             // 
             // listview_userQueue
             // 
-            listview_userQueue.Location = new Point(25, 89);
+            listview_userQueue.Location = new Point(22, 67);
+            listview_userQueue.Margin = new Padding(3, 2, 3, 2);
             listview_userQueue.Name = "listview_userQueue";
-            listview_userQueue.Size = new Size(763, 358);
+            listview_userQueue.Size = new Size(668, 270);
             listview_userQueue.TabIndex = 1;
             listview_userQueue.UseCompatibleStateImageBehavior = false;
             // 
             // btn_autoJoin
             // 
-            btn_autoJoin.Location = new Point(248, 23);
+            btn_autoJoin.Location = new Point(217, 17);
+            btn_autoJoin.Margin = new Padding(3, 2, 3, 2);
             btn_autoJoin.Name = "btn_autoJoin";
-            btn_autoJoin.Size = new Size(197, 60);
+            btn_autoJoin.Size = new Size(172, 45);
             btn_autoJoin.TabIndex = 2;
             btn_autoJoin.Text = "Auto join 2 random people to random room";
             btn_autoJoin.UseVisualStyleBackColor = true;
@@ -63,12 +67,14 @@
             // 
             // ChatServerCode
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(700, 338);
             Controls.Add(btn_autoJoin);
             Controls.Add(listview_userQueue);
             Controls.Add(btn_joinRandom);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(3, 2, 3, 2);
             Name = "ChatServerCode";
             Text = "ChatServer";
             FormClosed += ServerForm_FormClosed;

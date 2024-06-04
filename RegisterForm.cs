@@ -170,7 +170,8 @@ namespace winform_chat
                     ID = EncodeSha256(AccountBox.Text),
                     Username = AccountBox.Text,
                     Email = EmailBox.Text,
-                    Password = EncodeSha256(PasswordBox.Text)
+                    Password = EncodeSha256(PasswordBox.Text),
+                    ELO = 400
                 };
                 var find_user = Client.Get(@"Users/" + EncodeSha256(AccountBox.Text));
                 if (find_user != null)

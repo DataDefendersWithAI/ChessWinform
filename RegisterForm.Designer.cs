@@ -74,9 +74,10 @@
             PasswordBox.BorderStyle = BorderStyle.None;
             PasswordBox.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             PasswordBox.ForeColor = SystemColors.InactiveCaption;
-            PasswordBox.Location = new Point(131, 17);
+            PasswordBox.Location = new Point(115, 13);
+            PasswordBox.Margin = new Padding(3, 2, 3, 2);
             PasswordBox.Name = "PasswordBox";
-            PasswordBox.Size = new Size(451, 31);
+            PasswordBox.Size = new Size(395, 25);
             PasswordBox.TabIndex = 7;
             PasswordBox.Text = "Enter password";
             PasswordBox.Enter += PasswordBox_Enter;
@@ -88,9 +89,10 @@
             AccountBox.BorderStyle = BorderStyle.None;
             AccountBox.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             AccountBox.ForeColor = SystemColors.InactiveCaption;
-            AccountBox.Location = new Point(131, 15);
+            AccountBox.Location = new Point(115, 11);
+            AccountBox.Margin = new Padding(3, 2, 3, 2);
             AccountBox.Name = "AccountBox";
-            AccountBox.Size = new Size(451, 31);
+            AccountBox.Size = new Size(395, 25);
             AccountBox.TabIndex = 1;
             AccountBox.Text = "Enter username";
             AccountBox.Enter += AccountBox_Enter;
@@ -100,8 +102,9 @@
             // 
             pictureBox3.Image = (Image)resources.GetObject("pictureBox3.Image");
             pictureBox3.Location = new Point(0, 0);
+            pictureBox3.Margin = new Padding(3, 2, 3, 2);
             pictureBox3.Name = "pictureBox3";
-            pictureBox3.Size = new Size(125, 62);
+            pictureBox3.Size = new Size(109, 46);
             pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox3.TabIndex = 0;
             pictureBox3.TabStop = false;
@@ -110,8 +113,9 @@
             // 
             pictureBox4.Image = (Image)resources.GetObject("pictureBox4.Image");
             pictureBox4.Location = new Point(0, 0);
+            pictureBox4.Margin = new Padding(3, 2, 3, 2);
             pictureBox4.Name = "pictureBox4";
-            pictureBox4.Size = new Size(125, 62);
+            pictureBox4.Size = new Size(109, 46);
             pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox4.TabIndex = 6;
             pictureBox4.TabStop = false;
@@ -121,9 +125,9 @@
             StatusText.AutoSize = true;
             StatusText.Font = new Font("Microsoft Sans Serif", 18F, FontStyle.Bold, GraphicsUnit.Point, 0);
             StatusText.ForeColor = Color.Red;
-            StatusText.Location = new Point(411, 628);
+            StatusText.Location = new Point(360, 471);
             StatusText.Name = "StatusText";
-            StatusText.Size = new Size(440, 36);
+            StatusText.Size = new Size(357, 29);
             StatusText.TabIndex = 23;
             StatusText.Text = "Current Status: Not Logged In";
             // 
@@ -132,9 +136,10 @@
             panel2.BackColor = Color.Azure;
             panel2.Controls.Add(PasswordBox);
             panel2.Controls.Add(pictureBox4);
-            panel2.Location = new Point(411, 336);
+            panel2.Location = new Point(360, 252);
+            panel2.Margin = new Padding(3, 2, 3, 2);
             panel2.Name = "panel2";
-            panel2.Size = new Size(594, 62);
+            panel2.Size = new Size(520, 46);
             panel2.TabIndex = 17;
             // 
             // panel1
@@ -142,18 +147,19 @@
             panel1.BackColor = Color.Azure;
             panel1.Controls.Add(AccountBox);
             panel1.Controls.Add(pictureBox3);
-            panel1.Location = new Point(411, 200);
+            panel1.Location = new Point(360, 150);
+            panel1.Margin = new Padding(3, 2, 3, 2);
             panel1.Name = "panel1";
-            panel1.Size = new Size(594, 62);
+            panel1.Size = new Size(520, 46);
             panel1.TabIndex = 16;
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 25.8000011F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
-            label2.Location = new Point(442, 144);
+            label2.Location = new Point(387, 108);
             label2.Name = "label2";
-            label2.Size = new Size(524, 60);
+            label2.Size = new Size(417, 47);
             label2.TabIndex = 15;
             label2.Text = "Register to your account";
             // 
@@ -161,9 +167,9 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 25.8000011F, FontStyle.Bold | FontStyle.Italic, GraphicsUnit.Point, 0);
-            label1.Location = new Point(423, 3);
+            label1.Location = new Point(370, 2);
             label1.Name = "label1";
-            label1.Size = new Size(268, 60);
+            label1.Size = new Size(213, 47);
             label1.TabIndex = 14;
             label1.Text = "Welcome to";
             // 
@@ -171,7 +177,8 @@
             // 
             pictureBox2.BackColor = Color.Transparent;
             pictureBox2.Image = (Image)resources.GetObject("pictureBox2.Image");
-            pictureBox2.Location = new Point(570, 66);
+            pictureBox2.Location = new Point(499, 50);
+            pictureBox2.Margin = new Padding(3, 2, 3, 2);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(230, 75);
             pictureBox2.SizeMode = PictureBoxSizeMode.AutoSize;
@@ -182,8 +189,9 @@
             // 
             pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
             pictureBox1.Location = new Point(2, 1);
+            pictureBox1.Margin = new Padding(3, 2, 3, 2);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(410, 717);
+            pictureBox1.Size = new Size(359, 538);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 12;
             pictureBox1.TabStop = false;
@@ -193,9 +201,10 @@
             panel3.BackColor = Color.Azure;
             panel3.Controls.Add(EmailBox);
             panel3.Controls.Add(pictureBox5);
-            panel3.Location = new Point(411, 268);
+            panel3.Location = new Point(360, 201);
+            panel3.Margin = new Padding(3, 2, 3, 2);
             panel3.Name = "panel3";
-            panel3.Size = new Size(594, 62);
+            panel3.Size = new Size(520, 46);
             panel3.TabIndex = 24;
             // 
             // EmailBox
@@ -204,9 +213,10 @@
             EmailBox.BorderStyle = BorderStyle.None;
             EmailBox.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             EmailBox.ForeColor = SystemColors.InactiveCaption;
-            EmailBox.Location = new Point(131, 15);
+            EmailBox.Location = new Point(115, 11);
+            EmailBox.Margin = new Padding(3, 2, 3, 2);
             EmailBox.Name = "EmailBox";
-            EmailBox.Size = new Size(451, 31);
+            EmailBox.Size = new Size(395, 25);
             EmailBox.TabIndex = 1;
             EmailBox.Text = "Enter email";
             EmailBox.Enter += EmailBox_Enter;
@@ -216,8 +226,9 @@
             // 
             pictureBox5.Image = (Image)resources.GetObject("pictureBox5.Image");
             pictureBox5.Location = new Point(0, 0);
+            pictureBox5.Margin = new Padding(3, 2, 3, 2);
             pictureBox5.Name = "pictureBox5";
-            pictureBox5.Size = new Size(125, 62);
+            pictureBox5.Size = new Size(109, 46);
             pictureBox5.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox5.TabIndex = 0;
             pictureBox5.TabStop = false;
@@ -227,9 +238,10 @@
             panel4.BackColor = Color.Azure;
             panel4.Controls.Add(ReTypePasswordBox);
             panel4.Controls.Add(pictureBox6);
-            panel4.Location = new Point(411, 404);
+            panel4.Location = new Point(360, 303);
+            panel4.Margin = new Padding(3, 2, 3, 2);
             panel4.Name = "panel4";
-            panel4.Size = new Size(594, 62);
+            panel4.Size = new Size(520, 46);
             panel4.TabIndex = 25;
             // 
             // ReTypePasswordBox
@@ -238,9 +250,10 @@
             ReTypePasswordBox.BorderStyle = BorderStyle.None;
             ReTypePasswordBox.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             ReTypePasswordBox.ForeColor = SystemColors.InactiveCaption;
-            ReTypePasswordBox.Location = new Point(131, 17);
+            ReTypePasswordBox.Location = new Point(115, 13);
+            ReTypePasswordBox.Margin = new Padding(3, 2, 3, 2);
             ReTypePasswordBox.Name = "ReTypePasswordBox";
-            ReTypePasswordBox.Size = new Size(451, 31);
+            ReTypePasswordBox.Size = new Size(395, 25);
             ReTypePasswordBox.TabIndex = 7;
             ReTypePasswordBox.Text = "Retype password";
             ReTypePasswordBox.Enter += ReTypePasswordBox_Enter;
@@ -250,8 +263,9 @@
             // 
             pictureBox6.Image = (Image)resources.GetObject("pictureBox6.Image");
             pictureBox6.Location = new Point(0, 0);
+            pictureBox6.Margin = new Padding(3, 2, 3, 2);
             pictureBox6.Name = "pictureBox6";
-            pictureBox6.Size = new Size(125, 62);
+            pictureBox6.Size = new Size(109, 46);
             pictureBox6.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox6.TabIndex = 6;
             pictureBox6.TabStop = false;
@@ -260,9 +274,9 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.Location = new Point(418, 673);
+            label3.Location = new Point(366, 505);
             label3.Name = "label3";
-            label3.Size = new Size(308, 29);
+            label3.Size = new Size(252, 24);
             label3.TabIndex = 27;
             label3.Text = "Already have an account?";
             // 
@@ -270,9 +284,9 @@
             // 
             SignInLink.AutoSize = true;
             SignInLink.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            SignInLink.Location = new Point(725, 673);
+            SignInLink.Location = new Point(634, 505);
             SignInLink.Name = "SignInLink";
-            SignInLink.Size = new Size(87, 29);
+            SignInLink.Size = new Size(69, 24);
             SignInLink.TabIndex = 28;
             SignInLink.TabStop = true;
             SignInLink.Text = "SignIn";
@@ -282,9 +296,9 @@
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label4.Location = new Point(687, 702);
+            label4.Location = new Point(601, 526);
             label4.Name = "label4";
-            label4.Size = new Size(279, 29);
+            label4.Size = new Size(227, 24);
             label4.TabIndex = 29;
             label4.Text = "and begin your journey";
             // 
@@ -293,9 +307,10 @@
             panel5.BackColor = Color.Azure;
             panel5.Controls.Add(OTPBox);
             panel5.Controls.Add(pictureBox7);
-            panel5.Location = new Point(411, 472);
+            panel5.Location = new Point(360, 354);
+            panel5.Margin = new Padding(3, 2, 3, 2);
             panel5.Name = "panel5";
-            panel5.Size = new Size(422, 62);
+            panel5.Size = new Size(369, 46);
             panel5.TabIndex = 30;
             // 
             // OTPBox
@@ -304,9 +319,10 @@
             OTPBox.BorderStyle = BorderStyle.None;
             OTPBox.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             OTPBox.ForeColor = SystemColors.InactiveCaption;
-            OTPBox.Location = new Point(131, 17);
+            OTPBox.Location = new Point(115, 13);
+            OTPBox.Margin = new Padding(3, 2, 3, 2);
             OTPBox.Name = "OTPBox";
-            OTPBox.Size = new Size(272, 31);
+            OTPBox.Size = new Size(238, 25);
             OTPBox.TabIndex = 7;
             OTPBox.Text = "Enter OTP";
             OTPBox.Enter += OTPBox_Enter;
@@ -316,8 +332,9 @@
             // 
             pictureBox7.Image = (Image)resources.GetObject("pictureBox7.Image");
             pictureBox7.Location = new Point(0, 0);
+            pictureBox7.Margin = new Padding(3, 2, 3, 2);
             pictureBox7.Name = "pictureBox7";
-            pictureBox7.Size = new Size(125, 62);
+            pictureBox7.Size = new Size(109, 46);
             pictureBox7.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox7.TabIndex = 6;
             pictureBox7.TabStop = false;
@@ -329,9 +346,10 @@
             RegisterButton.FlatAppearance.BorderSize = 0;
             RegisterButton.FlatStyle = FlatStyle.Flat;
             RegisterButton.Font = new Font("Microsoft Sans Serif", 22.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            RegisterButton.Location = new Point(570, 547);
+            RegisterButton.Location = new Point(499, 410);
+            RegisterButton.Margin = new Padding(3, 2, 3, 2);
             RegisterButton.Name = "RegisterButton";
-            RegisterButton.Size = new Size(275, 78);
+            RegisterButton.Size = new Size(241, 58);
             RegisterButton.TabIndex = 32;
             RegisterButton.Text = "Register";
             RegisterButton.UseVisualStyleBackColor = true;
@@ -344,9 +362,10 @@
             OTPButton.FlatAppearance.BorderSize = 0;
             OTPButton.FlatStyle = FlatStyle.Flat;
             OTPButton.Font = new Font("Microsoft Sans Serif", 13.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            OTPButton.Location = new Point(839, 472);
+            OTPButton.Location = new Point(734, 354);
+            OTPButton.Margin = new Padding(3, 2, 3, 2);
             OTPButton.Name = "OTPButton";
-            OTPButton.Size = new Size(154, 62);
+            OTPButton.Size = new Size(135, 46);
             OTPButton.TabIndex = 33;
             OTPButton.Text = "Send OTP";
             OTPButton.UseVisualStyleBackColor = true;
@@ -354,10 +373,10 @@
             // 
             // RegisterForm
             // 
-            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Aquamarine;
-            ClientSize = new Size(1000, 730);
+            ClientSize = new Size(875, 548);
             Controls.Add(OTPButton);
             Controls.Add(RegisterButton);
             Controls.Add(panel5);
@@ -373,6 +392,8 @@
             Controls.Add(label1);
             Controls.Add(pictureBox2);
             Controls.Add(pictureBox1);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            Margin = new Padding(3, 2, 3, 2);
             Name = "RegisterForm";
             Text = "RegisterForm";
             Load += RegisterForm_Load;
