@@ -155,7 +155,7 @@ namespace winforms_chat
 
                             foreach (ListViewItem item in listview_userQueue.Items)
                             {
-                                if (item.SubItems[1].Text != player1 && item.SubItems[3].Text == timeCtrl )
+                                if (item.SubItems[1].Text != player1 && item.SubItems[2].Text == timeCtrl )
                                 {
                                     player2 = item.SubItems[1].Text;
                                 }
@@ -191,7 +191,7 @@ namespace winforms_chat
                         }
                         // update list user for all clients
                         Debug.WriteLine("[SVR] Update list user for all clients");
-                        UpdateUserList();
+                        //UpdateUserList();
                     }
                     else if (msg.type == "update" && msg.TableCode == "000000" && msg.to == "server" && msg.message.Contains(ChatCommandExt.ToString(ChatCommandExt.ChatCommand.GetUserList)))
                     {
@@ -286,7 +286,7 @@ namespace winforms_chat
                 comm.SendMessage(msg1.ToJson());
                 // comm.SendMessage(msg2.ToJson());
 
-                UpdateUserList();
+                //UpdateUserList();
             }
             catch (Exception ex)
             {
